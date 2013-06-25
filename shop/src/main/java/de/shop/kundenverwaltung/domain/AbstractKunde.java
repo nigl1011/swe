@@ -59,6 +59,7 @@ import org.jboss.logging.Logger;
 import de.shop.bestellverwaltung.domain.Bestellung;
 import de.shop.util.IdGroup;
 
+
 @Cacheable
 @Entity
 @Table(name = "kunde")
