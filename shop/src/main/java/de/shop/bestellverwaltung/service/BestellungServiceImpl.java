@@ -44,7 +44,7 @@ public class BestellungServiceImpl implements Serializable, BestellungService {
 	private static final long serialVersionUID = -9145947650157430928L;
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
 	
-	@PersistenceContext
+	@Inject
 	private transient EntityManager em;
 	
 	@Inject

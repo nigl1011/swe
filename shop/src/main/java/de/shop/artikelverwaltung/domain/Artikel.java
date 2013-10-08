@@ -9,7 +9,6 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.annotation.Nonnegative;
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -124,7 +123,6 @@ message = "{artikelverwaltung.artikel.farbe.length}")
 private String farbe;
 
 @NotNull
-@Nonnegative
 @Column(nullable = false, precision = 7, scale = 2)
 private BigDecimal preis;
 

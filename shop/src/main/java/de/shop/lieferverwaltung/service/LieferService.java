@@ -38,7 +38,7 @@ public class LieferService implements Serializable {
 	private static final long serialVersionUID = -3907630579991760308L;
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
 	
-	@PersistenceContext
+	@Inject
 	private transient EntityManager em;
 	
 	@Inject

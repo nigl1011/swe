@@ -54,7 +54,7 @@ public class KundeService implements Serializable {
 		ID
 	}
 	
-	@PersistenceContext
+	@Inject
 	private transient EntityManager em;
 	
 	@Inject

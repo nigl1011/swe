@@ -39,7 +39,7 @@ public class ArtikelService implements Serializable {
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles
 			.lookup().lookupClass());
 
-	@PersistenceContext
+	@Inject
 	private transient EntityManager em;
 
 	@Inject
