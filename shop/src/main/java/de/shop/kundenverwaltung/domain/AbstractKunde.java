@@ -1,31 +1,48 @@
 package de.shop.kundenverwaltung.domain;
 
 import static de.shop.util.Constants.KEINE_ID;
-import static de.shop.util.Constants.MIN_ID;
 import static javax.persistence.CascadeType.PERSIST;
+import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.CascadeType.REMOVE;
 import static javax.persistence.TemporalType.DATE;
 import static javax.persistence.TemporalType.TIMESTAMP;
+import static de.shop.util.Constants.ERSTE_VERSION;
+
 
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
+
+
+
 import java.math.BigDecimal;
 import java.net.URI;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
-import javax.persistence.Cacheable;
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedEntityGraphs;
+
+
+import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.UniqueConstraint;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Inheritance;
 import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
@@ -35,19 +52,25 @@ import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.PostLoad;
 import javax.persistence.PostPersist;
+import javax.persistence.PostUpdate;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
+import javax.persistence.Version;
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import javax.validation.groups.Default;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlTransient;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonSubTypes;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
@@ -55,14 +78,16 @@ import org.codehaus.jackson.annotate.JsonSubTypes.Type;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.ScriptAssert;
 import org.jboss.logging.Logger;
+import org.jboss.resteasy.annotations.providers.jaxb.Formatted;
 
+import de.shop.auth.domain.RolleType;
 import de.shop.bestellverwaltung.domain.Bestellung;
-import de.shop.util.IdGroup;
+import de.shop.util.persistence.File;
 
 
-@Cacheable
+
 @Entity
-@Table(name = "kunde")
+@Table(name = "kunde", indexes = { @Index(columnList = "nachname"), @Index(columnList = "file_fk")})
 @Inheritance
 @DiscriminatorColumn(name = "art", length = 1)
 @NamedQueries({
@@ -81,6 +106,11 @@ import de.shop.util.IdGroup;
 		                + " FROM  AbstractKunde k"
 		                + " WHERE CONCAT('', k.id) LIKE :" + AbstractKunde.PARAM_KUNDE_ID_PREFIX
 		                + " ORDER BY k.id"),
+	@NamedQuery(name  = AbstractKunde.FIND_KUNDEN_BY_ID_PREFIX,
+				query = "SELECT   k"
+				        + " FROM  AbstractKunde k"
+				        + " WHERE CONCAT('', k.id) LIKE :" + AbstractKunde.PARAM_KUNDE_ID_PREFIX
+				        + " ORDER BY k.id"),
 	@NamedQuery(name  = AbstractKunde.FIND_KUNDEN_BY_NACHNAME,
 	            query = "SELECT k"
 				        + " FROM   AbstractKunde k"
@@ -120,21 +150,46 @@ import de.shop.util.IdGroup;
 	@NamedQuery(name = AbstractKunde.FIND_PRIVATKUNDEN_FIRMENKUNDEN,
 			    query = "SELECT k"
 			            + " FROM  AbstractKunde k"
-			    		+ " WHERE TYPE(k) IN (Privatkunde, Firmenkunde)")
+			    		+ " WHERE TYPE(k) IN (Privatkunde, Firmenkunde)"),
+	@NamedQuery(name  = AbstractKunde.FIND_ALL_NACHNAMEN,
+		   	            query = "SELECT      DISTINCT k.nachname"
+		   				        + " FROM     AbstractKunde k"
+		   				        + " ORDER BY k.nachname"),
+    @NamedQuery(name  = AbstractKunde.FIND_KUNDEN_OHNE_BESTELLUNGEN,
+			            query = "SELECT k"
+					            + " FROM   AbstractKunde k"
+					            + " WHERE  k.bestellungen IS EMPTY"),
+	@NamedQuery(name  = AbstractKunde.FIND_KUNDE_BY_USERNAME,
+					            query = "SELECT   k"
+								        + " FROM  AbstractKunde k"
+					            		+ " WHERE CONCAT('', k.id) = :" + AbstractKunde.PARAM_KUNDE_USERNAME),
+	@NamedQuery(name  = AbstractKunde.FIND_USERNAME_BY_USERNAME_PREFIX,
+				  	            query = "SELECT   CONCAT('', k.id)"
+				  				        + " FROM  AbstractKunde k"
+				   	            		+ " WHERE CONCAT('', k.id) LIKE :" + AbstractKunde.PARAM_USERNAME_PREFIX)
+					            
 })
+
+@NamedEntityGraphs({
+	@NamedEntityGraph(name = AbstractKunde.GRAPH_BESTELLUNGEN,
+					  attributeNodes = @NamedAttributeNode("bestellungen")),
+	@NamedEntityGraph(name = AbstractKunde.GRAPH_WARTUNGSVERTRAEGE,
+					  attributeNodes = @NamedAttributeNode("wartungsvertraege"))
+})
+
 @ScriptAssert(lang = "javascript",
-	          script = "(_this.password == null && _this.passwordWdh == null)"
-	                   + "|| (_this.password != null && _this.password.equals(_this.passwordWdh))",
-	          message = "{kundenverwaltung.kunde.password.notEqual}",
-	          groups = PasswordGroup.class)
-
-
+script = "_this.password != null && !_this.password.equals(\"\")"
+		   + "&& _this.password.equals(_this.passwordWdh)",
+message = "{kunde.password.notEqual}",
+groups = { Default.class, PasswordGroup.class })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-	@Type(value = Privatkunde.class, name = AbstractKunde.PRIVATKUNDE),
-	@Type(value = Firmenkunde.class, name = AbstractKunde.FIRMENKUNDE) 
-	})
-public abstract class AbstractKunde implements Serializable {
+@Type(value = Privatkunde.class, name = AbstractKunde.PRIVATKUNDE),
+@Type(value = Firmenkunde.class, name = AbstractKunde.FIRMENKUNDE) })
+@XmlRootElement
+@Formatted
+@XmlSeeAlso({ Firmenkunde.class, Privatkunde.class })
+public abstract class AbstractKunde implements Serializable,Cloneable {
 	private static final long serialVersionUID = 7401524595142572933L;
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
 	
@@ -154,6 +209,8 @@ public abstract class AbstractKunde implements Serializable {
 	public static final int EMAIL_LENGTH_MAX = 128;
 	public static final int DETAILS_LENGTH_MAX = 128 * 1024;
 	public static final int PASSWORD_LENGTH_MAX = 256;
+	private static final String RABATT_MAX = "0.5";
+	private static final int BEMERKUNGEN_LENGTH_MAX = 2000;
 
 	
 	private static final String PREFIX = "AbstractKunde.";
@@ -161,6 +218,7 @@ public abstract class AbstractKunde implements Serializable {
 	public static final String FIND_KUNDEN_FETCH_BESTELLUNGEN = PREFIX + "findKundenFetchBestellungen";
 	public static final String FIND_KUNDEN_ORDER_BY_ID = PREFIX + "findKundenOrderById";
 	public static final String FIND_IDS_BY_PREFIX = PREFIX + "findIdsByPrefix";
+	public static final String FIND_KUNDEN_BY_ID_PREFIX = PREFIX + "findKundenByIdPrefix";
 	public static final String FIND_KUNDEN_BY_NACHNAME = PREFIX + "findKundenByNachname";
 	public static final String FIND_KUNDEN_BY_NACHNAME_FETCH_BESTELLUNGEN =
 		                       PREFIX + "findKundenByNachnameFetchBestellungen";
@@ -174,6 +232,10 @@ public abstract class AbstractKunde implements Serializable {
 	public static final String FIND_ADRESSE_BY_KUNDE = PREFIX + "findAdresseByKunde";
 	public static final String FIND_KUNDEN_BY_DATE = PREFIX + "findKundenByDate";
 	public static final String FIND_PRIVATKUNDEN_FIRMENKUNDEN = PREFIX + "findPrivatkundenFirmenkunden";
+	public static final String FIND_ALL_NACHNAMEN = PREFIX + "findAllNachnamen";
+	public static final String FIND_KUNDEN_OHNE_BESTELLUNGEN = PREFIX + "findKundenOhneBestellungen";
+	public static final String FIND_KUNDE_BY_USERNAME = PREFIX + "findKundeByUsername";
+	public static final String FIND_USERNAME_BY_USERNAME_PREFIX = PREFIX + "findKundeByUsernamePrefix";
 	
 	public static final String PARAM_KUNDE_ID = "kundeId";
 	public static final String PARAM_KUNDE_ID_PREFIX = "idPrefix";
@@ -182,12 +244,21 @@ public abstract class AbstractKunde implements Serializable {
 	public static final String PARAM_KUNDE_ADRESSE_PLZ = "plz";
 	public static final String PARAM_KUNDE_SEIT = "seit";
 	public static final String PARAM_KUNDE_EMAIL = "email";
+	public static final String PARAM_KUNDE_USERNAME = "username";
+	public static final String PARAM_USERNAME_PREFIX = "usernamePrefix";
+	
+	public static final String GRAPH_BESTELLUNGEN = "bestellungen";
+	public static final String GRAPH_WARTUNGSVERTRAEGE = "wartungsvertraege";
+
 	
 	@Id
 	@GeneratedValue
 	@Column(nullable = false, updatable = false)
-	@Min(value = MIN_ID, message = "{kundenverwaltung.kunde.id.min}", groups = IdGroup.class)
 	private Long id = KEINE_ID;
+	
+	@Version
+	@Basic(optional = false)
+	private int version = ERSTE_VERSION;
 	
 	@Column(length = VORNAME_LENGTH_MAX)
 	@NotNull(message = "{kundenverwaltung.kunde.vorname.notNull}")
@@ -203,15 +274,10 @@ public abstract class AbstractKunde implements Serializable {
 	@Pattern(regexp = NACHNAME_PATTERN, message = "{kundenverwaltung.kunde.nachname.pattern}")
 	private String nachname;
 	
-	
+	@Basic(optional = false)
 	@Temporal(DATE)
 	@Past(message = "{kundenverwaltung.kunde.seit.past}")
 	private Date seit;
-	
-	@Column(nullable = false)
-	@Enumerated
-	private GeschlechtType geschlecht;
-	
 
 	@Temporal(DATE)
 	@Past(message = "{kundenverwaltung.kunde.geburtsdatum.past}")
@@ -223,30 +289,36 @@ public abstract class AbstractKunde implements Serializable {
 	@Size(max = EMAIL_LENGTH_MAX, message = "{kundenverwaltung.kunde.email.length}")
 	private String email;
 	
+	@Column(precision = 5, scale = 4)
+	@DecimalMax(value = RABATT_MAX, message = "{kunde.rabatt.max}")
+	private BigDecimal rabatt = BigDecimal.ZERO;
+	
+	@Column(precision = 15, scale = 3)
+	private BigDecimal umsatz = BigDecimal.ZERO;
+	
 	private boolean newsletter = false;
 	
-	@Column(nullable = false)
+	@Basic(optional = false)
 	@Temporal(TIMESTAMP)
-	@JsonIgnore
+	@XmlTransient
 	private Date erzeugt;
 	
-	@Column(nullable = false, precision = 5, scale = 4)
-	private BigDecimal rabatt;
-	
-	@Column(nullable = false, precision = 15, scale = 3)
-	private BigDecimal umsatz;
 	
 	@Column(length = PASSWORD_LENGTH_MAX)
+	@Size(max = PASSWORD_LENGTH_MAX, message = "{kunde.password.length}")
 	private String password;
 	
 	@Transient
-	@JsonIgnore
 	private String passwordWdh;
 	
-	@Column(nullable = false)
+	@Basic(optional = false)
 	@Temporal(TIMESTAMP)
-	@JsonIgnore
+	@XmlTransient
 	private Date aktualisiert;
+	
+	@Transient
+	@AssertTrue(message = "{kunde.agb}")
+	private boolean agbAkzeptiert;
 	
 	@OneToOne(cascade = { PERSIST, REMOVE }, mappedBy = "kunde")
 	@Valid
@@ -257,7 +329,7 @@ public abstract class AbstractKunde implements Serializable {
 	@OneToMany
 	@JoinColumn(name = "kunde_fk", nullable = false)
 	@OrderColumn(name = "idx", nullable = false)
-	@JsonIgnore
+	@XmlTransient
 	private List<Bestellung> bestellungen;
 	
 	//Transient wird nicht in der Datenbank abgespeichert
@@ -267,13 +339,42 @@ public abstract class AbstractKunde implements Serializable {
 	@OneToMany
 	@JoinColumn(name = "kunde_fk", nullable = false)
 	@OrderColumn(name = "idx", nullable = false)
-	@JsonIgnore
+	@XmlTransient
 	private List<Wartungsvertrag> wartungsvertraege;
+	
+	@ElementCollection(fetch = EAGER)
+	@CollectionTable(name = "kunde_rolle",
+	                 joinColumns = @JoinColumn(name = "kunde_fk", nullable = false),
+   	                 uniqueConstraints =  @UniqueConstraint(columnNames = { "kunde_fk", "rolle" }))
+	@Column(table = "kunde_rolle", name = "rolle", length = 32, nullable = false)
+	private Set<RolleType> rollen;
+	
+	@OneToOne(fetch = LAZY, cascade = { PERSIST, REMOVE })
+	@JoinColumn(name = "file_fk")
+	@XmlTransient
+	private File file;
+	
+	@Column
+	@Size(max = BEMERKUNGEN_LENGTH_MAX)
+	//@SafeHtml
+	private String bemerkungen;
 	
 	@PrePersist
 	protected void prePersist() {
 		erzeugt = new Date();
 		aktualisiert = new Date();
+	}
+	
+	public AbstractKunde() {
+		super();
+	}
+	
+	public AbstractKunde(String nachname, String vorname, String email, Date seit) {
+		super();
+		this.nachname = nachname;
+		this.vorname = vorname;
+		this.email = email;
+		this.seit = seit == null ? null : (Date) seit.clone();
 	}
 	
 	@PostPersist
@@ -286,13 +387,20 @@ public abstract class AbstractKunde implements Serializable {
 		aktualisiert = new Date();
 	}
 	
+	@PostUpdate
+	protected void postUpdate() {
+		LOGGER.debugf("Kunde mit ID=%d aktualisiert: version=%d", id, version);
+	}
+	
 	@PostLoad
 	protected void postLoad() {
 		passwordWdh = password;
+		agbAkzeptiert = true;
 	}
 	
 	public void setValues(AbstractKunde k) {
 		nachname = k.nachname;
+		version= k.version;
 		vorname = k.vorname;
 		umsatz = k.umsatz;
 		rabatt = k.rabatt;
@@ -301,6 +409,7 @@ public abstract class AbstractKunde implements Serializable {
 		email = k.email;
 		password = k.password;
 		passwordWdh = k.password;
+		agbAkzeptiert = k.agbAkzeptiert;
 	}
 	
 	
@@ -309,6 +418,12 @@ public abstract class AbstractKunde implements Serializable {
 	}
 	public void setId(Long id) {
 		this.id = id;
+	}
+	public int getVersion() {
+		return version;
+	}
+	public void setVersion(int version) {
+		this.version = version;
 	}
 	public String getNachname() {
 		return nachname;
@@ -322,12 +437,7 @@ public abstract class AbstractKunde implements Serializable {
 	public void setVorname(String vorname) {
 		this.vorname = vorname;
 	}
-	public GeschlechtType getGeschlecht() {
-		return geschlecht;
-	}
-	public void setGeschlecht(GeschlechtType geschlecht) {
-		this.geschlecht = geschlecht;
-	}
+
 	public Date getGeburtsdatum() {
 		return geburtsdatum == null ? null : (Date) geburtsdatum.clone();
 	}
@@ -434,6 +544,13 @@ public abstract class AbstractKunde implements Serializable {
 	public void setErzeugt(Date erzeugt) {
 		this.erzeugt = erzeugt == null ? null : (Date) erzeugt.clone();
 	}
+	public void setAgbAkzeptiert(boolean agbAkzeptiert) {
+		this.agbAkzeptiert = agbAkzeptiert;
+	}
+
+	public boolean isAgbAkzeptiert() {
+		return agbAkzeptiert;
+	}
 	public Date getAktualisiert() {
 		return aktualisiert == null ? null : (Date) aktualisiert.clone();
 	}
@@ -510,6 +627,63 @@ public abstract class AbstractKunde implements Serializable {
 		return this;
 	}
 
+	public Set<RolleType> getRollen() {
+		if (rollen == null) {
+			return null;
+		}
+		
+		return Collections.unmodifiableSet(rollen);
+	}
+
+	public void setRollen(Set<RolleType> rollen) {
+		if (this.rollen == null) {
+			this.rollen = rollen;
+			return;
+		}
+		
+		// Wiederverwendung der vorhandenen Collection
+		this.rollen.clear();
+		if (rollen != null) {
+			this.rollen.addAll(rollen);
+		}
+	}
+	
+	public AbstractKunde addRollen(Collection<RolleType> rollen) {
+		LOGGER.tracef("neue Rollen: %s", rollen);
+		if (this.rollen == null) {
+			this.rollen = new HashSet<>();
+		}
+		this.rollen.addAll(rollen);
+		LOGGER.tracef("Rollen nachher: %s", this.rollen);
+		return this;
+	}
+	
+	public AbstractKunde removeRollen(Collection<RolleType> rollen) {
+		LOGGER.tracef("zu entfernende Rollen: %s", rollen);
+		if (this.rollen == null) {
+			return this;
+		}
+		this.rollen.removeAll(rollen);
+		LOGGER.tracef("Rollen nachher: %s", this.rollen);
+		return this;
+	}
+
+	public File getFile() {
+		return file;
+	}
+
+	public void setFile(File file) {
+		this.file = file;
+	}
+
+	public String getBemerkungen() {
+		return bemerkungen;
+	}
+
+	public void setBemerkungen(String bemerkungen) {
+		this.bemerkungen = bemerkungen;
+	}
+
 
 	@Override
 	public int hashCode() {
@@ -519,9 +693,8 @@ public abstract class AbstractKunde implements Serializable {
 		result = prime * result + ((erzeugt == null) ? 0 : erzeugt.hashCode());
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((geburtsdatum == null) ? 0 : geburtsdatum.hashCode());
-		result = prime * result + ((geschlecht == null) ? 0 : geschlecht.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((nachname == null) ? 0 : nachname.hashCode());
+		result = prime * result + ((nachname == null) ? 0 : nachname.hashCode());	
 		result = prime * result + ((vorname == null) ? 0 : vorname.hashCode());
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		return result;
@@ -558,16 +731,35 @@ public abstract class AbstractKunde implements Serializable {
 	public String toString() {
 		return "AbstractKunde [id=" + id
 			   + ", nachname=" + nachname + ", vorname=" + vorname
-			   + ", geschlecht=" + geschlecht
 			   + ", geburtsdatum=" + getGeburtsdatumAsString(DateFormat.MEDIUM, Locale.GERMANY)
 			   + ", seit=" + getSeitAsString(DateFormat.MEDIUM, Locale.GERMANY)
-			   + ", umsatz=" + umsatz
+			   + ", umsatz=" + umsatz + ", rabatt=" + rabatt
 			   + ", email=" + email
+			   + ", rollen=" + rollen + ", password=" + password + ", passwordWdh=" + passwordWdh
 			   + ", password=" + password + ", passwordWdh=" + passwordWdh
 			   + ", erzeugt=" + erzeugt
 			   + ", aktualisiert=" + aktualisiert 
 			   + "]";
 	}
-
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		final AbstractKunde neuesObjekt = AbstractKunde.class.cast(super.clone());
+		neuesObjekt.id = id;
+		neuesObjekt.version = version;
+		neuesObjekt.nachname = nachname;
+		neuesObjekt.vorname = vorname;
+		//neuesObjekt.kategorie = kategorie;
+		neuesObjekt.umsatz = umsatz;
+		neuesObjekt.email = email;
+		neuesObjekt.newsletter = newsletter;
+		neuesObjekt.password = password;
+		neuesObjekt.passwordWdh = passwordWdh;
+		neuesObjekt.agbAkzeptiert = agbAkzeptiert;
+		neuesObjekt.adresse = adresse;
+		neuesObjekt.bemerkungen = bemerkungen;
+		neuesObjekt.erzeugt = erzeugt;
+		neuesObjekt.aktualisiert = aktualisiert;
+		return neuesObjekt;
+	}
 
 }
