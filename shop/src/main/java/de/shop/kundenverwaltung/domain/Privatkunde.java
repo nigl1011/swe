@@ -41,10 +41,12 @@ public class Privatkunde extends AbstractKunde {
 	public void setFamilienstand(FamilienstandType familienstand) {
 		this.familienstand = familienstand;
 	}
-
+	
+	@Override
 	public GeschlechtType getGeschlecht() {
 		return geschlecht;
 	}
+	@Override
 	public void setGeschlecht(GeschlechtType geschlecht) {
 		this.geschlecht = geschlecht;
 	}

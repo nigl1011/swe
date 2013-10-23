@@ -16,7 +16,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -221,7 +220,7 @@ public class BestellungServiceImpl implements Serializable, BestellungService {
 		return lieferung;
 	}	
 
-	
+	@Override
 	public List<Bestellung> findBestellungenByIds(List<Long> ids) {
 		if (ids == null || ids.isEmpty()) {
 			return null;

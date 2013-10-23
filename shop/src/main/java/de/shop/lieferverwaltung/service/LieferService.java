@@ -11,7 +11,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -26,9 +25,7 @@ import org.jboss.logging.Logger;
 
 import de.shop.artikelverwaltung.domain.Artikel;
 import de.shop.artikelverwaltung.service.InvalidArtikelIdException;
-import de.shop.bestellverwaltung.service.BestellungServiceImpl;
 import de.shop.lieferverwaltung.domain.Lieferung;
-//import de.shop.lieferverwaltung.service.InvalidLieferIdException;
 import de.shop.util.IdGroup;
 import de.shop.util.Log;
 import de.shop.util.ValidatorProvider;
@@ -40,9 +37,6 @@ public class LieferService implements Serializable {
 	
 	@Inject
 	private transient EntityManager em;
-	
-	@Inject
-	private BestellungServiceImpl bs;
 	
 	@Inject
 	private ValidatorProvider validatorProvider;

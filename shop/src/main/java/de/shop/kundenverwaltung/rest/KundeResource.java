@@ -14,6 +14,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -36,13 +37,12 @@ import de.shop.bestellverwaltung.rest.UriHelperBestellung;
 import de.shop.bestellverwaltung.service.BestellungService;
 import de.shop.kundenverwaltung.domain.AbstractKunde;
 import de.shop.kundenverwaltung.domain.Adresse;
-import de.shop.kundenverwaltung.domain.Privatkunde;
 import de.shop.kundenverwaltung.service.KundeService;
 import de.shop.kundenverwaltung.service.KundeService.FetchType;
 import de.shop.util.LocaleHelper;
 import de.shop.util.Log;
 import de.shop.util.NotFoundException;
-import de.shop.util.Transactional;
+
 
 @Path("/kunden")
 @Produces(APPLICATION_JSON)
@@ -201,7 +201,7 @@ public class KundeResource {
 		}
 		kunde.setBestellungenUri(null);
 		
-		kunde = (Privatkunde) ks.createKunde(kunde, locale);
+		kunde = ks.createKunde(kunde, locale);
 		LOGGER.tracef("Kunde: %s", kunde);
 		
 		final URI kundeUri = uriHelperKunde.getUriKunde(kunde, uriInfo);

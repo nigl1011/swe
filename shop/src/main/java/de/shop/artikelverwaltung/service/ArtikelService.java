@@ -11,7 +11,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -64,7 +64,14 @@ public class ArtikelService implements Serializable {
 
 	public Artikel findArtikelById(Long id, Locale locale) {
 		validateArtikelId(id, locale);
-		final Artikel artikel = em.find(Artikel.class, id);
+		Artikel artikel = null;
+		try {
+			artikel = em.find(Artikel.class, id);
+		}
+		catch (NoResultException e) {
+			return null;
+		}
+		
 		return artikel;
 	}
 
@@ -103,7 +110,7 @@ public class ArtikelService implements Serializable {
 
 		final List<Artikel> artikel = em
 				.createNamedQuery(Artikel.FIND_ARTIKEL_BY_KAT, Artikel.class)
-				.setParameter(Artikel.PARAM_KATEGORIE, "%" + kategorie + "%")
+				.setParameter(Artikel.PARAM_KATEGORIE, kategorie)
 				.getResultList();
 		return artikel;
 	}

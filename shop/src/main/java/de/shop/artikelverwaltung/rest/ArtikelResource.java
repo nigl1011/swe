@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -34,7 +35,7 @@ import de.shop.artikelverwaltung.service.ArtikelService;
 import de.shop.util.LocaleHelper;
 import de.shop.util.Log;
 import de.shop.util.NotFoundException;
-import de.shop.util.Transactional;
+
 
 @Path("/artikel")
 @Produces(APPLICATION_JSON)
@@ -85,23 +86,32 @@ public class ArtikelResource {
 		if (artikel == null) {
 			throw new NotFoundException("Kein Artikel mit der ID " + id + " gefunden.");
 		}
-		uriHelperArtikel.getUriArtikel(artikel, uriInfo);
-		// URLs innerhalb des gefundenen Artikels anpassen
+		
 		return artikel;
 	}
-		
+	
+	//TODO @DefaultValue("") kann bei Enums nicht klappen und hier krachts auch. Loesung: Wrapper
 	@GET
 	public Collection<Artikel> findArtikelByKategorie(@QueryParam("kategorie") 
 	@DefaultValue("") KategorieType kategorie) {
-		final Locale locale = localeHelper.getLocale(headers);
 		
-		Collection<Artikel> allArtikel = null;
-			allArtikel = as.findArtikelByKategorie(kategorie, locale);
-			if (allArtikel.isEmpty()) {
-				throw new NotFoundException("Kein Artikel mit der Kategorie " + kategorie + " gefunden.");
+		Collection<Artikel> gesuchteArtikel = null;
+			if ("".equals(kategorie)) {
+				gesuchteArtikel = as.findVerfuegbareArtikel();
+				if (gesuchteArtikel.isEmpty()) {
+					throw new NotFoundException("Kein Artikel vorhanden");
+					}
+				}
+			else {
+				final Locale locale = localeHelper.getLocale(headers);
+				gesuchteArtikel = as.findArtikelByKategorie(kategorie, locale);
+				if (gesuchteArtikel.isEmpty()) {
+					throw new NotFoundException("Keine Artikel aus der Kategorie " + kategorie + " gefunden");
+				}
+				
 			}
-		
-		return allArtikel;
+	
+	return gesuchteArtikel;
 	}
 	
 

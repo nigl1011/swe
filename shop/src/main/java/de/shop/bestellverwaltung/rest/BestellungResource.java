@@ -12,6 +12,7 @@ import java.util.Locale;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -23,6 +24,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+
 
 //import com.jayway.restassured.response.Response;
 import org.jboss.logging.Logger;
@@ -40,7 +42,7 @@ import de.shop.lieferverwaltung.service.LieferService;
 import de.shop.util.LocaleHelper;
 import de.shop.util.Log;
 import de.shop.util.NotFoundException;
-import de.shop.util.Transactional;
+
 
 
 @Path("/bestellung")

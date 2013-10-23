@@ -1,6 +1,10 @@
 package de.shop.util;
 
 public final class Constants {
+	
+	// REST-PATH
+	public static final String REST_PATH = "/rest";
+	
 	// JPA
 	public static final Long KEINE_ID = null;
 	public static final long MIN_ID = 1L;

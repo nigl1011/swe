@@ -58,10 +58,10 @@ public class ShopProperties implements Serializable {
 					valueList.add(s);
 				}
 				
-				mapListString.put((String) key, valueList);
+				mapListString.put(key, valueList);
 			}
 			else {
-				mapString.put((String) key, value);
+				mapString.put(key, value);
 			}
 		}
 	}
