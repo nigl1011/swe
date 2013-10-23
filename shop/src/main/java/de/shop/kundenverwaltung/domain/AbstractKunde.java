@@ -10,6 +10,7 @@ import static javax.persistence.TemporalType.TIMESTAMP;
 import static de.shop.util.Constants.ERSTE_VERSION;
 
 
+
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.NamedAttributeNode;
@@ -87,6 +89,7 @@ import de.shop.util.persistence.File;
 
 
 @Entity
+@Cacheable
 @Table(name = "kunde", indexes = { @Index(columnList = "nachname"), @Index(columnList = "file_fk")})
 @Inheritance
 @DiscriminatorColumn(name = "art", length = 1)

@@ -1,12 +1,11 @@
 package de.shop.kundenverwaltung.service;
 
 import java.util.Collection;
-
 import javax.validation.ConstraintViolation;
 
 import de.shop.kundenverwaltung.domain.AbstractKunde;
 
-public class InvalidEmailException extends AbstractKundeValidationException {
+public abstract class InvalidEmailException extends AbstractKundeValidationException {
 	private static final long serialVersionUID = -8973151010781329074L;
 	
 	private final String email;

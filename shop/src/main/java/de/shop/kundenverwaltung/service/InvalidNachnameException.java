@@ -6,7 +6,7 @@ import javax.validation.ConstraintViolation;
 
 import de.shop.kundenverwaltung.domain.AbstractKunde;
 
-public class InvalidNachnameException extends AbstractKundeValidationException {
+public abstract class InvalidNachnameException extends AbstractKundeValidationException {
 	private static final long serialVersionUID = -8973151010781329074L;
 	
 	private final String nachname;
