@@ -18,7 +18,7 @@ import java.util.Collection;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.enterprise.context.RequestScoped;
+
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -55,10 +55,8 @@ import de.shop.util.rest.UriHelper;
 
 
 @Path("/kunden")
-@Produces({ APPLICATION_JSON, APPLICATION_XML, TEXT_XML })
+@Produces({ APPLICATION_JSON, APPLICATION_XML + ";qs=0.75", TEXT_XML + ";qs=0.5" })
 @Consumes
-@RequestScoped
-@Transactional
 @Log
 public class KundeResource {
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
