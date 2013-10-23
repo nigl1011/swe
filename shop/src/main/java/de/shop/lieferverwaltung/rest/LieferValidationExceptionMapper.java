@@ -13,7 +13,7 @@ import javax.ws.rs.ext.Provider;
 
 import de.shop.lieferverwaltung.domain.Lieferung;
 import de.shop.lieferverwaltung.service.LieferValidationException;
-import de.shop.util.Log;
+import de.shop.util.interceptor.Log;
 
 
 @Provider

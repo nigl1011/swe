@@ -5,7 +5,7 @@ package de.shop.bestellverwaltung.service;
 
 	import javax.validation.ConstraintViolation;
 
-	import de.shop.bestellverwaltung.domain.Bestellung;
+import de.shop.bestellverwaltung.domain.Bestellung;
 	
 
 	public class InvalidBestellungIdException extends AbstractBestellungValidationException {
@@ -20,6 +20,12 @@ package de.shop.bestellverwaltung.service;
 
 		public Long getBestellungId() {
 			return bestellungId;
+		}
+
+		@Override
+		public String getMessageKey() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 	}

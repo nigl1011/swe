@@ -27,8 +27,8 @@ import de.shop.bestellverwaltung.domain.Bestellposten;
 import de.shop.bestellverwaltung.domain.Bestellung;
 import de.shop.bestellverwaltung.service.NeueBestellung;
 import de.shop.kundenverwaltung.domain.AbstractKunde;
-import de.shop.util.Log;
 import de.shop.util.Config;
+import de.shop.util.interceptor.Log;
 
 @ApplicationScoped
 @Stateful

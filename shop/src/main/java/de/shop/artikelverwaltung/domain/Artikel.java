@@ -30,7 +30,6 @@ import javax.validation.constraints.Size;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.jboss.logging.Logger;
 
-import de.shop.util.IdGroup;
 
 @Cacheable
 @Entity
@@ -101,7 +100,7 @@ private static final String FARBE_PATTERN = FARBEN_PATTERN;
 @Id
 @GeneratedValue
 @Column(nullable = false, updatable = false)
-@Min(value = MIN_ID, message = "{artikelverwaltung.artikel.id.min}", groups = IdGroup.class)
+@Min(value = MIN_ID, message = "{artikelverwaltung.artikel.id.min}")
 private Long id = KEINE_ID;
 
 @Column(length = BEZEICHNUNG_LENGTH_MAX, nullable = false)

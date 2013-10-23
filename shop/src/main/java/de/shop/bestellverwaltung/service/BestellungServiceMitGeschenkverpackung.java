@@ -2,7 +2,7 @@ package de.shop.bestellverwaltung.service;
 
 import java.lang.invoke.MethodHandles;
 import java.util.List;
-import java.util.Locale;
+
 
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
@@ -35,8 +35,8 @@ public abstract class BestellungServiceMitGeschenkverpackung implements Bestellu
 	}
 
 	@Override
-	public AbstractKunde findKundeById(Long id, Locale locale) {
-		return bs.findKundeById(id, locale);
+	public AbstractKunde findKundeById(Long id) {
+		return bs.findKundeById(id);
 	}
 
 	@Override
@@ -45,17 +45,17 @@ public abstract class BestellungServiceMitGeschenkverpackung implements Bestellu
 	}
 
 	@Override
-	public Bestellung createBestellung(Bestellung bestellung, Long kundeId, Locale locale) {
+	public Bestellung createBestellung(Bestellung bestellung, Long kundeId) {
 		LOGGER.warn("Geschenkverpackung noch nicht implementiert");
 		
-		return bs.createBestellung(bestellung, kundeId, locale);
+		return bs.createBestellung(bestellung, kundeId);
 	}
 	
 	@Override
-	public Bestellung createBestellung(Bestellung bestellung, AbstractKunde kunde, Locale locale) {
+	public Bestellung createBestellung(Bestellung bestellung, AbstractKunde kunde) {
 		LOGGER.warn("Geschenkverpackung noch nicht implementiert");
 		
-		return bs.createBestellung(bestellung, kunde, locale);
+		return bs.createBestellung(bestellung, kunde);
 	}
 
 	@Override

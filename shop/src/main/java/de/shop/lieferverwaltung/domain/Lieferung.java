@@ -38,9 +38,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.logging.Logger;
 
 import de.shop.bestellverwaltung.domain.Bestellung;
-import de.shop.util.IdGroup;
-import de.shop.util.PreExistingGroup;
-
 
 @Entity
 @Table(name = "lieferung")
@@ -67,7 +64,7 @@ public class Lieferung implements Serializable {
 	@Id
 	@GeneratedValue
 	@Column(nullable = false, updatable = false)
-	@Min(value = MIN_ID, message = "{lieferverwaltung.lieferung.id.min}", groups = IdGroup.class)
+	@Min(value = MIN_ID, message = "{lieferverwaltung.lieferung.id.min}")
 	private Long id = KEINE_ID;
 	
 	@Column(length = LIEFERNR_LENGTH, unique = true)
@@ -89,7 +86,7 @@ public class Lieferung implements Serializable {
 	private Date aktualisiert;
 
 	@ManyToMany(mappedBy = "lieferungen", cascade = { PERSIST, MERGE })
-	@NotEmpty(message = "{bestellverwaltung.lieferung.bestellungen.notEmpty}", groups = PreExistingGroup.class)
+	@NotEmpty(message = "{bestellverwaltung.lieferung.bestellungen.notEmpty}")
 	@Valid
 	@JsonIgnore
 	private Set<Bestellung> bestellungen;

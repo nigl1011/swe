@@ -1,4 +1,4 @@
-package de.shop.util;
+package de.shop.util.interceptor;
 
 import java.io.Serializable;
 import java.util.Collection;

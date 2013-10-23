@@ -26,7 +26,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 import de.shop.kundenverwaltung.domain.AbstractKunde;
 import de.shop.lieferverwaltung.domain.Lieferung;
-import de.shop.util.IdGroup;
 import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.CascadeType.REMOVE;
 import static javax.persistence.FetchType.EAGER;
@@ -99,7 +98,7 @@ public class Bestellung implements Serializable {
 		@Id
 		@GeneratedValue
 		@Column(nullable = false, updatable = false)
-		@Min(value = MIN_ID, message = "{bestellverwaltung.bestellung.id.min}", groups = IdGroup.class)
+		@Min(value = MIN_ID, message = "{bestellverwaltung.bestellung.id.min}")
 		private Long id = KEINE_ID;
 		
 		@Column(nullable = false)

@@ -6,7 +6,6 @@ import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
-import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -31,9 +30,8 @@ import de.shop.bestellverwaltung.domain.Bestellung;
 import de.shop.bestellverwaltung.service.BestellungService;
 import de.shop.lieferverwaltung.domain.Lieferung;
 import de.shop.lieferverwaltung.service.LieferService;
-import de.shop.util.LocaleHelper;
-import de.shop.util.Log;
-import de.shop.util.NotFoundException;
+import de.shop.util.interceptor.Log;
+import de.shop.util.rest.NotFoundException;
 
 
 @Path("/lieferungen")
@@ -59,9 +57,6 @@ public class LieferungResource {
 	private LieferService ls;
 	
 	@Inject
-	private LocaleHelper localeHelper;
-	
-	@Inject
 	private BestellungService bs;
 	
 	@PostConstruct
@@ -74,6 +69,7 @@ public class LieferungResource {
 		LOGGER.debugf("CDI-faehiges Bean %s wird geloescht", this);
 	}
 	
+	//TODO Bean Validation für Methodenparameter, z.B: @Valid, @Pattern, ...
 	@GET
 	@Produces(TEXT_PLAIN)
 	@Path("version")
@@ -84,8 +80,7 @@ public class LieferungResource {
 	@GET
 	@Path("{id:[1-9][0-9]*}")
 	public Lieferung findLieferungById(@PathParam("id") Long id) {
-		final Locale locale = localeHelper.getLocale(headers);
-		final Lieferung lieferung = ls.findLieferungById(id, locale);
+		final Lieferung lieferung = ls.findLieferungById(id);
 		if (lieferung == null) {
 			throw new NotFoundException("Keine Lieferung mit der ID " + id + " gefunden.");
 		}
@@ -99,7 +94,6 @@ public class LieferungResource {
 	@Consumes(APPLICATION_JSON)
 	@Produces
 	public Response createLieferung(Lieferung lieferung) {
-		final Locale locale = localeHelper.getLocale(headers);
 		for(URI bestellUri : lieferung.getBestellungUri()){
 			String bestellungString=bestellUri.toString();
 			int startPos = bestellungString.lastIndexOf('/') + 1;
@@ -108,7 +102,7 @@ public class LieferungResource {
 			lieferung.addBestellung(bestellung);
 			bestellung.addLieferung(lieferung);
 		}
-		lieferung = ls.createLieferung(lieferung, locale);
+		lieferung = ls.createLieferung(lieferung);
 		final URI lieferungUri = uriHelperLieferung.getUriLieferung(lieferung, uriInfo);
 		return Response.created(lieferungUri).build();
 	}
@@ -118,8 +112,7 @@ public class LieferungResource {
 	@Produces
 	public void updateLieferung(Lieferung lieferung) {
 		// Vorhandenen Kunden ermitteln
-		final Locale locale = localeHelper.getLocale(headers);
-		final Lieferung origLieferung = ls.findLieferungById(lieferung.getId(), locale);
+		final Lieferung origLieferung = ls.findLieferungById(lieferung.getId());
 		if (origLieferung == null) {
 			// TODO msg passend zu locale
 			final String msg = "Kein Lieferng gefunden mit der ID " + lieferung.getId();
@@ -132,7 +125,7 @@ public class LieferungResource {
 		LOGGER.tracef("Lieferung nachher: %s", origLieferung);
 		
 		// Update durchfuehren
-		lieferung = ls.updateLieferung(origLieferung, locale);
+		lieferung = ls.updateLieferung(origLieferung);
 		if (lieferung == null) {
 			// TODO msg passend zu locale
 			final String msg = "Kein Leiferung gefunden mit der ID " + origLieferung.getId();

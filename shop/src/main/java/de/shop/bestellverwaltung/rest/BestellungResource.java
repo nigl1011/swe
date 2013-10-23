@@ -8,7 +8,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -26,6 +25,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 
+
 //import com.jayway.restassured.response.Response;
 import org.jboss.logging.Logger;
 
@@ -39,9 +39,8 @@ import de.shop.kundenverwaltung.rest.UriHelperKunde;
 import de.shop.lieferverwaltung.domain.Lieferung;
 import de.shop.lieferverwaltung.rest.UriHelperLieferung;
 import de.shop.lieferverwaltung.service.LieferService;
-import de.shop.util.LocaleHelper;
-import de.shop.util.Log;
-import de.shop.util.NotFoundException;
+import de.shop.util.interceptor.Log;
+import de.shop.util.rest.NotFoundException;
 
 
 
@@ -75,13 +74,11 @@ public class BestellungResource {
 	@Inject
 	private UriHelperKunde uriHelperKunde;
 	
-	@Inject
-	private LocaleHelper localeHelper;
-	
+		
 	@Inject
 	private BestellungServiceImpl bs;
 
-	
+	//TODO Bean Validation für Methodenparameter, z.B: @Valid, @Pattern, ...
 	@GET
 	@Produces(TEXT_PLAIN)
 	@Path("version")
@@ -109,8 +106,7 @@ public class BestellungResource {
 	@GET
 	@Path("{id:[1-9][0-9]*}/kunde")
 	public Lieferung findLieferungenByBestellungId(@PathParam("id") Long id) {
-		final Locale locale = localeHelper.getLocale(headers);
-		final Lieferung kunde = ls.findLieferungById(id, locale);
+		final Lieferung kunde = ls.findLieferungById(id);
 		if (kunde == null) {
 			final String msg = "Keine Bestellung gefunden mit der ID " + id;
 			throw new NotFoundException(msg);
@@ -126,8 +122,7 @@ public class BestellungResource {
 	@GET
 	@Path("{id:[1-9][0-9]*}/kunde")
 	public AbstractKunde findKundeByBestellungId(@PathParam("id") Long id) {
-		final Locale locale = localeHelper.getLocale(headers);
-		final AbstractKunde kunde = bs.findKundeById(id, locale);
+		final AbstractKunde kunde = bs.findKundeById(id);
 		if (kunde == null) {
 			final String msg = "Keine Bestellung gefunden mit der ID " + id;
 			throw new NotFoundException(msg);
@@ -145,9 +140,7 @@ public class BestellungResource {
 	@Path("{posid:[1-9][0-9]*}/bestellung")
 	public Bestellung findBestellungByPostenId(@PathParam("id") Long id) {
 
-
-		final Locale locale = localeHelper.getLocale(headers);
-		final Bestellung posten = bs.findBestellungByPostenId(id, locale);
+		final Bestellung posten = bs.findBestellungByPostenId(id);
 
 
 		// URLs innerhalb der gefundenen Bestellung anpassen
@@ -233,8 +226,7 @@ public class BestellungResource {
 		}
 		bestellung.setBestellpositionen(neueBestellpositionen);
 		
-		final Locale locale = localeHelper.getLocale(headers);
-		bestellung = bs.createBestellung(bestellung, kundeId, locale);
+		bestellung = bs.createBestellung(bestellung, kundeId);
 
 		final URI bestellungUri = uriHelperBestellung.getUriBestellung(bestellung, uriInfo);
 		final Response response = Response.created(bestellungUri).build();
@@ -248,7 +240,6 @@ public class BestellungResource {
 	@Produces
 	public void updateBestellung(Bestellung bestellung) {
 		// Vorhandenen Kunden ermitteln
-		final Locale locale = localeHelper.getLocale(headers);
 		final Bestellung origBestellung = bs.findBestellungById(bestellung.getId());
 		if (origBestellung == null) {
 			// TODO msg passend zu locale
@@ -262,7 +253,7 @@ public class BestellungResource {
 		LOGGER.tracef("Bestellung nachher: %s", origBestellung);
 		
 		// Update durchfuehren
-		bestellung = bs.updateBestellung(origBestellung, locale);
+		bestellung = bs.updateBestellung(origBestellung);
 		if (bestellung == null) {
 			// TODO msg passend zu locale
 			final String msg = "Kein Bestellung gefunden mit der ID " + origBestellung.getId();

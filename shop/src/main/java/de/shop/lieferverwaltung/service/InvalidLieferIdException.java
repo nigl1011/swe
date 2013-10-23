@@ -20,4 +20,10 @@ public class InvalidLieferIdException extends LieferValidationException {
 		return lieferId;
 	}
 
+	@Override
+	public String getMessageKey() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

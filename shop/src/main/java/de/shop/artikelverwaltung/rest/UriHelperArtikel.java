@@ -8,7 +8,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import de.shop.artikelverwaltung.domain.Artikel;
-import de.shop.util.Log;	
+import de.shop.util.interceptor.Log;
 
 @ApplicationScoped
 @Log

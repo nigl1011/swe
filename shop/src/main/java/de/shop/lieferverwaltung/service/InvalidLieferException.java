@@ -23,4 +23,10 @@ public class InvalidLieferException extends LieferValidationException {
 	public Lieferung getLieferung() {
 		return lieferung;
 	}
+
+	@Override
+	public String getMessageKey() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

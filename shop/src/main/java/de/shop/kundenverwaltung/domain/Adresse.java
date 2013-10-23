@@ -1,13 +1,14 @@
 package de.shop.kundenverwaltung.domain;
 
 import static de.shop.util.Constants.KEINE_ID;
-import static de.shop.util.Constants.MIN_ID;
+import static de.shop.util.Constants.ERSTE_VERSION;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.util.Date;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,22 +18,23 @@ import javax.persistence.OneToOne;
 import javax.persistence.PostPersist;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.validation.constraints.Min;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlTransient;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.jboss.logging.Logger;
 
-import de.shop.util.IdGroup;
 
 @Entity
-@Table(name = "adresse")
-
+//@Table(name = "adresse")
+@Table(indexes = @Index(columnList = "plz"))
 
 public class Adresse implements Serializable {
 	private static final long serialVersionUID = -3029272617931844501L;
@@ -47,8 +49,6 @@ public class Adresse implements Serializable {
 	public static final int PLZ_LENGTH_MAX = 5;
 	public static final int ORT_LENGTH_MIN = 2;
 	public static final int ORT_LENGTH_MAX = 32;
-	
-
 	private static final int STRASSE_LENGTH_MIN = 3;
 	private static final int STRASSE_LENGTH_MAX = 32;
 
@@ -57,7 +57,6 @@ public class Adresse implements Serializable {
 	@Id
 	@GeneratedValue
 	@Column(nullable = false, updatable = false)
-	@Min(value = MIN_ID, message = "{kundenverwaltung.adresse.id.min}", groups = IdGroup.class)
 	private Long id = KEINE_ID;
 	
 	@Column(length = STRASSE_LENGTH_MAX, nullable = false)
@@ -66,6 +65,9 @@ public class Adresse implements Serializable {
 	@Pattern(regexp = NAME_PATTERN, message = "{kundenverwaltung.kunde.strasse.pattern}")
 	private String strasse;
 	
+	@Version
+	@Basic(optional = false)
+	private int version = ERSTE_VERSION;
 
 	@NotNull(message = "{kundenverwaltung.adresse.hausnr.notNull}")
 	@Size(min = HAUSNR_LENGTH_MIN, max = HAUSNR_LENGTH_MAX, message = "{kundenverwaltung.adresse.hausnr.length}")
@@ -82,21 +84,33 @@ public class Adresse implements Serializable {
 	@Pattern(regexp = NAME_PATTERN, message = "{kundenverwaltung.kunde.ort.pattern}")
 	private String ort;
 	
-	@Column(nullable = false)
+	@Basic(optional = false)
 	@Temporal(TIMESTAMP)
-	@JsonIgnore
+	@XmlTransient
 	private Date aktualisiert;
 	
-	@Column(nullable = false)
+	@Basic(optional = false)
 	@Temporal(TIMESTAMP)
-	@JsonIgnore
+	@XmlTransient
 	private Date erzeugt;
 	
 	@OneToOne
-	@JoinColumn(name = "kunde_fk", nullable = false)
+	@JoinColumn(name = "kunde_fk", nullable = false, unique = true)
 	//@NotNull(message = "{kundenverwaltung.adresse.kunde.notNull}")
-	@JsonIgnore
+	@XmlTransient
 	private AbstractKunde kunde;
+	
+	public Adresse() {
+		super();
+	}
+
+	public Adresse(String plz, String ort, String strasse, String hausnr) {
+		super();
+		this.plz = plz;
+		this.ort = ort;
+		this.strasse = strasse;
+		this.hausnr = hausnr;
+	}
 	
 	@PrePersist
 	private void prePersist() {
@@ -120,6 +134,15 @@ public class Adresse implements Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
+	}
+	
 	public String getStrasse() {
 		return strasse;
 	}

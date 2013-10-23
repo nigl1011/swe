@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -17,18 +15,12 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
-import javax.validation.groups.Default;
 
 import org.jboss.logging.Logger;
 
-import de.shop.artikelverwaltung.domain.Artikel;
-import de.shop.artikelverwaltung.service.InvalidArtikelIdException;
 import de.shop.lieferverwaltung.domain.Lieferung;
-import de.shop.util.IdGroup;
-import de.shop.util.Log;
-import de.shop.util.ValidatorProvider;
+import de.shop.util.interceptor.Log;
+
 
 @Log
 public class LieferService implements Serializable {
@@ -38,9 +30,7 @@ public class LieferService implements Serializable {
 	@Inject
 	private transient EntityManager em;
 	
-	@Inject
-	private ValidatorProvider validatorProvider;
-	
+
 	@PostConstruct
 	private void postConstruct() {
 		LOGGER.debugf("CDI-faehiges Bean %s wurde erzeugt", this);
@@ -51,45 +41,20 @@ public class LieferService implements Serializable {
 		LOGGER.debugf("CDI-faehiges Bean %s wird geloescht", this);
 	}
 	
-	public Lieferung findLieferungById(Long id, Locale locale) {
-		validateLieferungId(id, locale);
+	public Lieferung findLieferungById(Long id) {
 		final Lieferung lieferung = em.find(Lieferung.class, id);
 		return lieferung;
 	}
-
-	//public List<Lieferung> FindLieferungByBestellung ()
-
-	private void validateLieferungId(Long id, Locale locale) {
-		final Validator validator = validatorProvider.getValidator(locale);
-		final Set<ConstraintViolation<Artikel>> violations = validator
-				.validateValue(Artikel.class, "id", id, IdGroup.class);
-		if (!violations.isEmpty())
-			throw new InvalidArtikelIdException(id, violations);
-	}
 	
-
-	
-	public Lieferung createLieferung(Lieferung lieferung, Locale locale) {
+	public Lieferung createLieferung(Lieferung lieferung) {
 		if (lieferung == null) {
 			return lieferung;
 		}
-		// Werden alle Constraints beim Einfuegen gewahrt?
-		validateLieferung(lieferung, locale, Default.class);
+		
 		em.persist(lieferung);
 		return lieferung;
 	}
 
-	private void validateLieferung(Lieferung lieferung, Locale locale,
-			Class<?>... groups) {
-		// Werden alle Constraints beim Einfuegen gewahrt?
-		final Validator validator = validatorProvider.getValidator(locale);
-
-		final Set<ConstraintViolation<Lieferung>> violations = validator
-				.validate(lieferung, groups);
-		if (!violations.isEmpty()) {
-			throw new InvalidLieferException(lieferung, violations);
-		}
-	}
 	
 	public List<Lieferung> findLieferungByIds(List<Long> ids) {
 		if (ids == null || ids.isEmpty()) {
@@ -128,13 +93,12 @@ public class LieferService implements Serializable {
 		return lieferung;
 	}
 
-	public Lieferung updateLieferung(Lieferung lieferung, Locale locale) {
+	public Lieferung updateLieferung(Lieferung lieferung) {
 		if (lieferung == null) {
 			return null;
 		}
 		em.detach(lieferung);
 		// Werden alle Constraints beim Modifizieren gewahrt?
-		validateLieferung(lieferung, locale, Default.class, IdGroup.class);
 		em.merge(lieferung);
 
 		return lieferung;

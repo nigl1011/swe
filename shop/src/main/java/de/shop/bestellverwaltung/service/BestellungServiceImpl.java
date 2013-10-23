@@ -7,8 +7,6 @@ import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -23,9 +21,8 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
-import javax.validation.groups.Default;
+
+
 
 import org.jboss.logging.Logger;
 
@@ -35,8 +32,7 @@ import de.shop.bestellverwaltung.domain.Bestellung;
 import de.shop.lieferverwaltung.domain.Lieferung;
 import de.shop.kundenverwaltung.domain.AbstractKunde;
 import de.shop.kundenverwaltung.service.KundeService;
-import de.shop.util.Log;
-import de.shop.util.ValidatorProvider;
+import de.shop.util.interceptor.Log;
 
 @Log
 public class BestellungServiceImpl implements Serializable, BestellungService {
@@ -48,9 +44,6 @@ public class BestellungServiceImpl implements Serializable, BestellungService {
 	
 	@Inject
 	private KundeService ks;
-	
-	@Inject
-	private ValidatorProvider validatorProvider;
 	
 	@Inject
 	@NeueBestellung
@@ -75,7 +68,7 @@ public class BestellungServiceImpl implements Serializable, BestellungService {
 	}
 	
 	@Override
-	public Bestellung findBestellungByPostenId(Long id, Locale locale) {
+	public Bestellung findBestellungByPostenId(Long id) {
 		final Bestellung bestellung = em.find(Bestellung.class, id);
 		return bestellung;
 	}
@@ -96,7 +89,7 @@ public class BestellungServiceImpl implements Serializable, BestellungService {
 	}
 	
 	@Override
-	public AbstractKunde findKundeById(Long id, Locale locale) {
+	public AbstractKunde findKundeById(Long id) {
 		try {
 			final AbstractKunde kunde = em.createNamedQuery(Bestellung.FIND_KUNDE_BY_ID, AbstractKunde.class)
                                           .setParameter(Bestellung.PARAM_ID, id)
@@ -122,32 +115,29 @@ public class BestellungServiceImpl implements Serializable, BestellungService {
 		return bestellungen;
 	}
 
-
 	@Override
 	public Bestellung createBestellung(Bestellung bestellung,
-			                           Long kundeId,
-			                           Locale locale) {
+			                           Long kundeId) {
 		if (bestellung == null) {
 			return null;
 		}
 		
 		// Den persistenten Kunden mit der transienten Bestellung verknuepfen
-		final AbstractKunde kunde = ks.findKundeById(kundeId, KundeService.FetchType.MIT_BESTELLUNGEN, locale);
-		return createBestellung(bestellung, kunde, locale);
+		final AbstractKunde kunde = ks.findKundeById(kundeId, KundeService.FetchType.MIT_BESTELLUNGEN);
+		return createBestellung(bestellung, kunde);
 	}
 	
 
 	@Override
 	public Bestellung createBestellung(Bestellung bestellung,
-			                           AbstractKunde kunde,
-			                           Locale locale) {
+			                           AbstractKunde kunde) {
 		if (bestellung == null) {
 			return null;
 		}
 		
 		// Den persistenten Kunden mit der transienten Bestellung verknuepfen
 		if (!em.contains(kunde)) {
-			kunde = ks.findKundeById(kunde.getId(), KundeService.FetchType.MIT_BESTELLUNGEN, locale);
+			kunde = ks.findKundeById(kunde.getId(), KundeService.FetchType.MIT_BESTELLUNGEN);
 		}
 		kunde.addBestellung(bestellung);
 		bestellung.setKunde(kunde);
@@ -160,22 +150,12 @@ public class BestellungServiceImpl implements Serializable, BestellungService {
 			LOGGER.tracef("Bestellposition: %s", bp);				
 		}
 		
-		validateBestellung(bestellung, locale, Default.class);
 		em.persist(bestellung);
 		event.fire(bestellung);
 
 		return bestellung;
 	}
 	
-	private void validateBestellung(Bestellung bestellung, Locale locale, Class<?>... groups) {
-		final Validator validator = validatorProvider.getValidator(locale);
-		
-		final Set<ConstraintViolation<Bestellung>> violations = validator.validate(bestellung);
-		if (violations != null && !violations.isEmpty()) {
-			LOGGER.debugf("createBestellung: violations=%s", violations);
-			throw new InvalidBestellungException(bestellung, violations);
-		}
-	}
 	@Override
 	public List<Artikel> ladenhueter(int anzahl) {
 		final List<Artikel> artikel = em.createNamedQuery(Bestellposten.FIND_LADENHUETER, Artikel.class)
@@ -252,7 +232,7 @@ public class BestellungServiceImpl implements Serializable, BestellungService {
 		return bestellungen;
 	}
 
-	public Bestellung updateBestellung(Bestellung bestellung, Locale locale) {
+	public Bestellung updateBestellung(Bestellung bestellung) {
 		if (bestellung == null || bestellung.getId() == null)  {
 		LOGGER.tracef("Bestellung ist null => Update nicht möglich");
 		return null;
@@ -264,5 +244,6 @@ public class BestellungServiceImpl implements Serializable, BestellungService {
 		return bestellung;
 		}
 
+	
 	}
 	

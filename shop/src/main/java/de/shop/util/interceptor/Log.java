@@ -1,4 +1,4 @@
-package de.shop.util;
+package de.shop.util.interceptor;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static java.lang.annotation.ElementType.TYPE;

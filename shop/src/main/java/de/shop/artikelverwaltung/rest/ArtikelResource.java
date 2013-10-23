@@ -6,7 +6,6 @@ import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.util.Collection;
-import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -32,9 +31,8 @@ import org.jboss.logging.Logger;
 import de.shop.artikelverwaltung.domain.Artikel;
 import de.shop.artikelverwaltung.domain.KategorieType;
 import de.shop.artikelverwaltung.service.ArtikelService;
-import de.shop.util.LocaleHelper;
-import de.shop.util.Log;
-import de.shop.util.NotFoundException;
+import de.shop.util.interceptor.Log;
+import de.shop.util.rest.NotFoundException;
 
 
 @Path("/artikel")
@@ -68,9 +66,6 @@ public class ArtikelResource {
 		LOGGER.debugf("CDI-faehiges Bean %s wird geloescht", this);
 	}
 	
-	@Inject
-	private LocaleHelper localeHelper;
-	
 	@GET
 	@Produces(TEXT_PLAIN)
 	@Path("version")
@@ -78,11 +73,12 @@ public class ArtikelResource {
 		return "1.0";
 	}
 	
+	
+	//TODO Bean Validation für Methodenparameter, z.B: @Valid, @Pattern, ...
 	@GET
 	@Path("{id:[1-9][0-9]*}")
 	public Artikel findArtikelById(@PathParam("id") Long id, @Context UriInfo uirInfo) {
-		final Locale locale = localeHelper.getLocale(headers);
-		final Artikel artikel = as.findArtikelById(id, locale);
+		final Artikel artikel = as.findArtikelById(id);
 		if (artikel == null) {
 			throw new NotFoundException("Kein Artikel mit der ID " + id + " gefunden.");
 		}
@@ -103,8 +99,7 @@ public class ArtikelResource {
 					}
 				}
 			else {
-				final Locale locale = localeHelper.getLocale(headers);
-				gesuchteArtikel = as.findArtikelByKategorie(kategorie, locale);
+				gesuchteArtikel = as.findArtikelByKategorie(kategorie);
 				if (gesuchteArtikel.isEmpty()) {
 					throw new NotFoundException("Keine Artikel aus der Kategorie " + kategorie + " gefunden");
 				}
@@ -122,8 +117,7 @@ public class ArtikelResource {
 	public Response createArtikel(Artikel artikel) {
 		//@SuppressWarnings("unused")
 
-		final Locale locale = localeHelper.getLocale(headers);
-		artikel = as.createArtikel(artikel, locale);
+		artikel = as.createArtikel(artikel);
 		final URI artikelUri = uriHelperArtikel.getUriArtikel(artikel, uriInfo);
 		return Response.created(artikelUri).build();
 
@@ -134,10 +128,8 @@ public class ArtikelResource {
 	@Produces
 	public void updateArtikel(Artikel artikel) {
 		// Vorhandenen Kunden ermitteln
-		final Locale locale = localeHelper.getLocale(headers);
-		final Artikel origArtikel = as.findArtikelById(artikel.getId(), locale);
+		final Artikel origArtikel = as.findArtikelById(artikel.getId());
 		if (origArtikel == null) {
-			// TODO msg passend zu locale
 			final String msg = "Kein Artikel gefunden mit der ID " + artikel.getId();
 			throw new NotFoundException(msg);
 		}
@@ -148,9 +140,9 @@ public class ArtikelResource {
 		LOGGER.tracef("Kunde nachher: %s", origArtikel);
 		
 		// Update durchfuehren
-		artikel = as.updateArtikel(origArtikel, locale);
+		artikel = as.updateArtikel(origArtikel);
 		if (artikel == null) {
-			// TODO msg passend zu locale
+			
 			final String msg = "Kein Artikel gefunden mit der ID " + origArtikel.getId();
 			throw new NotFoundException(msg);
 		}

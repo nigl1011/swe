@@ -20,4 +20,10 @@ public class InvalidArtikelIdException extends AbstractArtikelValidationExceptio
 		return artikelId;
 	}
 
+	@Override
+	public String getMessageKey() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
