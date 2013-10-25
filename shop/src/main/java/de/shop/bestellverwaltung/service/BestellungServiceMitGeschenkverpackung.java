@@ -4,8 +4,10 @@ import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 
+
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
@@ -16,6 +18,7 @@ import de.shop.bestellverwaltung.domain.Bestellung;
 import de.shop.kundenverwaltung.domain.AbstractKunde;
 
 @Decorator
+@Dependent
 public abstract class BestellungServiceMitGeschenkverpackung implements BestellungService {
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
 	

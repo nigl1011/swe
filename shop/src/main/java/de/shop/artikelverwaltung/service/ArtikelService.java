@@ -7,8 +7,10 @@ import java.util.List;
 
 
 
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -21,6 +23,7 @@ import javax.persistence.criteria.Root;
 
 
 
+
 import org.jboss.logging.Logger;
 
 import com.google.common.base.Strings;
@@ -30,7 +33,7 @@ import de.shop.artikelverwaltung.domain.KategorieType;
 import de.shop.util.interceptor.Log;
 
 
-
+@Dependent
 @Log
 public class ArtikelService implements Serializable {
 	private static final long serialVersionUID = -5105686816948437276L;

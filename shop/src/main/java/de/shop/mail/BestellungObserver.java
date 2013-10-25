@@ -27,7 +27,7 @@ import de.shop.bestellverwaltung.domain.Bestellposten;
 import de.shop.bestellverwaltung.domain.Bestellung;
 import de.shop.bestellverwaltung.service.NeueBestellung;
 import de.shop.kundenverwaltung.domain.AbstractKunde;
-import de.shop.util.Config;
+import de.shop.util.MailConfigProducer;
 import de.shop.util.interceptor.Log;
 
 @ApplicationScoped
@@ -42,7 +42,7 @@ public class BestellungObserver implements Serializable {
 	private transient Session mailSession;
 	
 	@Inject
-	private Config config;
+	private MailConfigProducer config;
 	
 	private String mailAbsender;
 	private String nameAbsender;

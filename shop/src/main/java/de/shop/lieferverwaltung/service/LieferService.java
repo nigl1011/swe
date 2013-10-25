@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -21,7 +22,7 @@ import org.jboss.logging.Logger;
 import de.shop.lieferverwaltung.domain.Lieferung;
 import de.shop.util.interceptor.Log;
 
-
+@Dependent
 @Log
 public class LieferService implements Serializable {
 	private static final long serialVersionUID = -3907630579991760308L;

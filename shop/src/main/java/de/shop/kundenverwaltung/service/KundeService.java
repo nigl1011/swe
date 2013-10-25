@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.concurrent.ManagedExecutorService;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -49,7 +50,7 @@ import de.shop.util.persistence.FileHelper;
 import de.shop.util.persistence.MimeType;
 
 
-
+@Dependent
 @Log
 public class KundeService implements Serializable {
 	private static final long serialVersionUID = -5520738420154763865L;

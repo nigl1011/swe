@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -24,6 +25,7 @@ import javax.persistence.criteria.Root;
 
 
 
+
 import org.jboss.logging.Logger;
 
 import de.shop.artikelverwaltung.domain.Artikel;
@@ -34,6 +36,7 @@ import de.shop.kundenverwaltung.domain.AbstractKunde;
 import de.shop.kundenverwaltung.service.KundeService;
 import de.shop.util.interceptor.Log;
 
+@Dependent
 @Log
 public class BestellungServiceImpl implements Serializable, BestellungService {
 	private static final long serialVersionUID = -9145947650157430928L;

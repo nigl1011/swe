@@ -13,7 +13,6 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.persistence.Inheritance;
 import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
@@ -43,7 +42,6 @@ private static final long serialVersionUID = -1783340753647408724L;
 	private FamilienstandType familienstand = FamilienstandType.VERHEIRATET;
 	
 	@Column(length = 1)
-	@Enumerated
 	private GeschlechtType geschlecht = GeschlechtType.WEIBLICH;
 	
 	@ElementCollection(fetch = EAGER)

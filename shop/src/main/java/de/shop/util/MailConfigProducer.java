@@ -14,7 +14,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 @ApplicationScoped
-public class Config implements Serializable {
+public class MailConfigProducer implements Serializable {
 	private static final long serialVersionUID = 3916523726340426731L;
 
 	// In META-INF\ejb-jar.xml kann der Wert gesetzt bzw. ueberschrieben werden

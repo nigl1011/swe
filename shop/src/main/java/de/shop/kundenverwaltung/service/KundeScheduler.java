@@ -24,10 +24,10 @@ public class KundeScheduler {
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
 	
 	@Inject
-	private transient EntityManager em;
+	private EntityManager em;
 	
 	@Inject
-	private KundeService ks;
+	private transient KundeService ks;
 	
 	@Schedule(dayOfMonth = "*", hour = "2", minute = "0", year = "*", persistent = false)
 	public void deleteKundeOhneBestellungen() {

@@ -59,6 +59,7 @@ public class AuthService implements Serializable {
 	
 	@Inject
 	private transient EntityManager em;
+
 	
 	@Inject
 	private KundeService ks;

@@ -3,6 +3,7 @@ package de.shop.util.rest;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -15,6 +16,7 @@ import de.shop.util.interceptor.Log;
 
 
 @Provider
+@ApplicationScoped
 @Log
 public class NotFoundExceptionMapper implements ExceptionMapper<NotFoundException> {
 	@Context
