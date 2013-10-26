@@ -278,6 +278,9 @@ public abstract class AbstractKunde implements Serializable,Cloneable {
 	private String nachname;
 	
 	@Basic(optional = false)
+	private short kategorie;
+	
+	@Basic(optional = false)
 	@Temporal(DATE)
 	@Past(message = "{kundenverwaltung.kunde.seit.past}")
 	private Date seit;
@@ -407,6 +410,7 @@ public abstract class AbstractKunde implements Serializable,Cloneable {
 		vorname = k.vorname;
 		umsatz = k.umsatz;
 		rabatt = k.rabatt;
+		kategorie = k.kategorie;
 		geburtsdatum = k.geburtsdatum;
 		seit = k.seit;
 		email = k.email;
@@ -440,7 +444,14 @@ public abstract class AbstractKunde implements Serializable,Cloneable {
 	public void setVorname(String vorname) {
 		this.vorname = vorname;
 	}
-
+	public short getKategorie() {
+		return kategorie;
+	}
+	public void setKategorie(short kategorie) {
+		this.kategorie = kategorie;
+	}
+	
+	
 	public Date getGeburtsdatum() {
 		return geburtsdatum == null ? null : (Date) geburtsdatum.clone();
 	}
@@ -737,7 +748,7 @@ public abstract class AbstractKunde implements Serializable,Cloneable {
 			   + ", geburtsdatum=" + getGeburtsdatumAsString(DateFormat.MEDIUM, Locale.GERMANY)
 			   + ", seit=" + getSeitAsString(DateFormat.MEDIUM, Locale.GERMANY)
 			   + ", umsatz=" + umsatz + ", rabatt=" + rabatt
-			   + ", email=" + email
+			   + ", email=" + email + ", kategorie=" + kategorie 
 			   + ", rollen=" + rollen + ", password=" + password + ", passwordWdh=" + passwordWdh
 			   + ", password=" + password + ", passwordWdh=" + passwordWdh
 			   + ", erzeugt=" + erzeugt
@@ -751,7 +762,7 @@ public abstract class AbstractKunde implements Serializable,Cloneable {
 		neuesObjekt.version = version;
 		neuesObjekt.nachname = nachname;
 		neuesObjekt.vorname = vorname;
-		//neuesObjekt.kategorie = kategorie;
+		neuesObjekt.kategorie = kategorie;
 		neuesObjekt.umsatz = umsatz;
 		neuesObjekt.email = email;
 		neuesObjekt.newsletter = newsletter;
