@@ -30,6 +30,7 @@ public final class Constants {
 	public static final String HASH_ENCODING = "base64";
 	public static final String HASH_CHARSET = "UTF-8";
 	
+	
 	private Constants() {
 	}
 }

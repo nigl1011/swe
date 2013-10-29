@@ -1,7 +1,0 @@
---===============================================================================
---Fremdschluessel in den bereits *generierten* Tabellen auf die obigen "Enum-Tabellen" anlegen
---===============================================================================
---ALTER TABLE kunde ADD CONSTRAINT kunde_geschlecht_fk FOREIGN KEY (geschlecht) REFERENCES geschlecht;
---ALTER TABLE kunde ADD CONSTRAINT kunde_fam_fk FOREIGN KEY (familienstand) REFERENCES familienstand;
---ALTER TABLE kunde_hobby ADD FOREIGN KEY (hobby) REFERENCES hobby(id);
---ALTER TABLE lieferung ADD CONSTRAINT lieferung__transport_art_fk FOREIGN KEY (transport_art_fk) REFERENCES transport_art;

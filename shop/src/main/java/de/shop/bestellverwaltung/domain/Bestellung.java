@@ -1,5 +1,7 @@
 package de.shop.bestellverwaltung.domain;
 
+
+
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 import java.io.Serializable;
@@ -12,17 +14,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Enumerated;
 import javax.persistence.Temporal;
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 
 import static de.shop.util.Constants.KEINE_ID;
+import static de.shop.util.Constants.ERSTE_VERSION;
 
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 import de.shop.kundenverwaltung.domain.AbstractKunde;
 import de.shop.lieferverwaltung.domain.Lieferung;
@@ -30,11 +31,13 @@ import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.CascadeType.REMOVE;
 import static javax.persistence.FetchType.EAGER;
 
+import javax.persistence.Basic;
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Inheritance;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -51,6 +54,7 @@ import javax.persistence.Table;
 
 
 import javax.persistence.Transient;
+import javax.persistence.Version;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.jboss.logging.Logger;
@@ -58,8 +62,7 @@ import org.jboss.logging.Logger;
 
 
 @Entity
-@Cacheable
-@Table(name = "bestellung")
+@Table(indexes = { @Index(columnList = "kunde_fk"), @Index(columnList = "erzeugt")})
 @Inheritance
 @NamedQueries({
 	@NamedQuery(name  = Bestellung.FIND_BESTELLUNGEN_BY_KUNDE,
@@ -76,6 +79,8 @@ import org.jboss.logging.Logger;
   			            + " WHERE  b.id = :" + Bestellung.PARAM_ID)
 })
 
+@Cacheable
+@XmlRootElement
 public class Bestellung implements Serializable {
 
 
@@ -92,18 +97,18 @@ public class Bestellung implements Serializable {
 	public static final String PARAM_ID = "id";
 	
 
-	private static final long MIN_ID = 1;
 
 
 		@Id
 		@GeneratedValue
 		@Column(nullable = false, updatable = false)
-		@Min(value = MIN_ID, message = "{bestellverwaltung.bestellung.id.min}")
 		private Long id = KEINE_ID;
 		
-		@Column(nullable = false)
-		@Enumerated
-		@NotNull(message = "{bestellverwaltung.bestellung.status.notEmpty}")
+		@Version
+		@Basic(optional = false)
+		private int version = ERSTE_VERSION;
+		
+		@Column(name = "status", length = 1)
 		private StatusType status;
 		
 		@Column(precision = 5, scale = 4, nullable = false)
@@ -112,8 +117,7 @@ public class Bestellung implements Serializable {
 
 		@ManyToOne(optional = false)
 		@JoinColumn(name = "kunde_fk", nullable = false, insertable = false, updatable = false)
-		@NotNull(message = "{bestellverwaltung.bestellung.kunde.notNull}")
-		@JsonIgnore
+		@XmlTransient
 		private AbstractKunde kunde;
 		
 		@OneToMany(fetch = EAGER, cascade = { PERSIST, REMOVE })
@@ -126,19 +130,19 @@ public class Bestellung implements Serializable {
 		
 		@Column(nullable = false)
 		@Temporal(TIMESTAMP)
-		@JsonIgnore
+		@XmlTransient
 		private Date erzeugt;
 		
 		@Column(nullable = false)
 		@Temporal(TIMESTAMP)
-		@JsonIgnore
+		@XmlTransient
 		private Date aktualisiert;
 		
 		@ManyToMany
 		@JoinTable(name = "bestellung_lieferung",
 				   joinColumns = @JoinColumn(name = "bestellung_fk"),
 				                 inverseJoinColumns = @JoinColumn(name = "lieferung_fk"))
-		@JsonIgnore
+		@XmlTransient
 		private Set<Lieferung> lieferungen;
 		
 		@Transient
@@ -146,8 +150,6 @@ public class Bestellung implements Serializable {
 		
 		
 		@Transient
-		@XmlElement(name = "kunde", required = true) 
-		@JsonProperty
 		private URI kundeUri;
 
 		
@@ -268,7 +270,7 @@ public class Bestellung implements Serializable {
 			lieferungen.add(lieferung);
 		}
 		
-		@JsonIgnore
+		@XmlTransient
 		public List<Lieferung> getLieferungenAsList() {
 			return lieferungen == null ? null : new ArrayList<>(lieferungen);
 		}
