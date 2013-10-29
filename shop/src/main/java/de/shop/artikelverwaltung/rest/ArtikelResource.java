@@ -148,4 +148,9 @@ public class ArtikelResource {
 		}
 	
 	}
+
+	public URI getArtikelUri(Artikel artikel, UriInfo uriInfo) {
+		// TODO Methode erstellen, damit URI zurückgegeben wird. Siehe sein Beispiel
+		return null;
+	}
 }

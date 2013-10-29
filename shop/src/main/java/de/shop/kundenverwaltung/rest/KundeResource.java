@@ -312,4 +312,10 @@ public class KundeResource {
 		
 		return file.getBytes();
 	}
+
+	public URI getUriKunde(AbstractKunde kunde, UriInfo uriInfo) {
+		// TODO Bitte noch Methdode implementieren, so dass die KundenUri zurückgegeben wird!
+		return null;
+	}
+	
 }
