@@ -33,6 +33,8 @@ public class TestConstants {
 	public static final String BESTELLUNGEN_ID_KUNDE_URI = BESTELLUNGEN_ID_URI + "/kunde";
 	
 	
+	public static final String ARTIKEL_URI = BASE_URI + "/artikel";
+	
 	// Username und Password
 	public static final String USERNAME = "102";
 	public static final String PASSWORD = "102";

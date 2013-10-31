@@ -9,6 +9,7 @@ import static de.shop.util.TestConstants.KUNDEN_ID_FILE_URI;
 import static de.shop.util.TestConstants.KUNDEN_ID_URI;
 import static de.shop.util.TestConstants.KUNDEN_URI;
 import static de.shop.util.TestConstants.PASSWORD;
+import static de.shop.util.TestConstants.ARTIKEL_URI;
 import static de.shop.util.TestConstants.PASSWORD_ADMIN;
 import static de.shop.util.TestConstants.PASSWORD_FALSCH;
 import static de.shop.util.TestConstants.USERNAME;
@@ -98,7 +99,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 	private static final String NEUE_STRASSE = "Testweg";
 	private static final String NEUE_HAUSNR = "1";
 	private static final String NEUES_PASSWORD = "neuesPassword";
-	//private static final Long ARTIKEL_ID_VORHANDEN = Long.valueOf(300);
+	private static final Long ARTIKEL_ID_VORHANDEN = Long.valueOf(300);
 	
 	private static final String IMAGE_FILENAME = "image.png";
 	private static final String IMAGE_PATH_UPLOAD = "src/test/resources/rest/" + IMAGE_FILENAME;
@@ -381,13 +382,13 @@ public class KundeResourceTest extends AbstractResourceTest {
 		// Einloggen als neuer Kunde und Bestellung aufgeben
 
 		// Given (2)
-		//-------------final Long artikelId = ARTIKEL_ID_VORHANDEN;
+		final Long artikelId = ARTIKEL_ID_VORHANDEN;
 		final String username = idStr;
 
 		// When (2)
 		final Bestellung bestellung = new Bestellung();
 		final Bestellposten bp = new Bestellposten();
-		//------------bp.setArtikelUri(new URI(ARTIKEL_URI + "/" + artikelId));
+		bp.setArtikelUri(new URI(ARTIKEL_URI + "/" + artikelId));
 		bp.setAnzahl((short) 1);
 		bestellung.addBestellposition(bp);
 		
