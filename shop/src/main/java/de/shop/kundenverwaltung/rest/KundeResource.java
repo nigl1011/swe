@@ -244,7 +244,7 @@ public class KundeResource {
 	 */
 	@PUT
 	@Consumes({ APPLICATION_JSON, APPLICATION_XML, TEXT_XML })
-	@Produces //({ APPLICATION_JSON, APPLICATION_XML, TEXT_XML })
+	@Produces ({ APPLICATION_JSON, APPLICATION_XML, TEXT_XML })
 	@Transactional
 	public void updateKunde(@Valid AbstractKunde kunde) {
 		// Vorhandenen Kunden ermitteln
