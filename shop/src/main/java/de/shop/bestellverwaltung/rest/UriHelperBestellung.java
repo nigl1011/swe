@@ -41,8 +41,6 @@ public class UriHelperBestellung {
 			for (Bestellposten bp : bestellposten) {
 				final URI artikelUri = uriHelperArtikel.getUriArtikel(bp.getArtikel(), uriInfo);
 				bp.setArtikelUri(artikelUri);
-				final URI bestellungUri = getUriBestellung(bestellung, uriInfo);
-				bp.setBestellungUri(bestellungUri);
 			}
 		}
 		

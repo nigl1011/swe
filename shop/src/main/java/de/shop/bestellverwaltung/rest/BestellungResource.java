@@ -20,7 +20,6 @@ import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -28,14 +27,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-
-
-
-
-
-
-
-
 
 import org.jboss.logging.Logger;
 
@@ -58,7 +49,7 @@ import de.shop.util.rest.UriHelper;
 
 
 @Path("/bestellung")
-@Produces({ APPLICATION_JSON, APPLICATION_XML + ";qs=0.75", TEXT_XML + ";qs=0.5"})
+@Produces({ APPLICATION_JSON, APPLICATION_XML + ";qs=0.75", TEXT_XML + ";qs=0.5", TEXT_PLAIN})
 @RequestScoped
 @Consumes
 @Log
@@ -160,21 +151,18 @@ public class BestellungResource {
 		return uriHelper.getUri(BestellungResource.class, "findBestellungById", bestellung.getId(), uriInfo);
 	}
 
-	//FIXME Die Methode macht überhaupt keinen Sinn?! findLieferungenByBestellungId aber mit Pfad kunde
-	// im uriUpdate wird an die Lieferung der Kunde übergeben?!
 	@GET
-	@Path("{id:[1-9][0-9]*}/kunde")
+	@Path("{id:[1-9][0-9]*}/lieferung")
 	public Lieferung findLieferungenByBestellungId(@PathParam("id") Long id) {
-		final Lieferung kunde = ls.findLieferungById(id);
-		if (kunde == null) {
-			final String msg = "Keine Bestellung gefunden mit der ID " + id;
+		final Lieferung lieferung = ls.findLieferungById(id);
+		if (lieferung == null) {
+			final String msg = "Keine Lieferung zur Bestellung mit der ID " + id;
 			throw new NotFoundException(msg);
 		}
-
 		
 		// URLs innerhalb der gefundenen Bestellung anpassen
-		uriHelperLieferung.updateUriLieferung(kunde, uriInfo);
-		return kunde;
+		uriHelperLieferung.updateUriLieferung(lieferung, uriInfo);
+		return lieferung;
 	}
 	
 	
@@ -197,7 +185,7 @@ public class BestellungResource {
 	
 	@GET
 	@Path("{posid:[1-9][0-9]*}/bestellung")
-	public Bestellung findBestellungByPostenId(@PathParam("id") Long id) {
+	public Bestellung findBestellungByPostenId(@PathParam("posid") Long id) {
 
 		final Bestellung posten = bs.findBestellungByPostenId(id);
 
@@ -242,7 +230,6 @@ public class BestellungResource {
 				continue;
 			}
 			artikelIds.add(artikelId);
-			bp.setBestellung(bestellung);
 		}
 		
 		if (artikelIds.isEmpty()) {
@@ -295,30 +282,5 @@ public class BestellungResource {
 	}
 	
 	
-	@PUT
-	@Consumes({ APPLICATION_JSON, APPLICATION_XML, TEXT_XML })
-	@Transactional
-	public void updateBestellung(@Valid Bestellung bestellung) {
-		// Vorhandenen Kunden ermitteln
-		final Bestellung origBestellung = bs.findBestellungById(bestellung.getId());
-		if (origBestellung == null) {
-			// TODO msg passend zu locale
-			final String msg = "Kein Bestellung gefunden mit der ID " + bestellung.getId();
-			throw new NotFoundException(msg);
-		}
-		LOGGER.tracef("Bestellung vorher: %s", origBestellung);
 	
-		// Daten des vorhandenen Kunden ueberschreiben
-		origBestellung.setValues(bestellung);
-		LOGGER.tracef("Bestellung nachher: %s", origBestellung);
-		
-		// Update durchfuehren
-		bestellung = bs.updateBestellung(origBestellung);
-		if (bestellung == null) {
-			// TODO msg passend zu locale
-			final String msg = "Kein Bestellung gefunden mit der ID " + origBestellung.getId();
-			throw new NotFoundException(msg);
-		}
-	
-	}
 }

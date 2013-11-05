@@ -1,6 +1,7 @@
 package de.shop.bestellverwaltung.domain;
 
 import static de.shop.util.Constants.KEINE_ID;
+import static de.shop.util.Constants.ERSTE_VERSION;
 
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
@@ -9,42 +10,34 @@ import java.net.URI;
 
 
 
+
+
+import javax.persistence.Basic;
+import javax.persistence.Index;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.PostPersist;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.Version;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-
-import org.codehaus.jackson.annotate.JsonIgnore;
+import javax.xml.bind.annotation.XmlTransient;
 import org.jboss.logging.Logger;
-
 import de.shop.artikelverwaltung.domain.Artikel;
 
 
 
 @Entity
-@Table(name = "bestellposten")
-@NamedQueries({
-    @NamedQuery(name  = Bestellposten.FIND_LADENHUETER,
-   	            query = "SELECT a"
-   	            	    + " FROM   Artikel a"
-   	            	    + " WHERE  a NOT IN (SELECT bp.artikel FROM Bestellposten bp)"),
-   	@NamedQuery(name = Bestellposten.FIND_POSTEN_BY_BESTELLID, 
-   				query = "Select p"
-   	     				+ " FROM Bestellposten p"
-   	     				+ " WHERE p.bestellung.id =:"
-   	     				+ Bestellposten.PARAM_BES_ID) })
-
-
+@Table(indexes = { @Index(columnList = "bestellung_fk"), @Index(columnList = "artikel_fk") })
+@NamedQuery(name  = Bestellposten.FIND_LADENHUETER,
+			query = "SELECT a"
+   	            	 + " FROM   Artikel a"
+   	            	 + " WHERE  a NOT IN (SELECT bp.artikel FROM Bestellposten bp)")
 public class Bestellposten implements Serializable {
 	
 	
@@ -63,26 +56,22 @@ public class Bestellposten implements Serializable {
 	@Column(nullable = false, updatable = false)
 	private Long id = KEINE_ID;
 	
+	@Version
+	@Basic(optional = false)
+	private int version = ERSTE_VERSION;
+	
 	@Column(name = "anzahl", nullable = false)
 	@Min(value = ANZAHL_MIN, message = "{bestellverwaltung.bestellposten.anzahl.min}")
 	private short anzahl;
 	
-	@Transient
-	private URI bestellungUri;
+	
 	@Transient
 	private URI artikelUri;
 	
-	@OneToOne
-	@JoinColumn(name = "artikel_fk", nullable = false, updatable = false)
-	@NotNull(message = "{positionsverwaltung.posten.artikel.notnull}")
-	@JsonIgnore
+	@ManyToOne
+	@JoinColumn(name = "artikel_fk", nullable = false)
+	@XmlTransient
 	private Artikel artikel;
-	
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "bestellung_fk", insertable = false, nullable = false, updatable = false)
-	@NotNull(message = "{bestellverwaltung.bestellposten.bestellung.notNull}")
-	@JsonIgnore
-	private Bestellung bestellung;
 	
 	@PostPersist
 	private void postPersist() {
@@ -120,12 +109,7 @@ public class Bestellposten implements Serializable {
 	public void setArtikel(Artikel artikel) {
 		this.artikel = artikel;
 	}
-	public URI getBestellungUri() {
-		return bestellungUri;
-	}
-	public void setBestellungUri(URI bestellungUri) {
-		this.bestellungUri = bestellungUri;
-	}
+
 	public URI getArtikelUri() {
 		return artikelUri;
 	}
@@ -138,15 +122,7 @@ public class Bestellposten implements Serializable {
 	public void setAnzahl(short anzahl) {
 		this.anzahl = anzahl;
 	}
-	public Bestellung getBestellung() {
-		return bestellung;
-	}
-
-	public void setBestellung(Bestellung bestellung) {
-		this.bestellung = bestellung;
-	}
-
-
+	
 	@Override
 	public String toString() {
 		final Long artikelId = artikel == null ? null : artikel.getId();

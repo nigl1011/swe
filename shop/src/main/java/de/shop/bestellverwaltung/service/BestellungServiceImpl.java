@@ -235,18 +235,6 @@ public class BestellungServiceImpl implements Serializable, BestellungService {
 		return bestellungen;
 	}
 
-	public Bestellung updateBestellung(Bestellung bestellung) {
-		if (bestellung == null || bestellung.getId() == null)  {
-		LOGGER.tracef("Bestellung ist null => Update nicht möglich");
-		return null;
-		}
-		final List<Bestellposten> bestellposten = bestellung.getBestellposten();
-		for (Bestellposten bp : bestellposten) { bp.setBestellung(bestellung); }
-		em.merge(bestellung);
-		LOGGER.tracef("update der Bestellung erfolgreich");
-		return bestellung;
-		}
 
-	
-	}
+}
 	

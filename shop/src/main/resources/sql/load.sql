@@ -35,15 +35,15 @@ INSERT INTO bestellung (id, version, kunde_fk, idx, status, gesamtpreis, erzeugt
 INSERT INTO bestellung (id, version, kunde_fk, idx, status, gesamtpreis, erzeugt, aktualisiert) VALUES (404,1,6,0,'I',10,'05.08.2006 00:00:00','05.08.2006 00:00:00');
 
 --bestellposten
-INSERT INTO bestellposten (id, bestellung_fk, artikel_fk, anzahl, idx) VALUES (500,400,301,1,0);
-INSERT INTO bestellposten (id, bestellung_fk, artikel_fk, anzahl, idx) VALUES (501,400,301,4,1);
-INSERT INTO bestellposten (id, bestellung_fk, artikel_fk, anzahl, idx) VALUES (502,401,302,5,0);
-INSERT INTO bestellposten (id, bestellung_fk, artikel_fk, anzahl, idx) VALUES (503,402,303,3,0);
-INSERT INTO bestellposten (id, bestellung_fk, artikel_fk, anzahl, idx) VALUES (504,402,304,2,1);
-INSERT INTO bestellposten (id, bestellung_fk, artikel_fk, anzahl, idx) VALUES (505,403,304,1,0);
-INSERT INTO bestellposten (id, bestellung_fk, artikel_fk, anzahl, idx) VALUES (506,404,303,5,0);
-INSERT INTO bestellposten (id, bestellung_fk, artikel_fk, anzahl, idx) VALUES (507,404,301,2,1);
-INSERT INTO bestellposten (id, bestellung_fk, artikel_fk, anzahl, idx) VALUES (508,404,302,8,1);
+INSERT INTO bestellposten (id, version, bestellung_fk, artikel_fk, anzahl, idx) VALUES (500,1,400,301,1,0);
+INSERT INTO bestellposten (id, version, bestellung_fk, artikel_fk, anzahl, idx) VALUES (501,1,400,301,4,1);
+INSERT INTO bestellposten (id, version, bestellung_fk, artikel_fk, anzahl, idx) VALUES (502,1,401,302,5,0);
+INSERT INTO bestellposten (id, version, bestellung_fk, artikel_fk, anzahl, idx) VALUES (503,1,402,303,3,0);
+INSERT INTO bestellposten (id, version, bestellung_fk, artikel_fk, anzahl, idx) VALUES (504,1,402,304,2,1);
+INSERT INTO bestellposten (id, version, bestellung_fk, artikel_fk, anzahl, idx) VALUES (505,1,403,304,1,0);
+INSERT INTO bestellposten (id, version, bestellung_fk, artikel_fk, anzahl, idx) VALUES (506,1,404,303,5,0);
+INSERT INTO bestellposten (id, version, bestellung_fk, artikel_fk, anzahl, idx) VALUES (507,1,404,301,2,1);
+INSERT INTO bestellposten (id, version, bestellung_fk, artikel_fk, anzahl, idx) VALUES (508,1,404,302,8,1);
 
 
 
