@@ -19,7 +19,7 @@ public interface BestellungService {
 	
 	List<Bestellung> findBestellungenByKunde(AbstractKunde kunde);
 	
-	Bestellung createBestellung(Bestellung bestellung, Long kundeId);
+	Bestellung createBestellung(Bestellung bestellung, String username);
 	
 	Bestellung createBestellung(Bestellung bestellung, AbstractKunde kunde);
 	

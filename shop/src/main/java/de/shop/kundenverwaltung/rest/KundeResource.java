@@ -9,10 +9,12 @@ import static javax.ws.rs.core.MediaType.TEXT_XML;
 
 
 
+
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+
 
 
 
@@ -33,6 +35,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Link;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
@@ -315,6 +318,17 @@ public class KundeResource {
 
 	public URI getUriKunde(AbstractKunde kunde, UriInfo uriInfo) {
 		// TODO Bitte noch Methdode implementieren, so dass die KundenUri zurückgegeben wird!
+		return null;
+	}
+	
+	
+	public void setStructuralLinks(AbstractKunde kunde, UriInfo uriInfo2) {
+		// TODO Need Methode für Bestellung, bitte machen, Gruß Micha ;)
+		
+	}
+
+	public Link getTransitionalLinks(AbstractKunde kunde, UriInfo uriInfo2) {
+		// TODO Die Methode bräucht ich auch noch :))
 		return null;
 	}
 	

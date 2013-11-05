@@ -26,6 +26,7 @@ import javax.persistence.criteria.Root;
 
 
 
+
 import org.jboss.logging.Logger;
 
 import de.shop.artikelverwaltung.domain.Artikel;
@@ -119,14 +120,13 @@ public class BestellungServiceImpl implements Serializable, BestellungService {
 	}
 
 	@Override
-	public Bestellung createBestellung(Bestellung bestellung,
-			                           Long kundeId) {
+	public Bestellung createBestellung(Bestellung bestellung, String username) {
 		if (bestellung == null) {
 			return null;
 		}
 		
 		// Den persistenten Kunden mit der transienten Bestellung verknuepfen
-		final AbstractKunde kunde = ks.findKundeById(kundeId, KundeService.FetchType.MIT_BESTELLUNGEN);
+		final AbstractKunde kunde = ks.findKundeByUserName(username);
 		return createBestellung(bestellung, kunde);
 	}
 	

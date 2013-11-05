@@ -48,10 +48,9 @@ public abstract class BestellungServiceMitGeschenkverpackung implements Bestellu
 	}
 
 	@Override
-	public Bestellung createBestellung(Bestellung bestellung, Long kundeId) {
+	public Bestellung createBestellung(Bestellung bestellung, String username) {
 		LOGGER.warn("Geschenkverpackung noch nicht implementiert");
-		
-		return bs.createBestellung(bestellung, kundeId);
+		return bs.createBestellung(bestellung, username);
 	}
 	
 	@Override
