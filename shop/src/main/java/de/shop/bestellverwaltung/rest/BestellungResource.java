@@ -123,7 +123,7 @@ public class BestellungResource {
 		return new Link[] { self, add };
 	}
 
-	private void setStructuralLinks(Bestellung bestellung, UriInfo uriInfo) {
+	public void setStructuralLinks(Bestellung bestellung, UriInfo uriInfo) {
 		// URI fuer den Kunden setzen
 		final AbstractKunde kunde = bestellung.getKunde();
 		if (kunde != null) {
@@ -144,7 +144,7 @@ public class BestellungResource {
 		
 	}
 
-	private URI getUriBestellung(Bestellung bestellung, UriInfo uriInfo) {
+	public URI getUriBestellung(Bestellung bestellung, UriInfo uriInfo) {
 		return uriHelper.getUri(BestellungResource.class, "findBestellungById", bestellung.getId(), uriInfo);
 	}
 

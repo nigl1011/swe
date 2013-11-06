@@ -102,34 +102,62 @@ public class KundeService implements Serializable {
 	}
 
 
-	/*public List<AbstractKunde> findAllKunden(FetchType fetch, OrderType order) {
-		List<AbstractKunde> kunden;
+	public List<AbstractKunde> findAllKunden(FetchType fetch, OrderByType order) {
+		final TypedQuery<AbstractKunde> query = OrderByType.ID.equals(order)
+				                        ? em.createNamedQuery(AbstractKunde.FIND_KUNDEN_ORDER_BY_ID,
+										                      AbstractKunde.class)
+				                        : em.createNamedQuery(AbstractKunde.FIND_KUNDEN, AbstractKunde.class);
 		switch (fetch) {
 			case NUR_KUNDE:
-				kunden = OrderType.ID.equals(order)
-				         ? em.createNamedQuery(AbstractKunde.FIND_KUNDEN_ORDER_BY_ID, AbstractKunde.class)
-				             .getResultList()
-				         : em.createNamedQuery(AbstractKunde.FIND_KUNDEN, AbstractKunde.class)
-				             .getResultList();
+				break;
+			case MIT_BESTELLUNGEN:
+				query.setHint("javax.persistence.loadgraph", AbstractKunde.GRAPH_BESTELLUNGEN);
+				break;
+			case MIT_WARTUNGSVERTRAEGEN:
+				query.setHint("javax.persistence.loadgraph", AbstractKunde.GRAPH_WARTUNGSVERTRAEGE);
+				break;
+			default:
+				break;
+		}
+		
+		final List<AbstractKunde> kunden = query.getResultList();
+		return kunden;
+	}
+	
+	public AbstractKunde findKundeById(Long id, FetchType fetch) {
+		if (id == null) {
+			return null;
+		}
+		
+		AbstractKunde kunde;
+		switch (fetch) {
+			case NUR_KUNDE:
+				kunde = em.find(AbstractKunde.class, id);
 				break;
 			
 			case MIT_BESTELLUNGEN:
-				kunden = em.createNamedQuery(AbstractKunde.FIND_KUNDEN_FETCH_BESTELLUNGEN, AbstractKunde.class)
-						   .getResultList();
+				try {
+					kunde = em.createNamedQuery(AbstractKunde.FIND_KUNDE_BY_ID_FETCH_BESTELLUNGEN, AbstractKunde.class)
+					          .setParameter(AbstractKunde.PARAM_KUNDE_ID, id)
+                              .getSingleResult();
+				}
+				catch (NoResultException e) {
+					kunde = null;
+				}
+				// FIXME https://hibernate.atlassian.net/browse/HHH-8285 : @NamedEntityGraph ab Java EE 7 bzw. JPA 2.1
+				//kunde = em.find(AbstractKunde.class, id, GRAPH_BESTELLUNGEN);
+				break;
+				
+			case MIT_WARTUNGSVERTRAEGEN:
+				kunde = em.find(AbstractKunde.class, id, GRAPH_WARTUNGSVERTRAEGE);
 				break;
 
 			default:
-				kunden = OrderType.ID.equals(order)
-		                 ? em.createNamedQuery(AbstractKunde.FIND_KUNDEN_ORDER_BY_ID, AbstractKunde.class)
-		                	 .getResultList()
-		                 : em.createNamedQuery(AbstractKunde.FIND_KUNDEN, AbstractKunde.class)
-		                     .getResultList();
+				kunde = em.find(AbstractKunde.class, id);
 				break;
 		}
-
-		return kunden;
-	}*/
-	
+		return kunde;
+	}
 
 	public List<AbstractKunde> findKundenByNachname(String nachname, FetchType fetch) {
 		List<AbstractKunde> kunden;
@@ -183,43 +211,6 @@ public class KundeService implements Serializable {
 				                         .getResultList();
 		return nachnamen;
 	}
-
-	/**
-	 */
-	public AbstractKunde findKundeById(Long id, FetchType fetch) {
-		if (id == null) {
-			return null;
-		}
-		
-		AbstractKunde kunde;
-		switch (fetch) {
-			case NUR_KUNDE:
-				kunde = em.find(AbstractKunde.class, id);
-				break;
-			
-			case MIT_BESTELLUNGEN:
-				try {
-					kunde = em.createNamedQuery(AbstractKunde.FIND_KUNDE_BY_ID_FETCH_BESTELLUNGEN, AbstractKunde.class)
-					          .setParameter(AbstractKunde.PARAM_KUNDE_ID, id)
-                              .getSingleResult();
-				}
-				catch (NoResultException e) {
-					kunde = null;
-				}
-				// FIXME https://hibernate.atlassian.net/browse/HHH-8285 : @NamedEntityGraph ab Java EE 7 bzw. JPA 2.1
-				//kunde = em.find(AbstractKunde.class, id, GRAPH_BESTELLUNGEN);
-				break;
-				
-			case MIT_WARTUNGSVERTRAEGEN:
-				kunde = em.find(AbstractKunde.class, id, GRAPH_WARTUNGSVERTRAEGE);
-				break;
-
-			default:
-				kunde = em.find(AbstractKunde.class, id);
-				break;
-		}
-		return kunde;
-	}
 	
 	public List<Long> findIdsByPrefix(String idPrefix) {
 		if (Strings.isNullOrEmpty(idPrefix)) {
@@ -243,32 +234,7 @@ public class KundeService implements Serializable {
 				 .getResultList();
 	}
 
-	
 
-	/**
-	 */
-	
-	public List<AbstractKunde> findAllKunden(FetchType fetch, OrderByType order) {
-		final TypedQuery<AbstractKunde> query = OrderByType.ID.equals(order)
-				                        ? em.createNamedQuery(AbstractKunde.FIND_KUNDEN_ORDER_BY_ID,
-										                      AbstractKunde.class)
-				                        : em.createNamedQuery(AbstractKunde.FIND_KUNDEN, AbstractKunde.class);
-		switch (fetch) {
-			case NUR_KUNDE:
-				break;
-			case MIT_BESTELLUNGEN:
-				query.setHint("javax.persistence.loadgraph", AbstractKunde.GRAPH_BESTELLUNGEN);
-				break;
-			case MIT_WARTUNGSVERTRAEGEN:
-				query.setHint("javax.persistence.loadgraph", AbstractKunde.GRAPH_WARTUNGSVERTRAEGE);
-				break;
-			default:
-				break;
-		}
-		
-		final List<AbstractKunde> kunden = query.getResultList();
-		return kunden;
-	}
 	
 
 	public AbstractKunde findKundeByEmail(String email) {
@@ -310,8 +276,6 @@ public class KundeService implements Serializable {
 	}
 	
 	
-	/**
-	 */
 	public List<AbstractKunde> findPrivatkundenFirmenkunden() {
 		final List<AbstractKunde> kunden = em.createNamedQuery(AbstractKunde.FIND_PRIVATKUNDEN_FIRMENKUNDEN,
                                                                AbstractKunde.class)
