@@ -3,12 +3,13 @@ package de.shop.kundenverwaltung.rest;
 import static de.shop.util.Constants.FIRST_LINK;
 import static de.shop.util.Constants.LAST_LINK;
 import static de.shop.util.Constants.SELF_LINK;
-import static de.shop.util.TestConstants.ARTIKEL_URI;
+//import static de.shop.util.TestConstants.ARTIKEL_URI;
 import static de.shop.util.TestConstants.BESTELLUNGEN_URI;
 import static de.shop.util.TestConstants.KUNDEN_ID_FILE_URI;
 import static de.shop.util.TestConstants.KUNDEN_ID_URI;
 import static de.shop.util.TestConstants.KUNDEN_URI;
 import static de.shop.util.TestConstants.PASSWORD;
+import static de.shop.util.TestConstants.ARTIKEL_URI;
 import static de.shop.util.TestConstants.PASSWORD_ADMIN;
 import static de.shop.util.TestConstants.PASSWORD_FALSCH;
 import static de.shop.util.TestConstants.USERNAME;
@@ -28,6 +29,7 @@ import static javax.ws.rs.client.Entity.entity;
 import static javax.ws.rs.client.Entity.json;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.fest.assertions.api.Assertions.assertThat;
+import static org.fest.assertions.api.Assertions.fail;
 import static org.fest.assertions.api.Assertions.filter;
 
 import java.io.IOException;
@@ -74,15 +76,11 @@ public class KundeResourceTest extends AbstractResourceTest {
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
 	
 	private static final Long KUNDE_ID_VORHANDEN_MIT_BESTELLUNGEN = Long.valueOf(101);
-	
-	private static final Long KUNDE_ID_VORHANDEN = Long.valueOf(209);
 	private static final Long KUNDE_ID_NICHT_VORHANDEN = Long.valueOf(1000);
-	
 	private static final Long KUNDE_ID_UPDATE = Long.valueOf(120);
 	private static final Long KUNDE_ID_DELETE = Long.valueOf(122);
 	private static final Long KUNDE_ID_DELETE_MIT_BESTELLUNGEN = Long.valueOf(101);
 	private static final Long KUNDE_ID_DELETE_FORBIDDEN = Long.valueOf(101);
-	
 	private static final String NACHNAME_VORHANDEN = "Alpha";
 	private static final String NACHNAME_NICHT_VORHANDEN = "Falschername";
 	private static final String NACHNAME_INVALID = "Test9";
@@ -112,8 +110,6 @@ public class KundeResourceTest extends AbstractResourceTest {
 	private static final String IMAGE_INVALID = "image.bmp";
 	private static final String IMAGE_INVALID_PATH = "src/test/resources/rest/" + IMAGE_INVALID;
 	private static final String IMAGE_INVALID_MIMETYPE = "image/bmp";
-
-
 	
 	
 	@Test
@@ -124,6 +120,19 @@ public class KundeResourceTest extends AbstractResourceTest {
 	
 	@Ignore
 	@Test
+	@InSequence(2)
+	public void beispielIgnore() {
+		assertThat(true).isFalse();
+	}
+	
+	@Ignore
+	@Test
+	@InSequence(3)
+	public void beispielFailMitIgnore() {
+		fail("Beispiel fuer fail()");
+	}
+	
+	@Test
 	@InSequence(10)
 	public void findKundeMitBestellungenById() {
 		LOGGER.finer("BEGINN");
@@ -133,7 +142,10 @@ public class KundeResourceTest extends AbstractResourceTest {
 		
 		// When
 		Response response = getHttpsClient().target(KUNDEN_ID_URI)
-                                            .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId).request().accept(APPLICATION_JSON).get();
+                                            .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId)
+                                            .request()
+                                            .accept(APPLICATION_JSON)
+                                            .get();
 	
 		// Then
 		assertThat(response.getStatus()).isEqualTo(HTTP_OK);
@@ -169,39 +181,30 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-    @Test
-    @InSequence(2)
-    public void findKundeByIdVorhanden() {
-            LOGGER.finer("BEGINN");
+	@Test
+	@InSequence(11)
+	public void findKundeByIdNichtVorhanden() {
+		LOGGER.finer("BEGINN");
+		
+		// Given
+		final Long kundeId = KUNDE_ID_NICHT_VORHANDEN;
+		
+		// When
+		final Response response = getHttpsClient().target(KUNDEN_ID_URI)
+                                                  .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId)
+                                                  .request()
+                                                  .acceptLanguage(GERMAN)
+                                                  .get();
 
-            final Long kundeId = KUNDE_ID_VORHANDEN;
+    	// Then
+    	assertThat(response.getStatus()).isEqualTo(HTTP_NOT_FOUND);
+    	final String fehlermeldung = response.readEntity(String.class);
+    	assertThat(fehlermeldung).startsWith("Kein Kunde mit der ID")
+    	                         .endsWith("gefunden.");
+		
+		LOGGER.finer("ENDE");
+	}
 
-            final Response response = getHttpsClient().target(KUNDEN_ID_URI)
-                            .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId).request().acceptLanguage(GERMAN).get();
-            assertThat(response.getStatus()).isEqualTo(HTTP_OK);
-            final AbstractKunde kunde = response.readEntity(AbstractKunde.class);
-            assertThat(kunde.getId()).isEqualTo(kundeId);
-
-            LOGGER.finer("ENDE");
-    }
-
-    @Test
-    @InSequence(3)
-    public void findKundeByIdNichtVorhanden() {
-            LOGGER.finer("BEGINN");
-
-            final Long kundeId = KUNDE_ID_NICHT_VORHANDEN;
-
-            final Response response = getHttpsClient().target(KUNDEN_ID_URI)
-                            .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId).request().acceptLanguage(GERMAN).get();
-            assertThat(response.getStatus()).isEqualTo(HTTP_NOT_FOUND);
-            final String fehlermeldung = response.readEntity(String.class);
-            assertThat(fehlermeldung).startsWith("Kein Kunde mit der ID").endsWith("gefunden.");
-
-            LOGGER.finer("ENDE");
-    }
-
-	@Ignore
 	@Test
 	@InSequence(20)
 	public void findKundenByNachnameVorhanden() {
@@ -246,7 +249,6 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
 	@Test
 	@InSequence(21)
 	public void findKundenByNachnameNichtVorhanden() {
@@ -270,7 +272,6 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
 	@Test
 	@InSequence(22)
 	public void findKundenByNachnameInvalid() {
@@ -305,7 +306,6 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
 	@Test
 	@InSequence(30)
 	public void findKundenByGeschlecht() {
@@ -333,7 +333,6 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
 	@Test
 	@InSequence(40)
 	public void createPrivatkunde() throws URISyntaxException {
@@ -406,7 +405,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+	
 	@Test
 	@InSequence(41)
 	public void createPrivatkundeInvalid() {
@@ -454,38 +453,54 @@ public class KundeResourceTest extends AbstractResourceTest {
 		ResteasyConstraintViolation violation =
 				                    filter(violations).with("message")
                                                       .equalsTo("A lastname must have at least 2 and may only have up to 32 characters.")
-                                                      .get().iterator().next();
+                                                      .get()
+                                                      .iterator()
+                                                      .next();
 		assertThat(violation.getValue()).isEqualTo(String.valueOf(nachname));
 		
 		violation = filter(violations).with("message")
                                       .equalsTo("A lastname must start with exactly one capital letter followed by at least one lower letter, and composed names with \"-\" are allowed.")
-                                      .get().iterator().next();
+                                      .get()
+                                      .iterator()
+                                      .next();
 		assertThat(violation.getValue()).isEqualTo(String.valueOf(nachname));
 
 		violation = filter(violations).with("message")
-				                      .equalsTo("The email address is invalid.").get().iterator().next();
+				                      .equalsTo("The email address is invalid.")
+				                      .get()
+				                      .iterator()
+				                      .next();
 		assertThat(violation.getValue()).isEqualTo(email);
 		
 		
 		violation = filter(violations).with("message")
-                                      .equalsTo("Passwords are not equal.").get().iterator().next();
+                                      .equalsTo("Passwords are not equal.")
+                                      .get()
+                                      .iterator()
+                                      .next();
 		// @ScriptAssert steht bei der Klasse und nicht bei einem Attribut:
 		// violation.getValue() ruft toString() auf dem Objekt der Klasse Privatkunde auf
 		assertThat(violation.getValue()).contains(password).contains(passwordWdh);
 		
 		violation = filter(violations).with("message")
-                                      .equalsTo("The terms were not accepted.").get().iterator().next();
+                                      .equalsTo("The terms were not accepted.")
+                                      .get()
+                                      .iterator()
+                                      .next();
 		assertThat(violation.getValue()).isEqualTo(String.valueOf(agbAkzeptiert));
 		
 		
 		violation = filter(violations).with("message")
-                                      .equalsTo("The ZIP code doesn't have 5 digits.").get().iterator().next();
+                                      .equalsTo("The ZIP code doesn't have 5 digits.")
+                                      .get()
+                                      .iterator()
+                                      .next();
 		assertThat(violation.getValue()).isEqualTo(plz);
 		
 		LOGGER.finer("ENDE");
 	}
 
-	@Ignore
+	
 	@Test
 	@InSequence(42)
 	public void createPrivatkundeFalschesPassword() {
@@ -498,7 +513,9 @@ public class KundeResourceTest extends AbstractResourceTest {
 		};
 		
 		// When
-		final Response response = getHttpsClient(USERNAME, PASSWORD_FALSCH).target(KUNDEN_URI).request().post(json(kunde));
+		final Response response = getHttpsClient(USERNAME, PASSWORD_FALSCH).target(KUNDEN_URI)
+                                                                           .request()
+                                                                           .post(json(kunde));
 		
 		// Then
 		assertThat(response.getStatus()).isEqualTo(HTTP_UNAUTHORIZED);
@@ -508,48 +525,54 @@ public class KundeResourceTest extends AbstractResourceTest {
 	}
 	
 	
-	@Ignore
-    @Test
-    @InSequence(50)
-    public void updateKunde() {
-            LOGGER.finer("BEGINN");
-
-            // Given
-            final Long kundeId = KUNDE_ID_UPDATE;
-            final String neuerNachname = NEUER_NACHNAME;
-
-            // When
-            Response response = getHttpsClient().target(KUNDEN_ID_URI)
-                            .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId).request().accept(APPLICATION_JSON).get();
-            AbstractKunde kunde = response.readEntity(AbstractKunde.class);
-            assertThat(kunde.getId()).isEqualTo(kundeId);
-            final int origVersion = kunde.getVersion();
-
-            // Aus den gelesenen JSON-Werten ein neues JSON-Objekt mit neuem
-            // Nachnamen bauen
-            kunde.setNachname(neuerNachname);
-
-            response = getHttpsClient(USERNAME, PASSWORD).target(KUNDEN_URI).request().accept(APPLICATION_JSON)
-                            .put(json(kunde));
-            // Then
-            assertThat(response.getStatus()).isEqualTo(HTTP_OK);
-            kunde = response.readEntity(AbstractKunde.class);
-            assertThat(kunde.getVersion()).isGreaterThan(origVersion);
-
-            // Erneutes Update funktioniert, da die Versionsnr. aktualisiert ist
-            response = getHttpsClient(USERNAME, PASSWORD).target(KUNDEN_URI).request().put(json(kunde));
-            assertThat(response.getStatus()).isEqualTo(HTTP_OK);
-            response.close();
-
-            // Erneutes Update funktioniert NICHT, da die Versionsnr. NICHT aktualisiert ist
-            response = getHttpsClient(USERNAME, PASSWORD).target(KUNDEN_URI).request().put(json(kunde));
-            assertThat(response.getStatus()).isEqualTo(HTTP_CONFLICT);
-            response.close();
-
-            LOGGER.finer("ENDE");
-    }
+	@Test
+	@InSequence(50)
+	public void updateKunde() {
+		LOGGER.finer("BEGINN");
+		
+		// Given
+		final Long kundeId = KUNDE_ID_UPDATE;
+		final String neuerNachname = NEUER_NACHNAME;
+		
+		// When
+		Response response = getHttpsClient().target(KUNDEN_ID_URI)
+                                            .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId)
+                                            .request()
+                                            .accept(APPLICATION_JSON)
+                                            .get();
+		AbstractKunde kunde = response.readEntity(AbstractKunde.class);
+		assertThat(kunde.getId()).isEqualTo(kundeId);
+		final int origVersion = kunde.getVersion();
+    	
+    	// Aus den gelesenen JSON-Werten ein neues JSON-Objekt mit neuem Nachnamen bauen
+		kunde.setNachname(neuerNachname);
+    	
+		response = getHttpsClient(USERNAME, PASSWORD).target(KUNDEN_URI)
+                                                     .request()
+                                                     .accept(APPLICATION_JSON)
+                                                     .put(json(kunde));
+		// Then
+		assertThat(response.getStatus()).isEqualTo(HTTP_OK);
+		kunde = response.readEntity(AbstractKunde.class);
+		assertThat(kunde.getVersion()).isGreaterThan(origVersion);
+		
+		// Erneutes Update funktioniert, da die Versionsnr. aktualisiert ist
+		response = getHttpsClient(USERNAME, PASSWORD).target(KUNDEN_URI)
+                                                     .request()
+                                                     .put(json(kunde));
+		assertThat(response.getStatus()).isEqualTo(HTTP_OK);
+		response.close();
+		
+		// Erneutes Update funktioniert NICHT, da die Versionsnr. NICHT aktualisiert ist
+		response = getHttpsClient(USERNAME, PASSWORD).target(KUNDEN_URI)
+                                                     .request()
+                                                     .put(json(kunde));
+		assertThat(response.getStatus()).isEqualTo(HTTP_CONFLICT);
+		response.close();
+		
+		LOGGER.finer("ENDE");
+   	}
 	
-	@Ignore
 	@Test
 	@InSequence(60)
 	public void deleteKunde() {
@@ -588,7 +611,6 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
 	@Test
 	@InSequence(61)
 	public void deleteKundeMitBestellung() {
@@ -615,7 +637,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+	
 	@Test
 	@InSequence(62)
 	public void deleteKundeFehlendeBerechtigung() {
@@ -638,7 +660,6 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
 	@Test
 	@InSequence(70)
 	public void uploadDownload() throws IOException {
@@ -691,7 +712,6 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
 	@Test
 	@InSequence(71)
 	public void uploadInvalidMimeType() throws IOException {
@@ -716,3 +736,4 @@ public class KundeResourceTest extends AbstractResourceTest {
 		response.close();
 	}
 }
+
