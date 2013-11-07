@@ -83,7 +83,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 	private static final Long KUNDE_ID_DELETE_MIT_BESTELLUNGEN = Long.valueOf(101);
 	private static final Long KUNDE_ID_DELETE_FORBIDDEN = Long.valueOf(101);
 	
-	private static final String NACHNAME_VORHANDEN = "Nina";
+	private static final String NACHNAME_VORHANDEN = "Nine";
 	private static final String NACHNAME_NICHT_VORHANDEN = "Falschername";
 	private static final String NACHNAME_INVALID = "Test9";
 	private static final String NEUER_NACHNAME = "Nachnameneu";
@@ -122,7 +122,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		assertThat(true).isTrue();
 	}
 	
-	@Ignore
+	
 	@Test
 	@InSequence(10)
 	public void findKundeMitBestellungenById() {
@@ -133,7 +133,9 @@ public class KundeResourceTest extends AbstractResourceTest {
 		
 		// When
 		Response response = getHttpsClient().target(KUNDEN_ID_URI)
-                                            .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId).request().accept(APPLICATION_JSON).get();
+                                            .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId)
+                                            .request()
+                                            .accept(APPLICATION_JSON).get();
 	
 		// Then
 		assertThat(response.getStatus()).isEqualTo(HTTP_OK);
@@ -177,7 +179,8 @@ public class KundeResourceTest extends AbstractResourceTest {
             final Long kundeId = KUNDE_ID_VORHANDEN;
 
             final Response response = getHttpsClient().target(KUNDEN_ID_URI)
-                            .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId).request().acceptLanguage(GERMAN).get();
+                            .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId)
+                            .request().acceptLanguage(GERMAN).get();
             assertThat(response.getStatus()).isEqualTo(HTTP_OK);
             final AbstractKunde kunde = response.readEntity(AbstractKunde.class);
             assertThat(kunde.getId()).isEqualTo(kundeId);
@@ -193,7 +196,8 @@ public class KundeResourceTest extends AbstractResourceTest {
             final Long kundeId = KUNDE_ID_NICHT_VORHANDEN;
 
             final Response response = getHttpsClient().target(KUNDEN_ID_URI)
-                            .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId).request().acceptLanguage(GERMAN).get();
+                            .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId)
+                            .request().acceptLanguage(GERMAN).get();
             assertThat(response.getStatus()).isEqualTo(HTTP_NOT_FOUND);
             final String fehlermeldung = response.readEntity(String.class);
             assertThat(fehlermeldung).startsWith("Kein Kunde mit der ID").endsWith("gefunden.");
@@ -201,7 +205,7 @@ public class KundeResourceTest extends AbstractResourceTest {
             LOGGER.finer("ENDE");
     }
 
-	@Ignore
+	
 	@Test
 	@InSequence(20)
 	public void findKundenByNachnameVorhanden() {
@@ -246,7 +250,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+	
 	@Test
 	@InSequence(21)
 	public void findKundenByNachnameNichtVorhanden() {
@@ -296,7 +300,8 @@ public class KundeResourceTest extends AbstractResourceTest {
 		
 		final ResteasyConstraintViolation violation =
 				                          filter(violations).with("message")
-                                                            .equalsTo("A lastname must start with exactly one capital letter followed by at least one lower letter, and composed names with \"-\" are allowed.")
+                                                            .equalsTo("A lastname must start with exactly one "
+                                                            		+ "capital letter followed by at least one lower letter, and composed names with \"-\" are allowed.")
                                                             .get()
                                                             .iterator()
                                                             .next();
@@ -458,7 +463,8 @@ public class KundeResourceTest extends AbstractResourceTest {
 		assertThat(violation.getValue()).isEqualTo(String.valueOf(nachname));
 		
 		violation = filter(violations).with("message")
-                                      .equalsTo("A lastname must start with exactly one capital letter followed by at least one lower letter, and composed names with \"-\" are allowed.")
+                                      .equalsTo("A lastname must start with exactly one capital letter"
+                                      		+ " followed by at least one lower letter, and composed names with \"-\" are allowed.")
                                       .get().iterator().next();
 		assertThat(violation.getValue()).isEqualTo(String.valueOf(nachname));
 
@@ -520,7 +526,8 @@ public class KundeResourceTest extends AbstractResourceTest {
 
             // When
             Response response = getHttpsClient().target(KUNDEN_ID_URI)
-                            .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId).request().accept(APPLICATION_JSON).get();
+                            .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId)
+                            .request().accept(APPLICATION_JSON).get();
             AbstractKunde kunde = response.readEntity(AbstractKunde.class);
             assertThat(kunde.getId()).isEqualTo(kundeId);
             final int origVersion = kunde.getVersion();
@@ -678,7 +685,7 @@ public class KundeResourceTest extends AbstractResourceTest {
                                                      .request()
                                                      .accept(mimeType)
                                                      .get();
-		downloadBytes = response.readEntity(new GenericType<byte[]>() {});
+		downloadBytes = response.readEntity(new GenericType<byte[]>() { } );
 		
 		// Then (2)
 		assertThat(uploadBytes.length).isEqualTo(downloadBytes.length);

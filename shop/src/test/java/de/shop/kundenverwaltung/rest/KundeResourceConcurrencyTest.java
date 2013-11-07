@@ -26,6 +26,7 @@ import javax.ws.rs.core.Response;
 
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -50,6 +51,7 @@ public class KundeResourceConcurrencyTest extends AbstractResourceTest {
 	private static final Long KUNDE_ID_DELETE1 = Long.valueOf(122);
 	private static final Long KUNDE_ID_DELETE2 = Long.valueOf(124);
 
+	@Ignore
 	@Test
 	@InSequence(1)
 	public void updateUpdate() throws InterruptedException, ExecutionException, TimeoutException {
@@ -107,6 +109,7 @@ public class KundeResourceConcurrencyTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
+	@Ignore
 	@Test
 	@InSequence(2)
 	public void updateDelete() throws InterruptedException, ExecutionException, TimeoutException {
@@ -159,6 +162,7 @@ public class KundeResourceConcurrencyTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
+	@Ignore
 	@Test
 	@InSequence(3)
 	public void deleteUpdate() throws InterruptedException, ExecutionException, TimeoutException {

@@ -36,10 +36,10 @@ public class TestConstants {
 	public static final String ARTIKEL_URI = BASE_URI + "/artikel";
 	
 	// Username und Password
-	public static final String USERNAME = "102";
-	public static final String PASSWORD = "102";
-	public static final String USERNAME_ADMIN = "101";
-	public static final String PASSWORD_ADMIN = "101";
+	public static final String USERNAME = "3";
+	public static final String PASSWORD = "3";
+	public static final String USERNAME_ADMIN = "2";
+	public static final String PASSWORD_ADMIN = "2";
 	public static final String PASSWORD_FALSCH = "falsch";
 	
 	// Testklassen fuer Service- und Domain-Tests (nicht in Software Engineering)
