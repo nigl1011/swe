@@ -17,7 +17,7 @@ public class TestConstants {
 	
 	// Basis-URI
 	// https://localhost:8443/shop/rest
-	public static final String BASE_URI = HTTPS + "://" + HOST + "/" + WEB_PROJEKT + REST_PATH;
+	public static final String BASE_URI = HTTPS + "://" + HOST + ":" + PORT + "/" + WEB_PROJEKT + REST_PATH;
 	
 	// Pfade 
 	//Kunde
