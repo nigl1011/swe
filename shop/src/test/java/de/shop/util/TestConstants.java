@@ -5,7 +5,7 @@ import static de.shop.util.Constants.REST_PATH;
 
 public class TestConstants {
 
-	public static final String WEB_PROJEKT = "shop";
+	public static final String WEB_PROJEKT = "TESTshop";
 	
 	// https
 	public static final String HTTPS = "https";

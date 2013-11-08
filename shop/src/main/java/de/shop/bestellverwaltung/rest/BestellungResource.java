@@ -131,6 +131,7 @@ public class BestellungResource {
 			bestellung.setKundeUri(kundeUri);
 		}
 		
+		//TODO: Anpassen auf URI-Helper in util/rest
 		// URI für Artikel in den Bestellpositionen setzen
 		final List<Bestellposten> bestellposten = bestellung.getBestellposten();
 		if (bestellposten != null && !bestellposten.isEmpty()) {
