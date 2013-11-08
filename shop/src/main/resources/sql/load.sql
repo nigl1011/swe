@@ -9,8 +9,8 @@ INSERT INTO kunde (id, nachname, vorname, seit, art, kategorie, familienstand, n
 --Kunde_rolle
 INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (2,'admin');
 INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (3,'mitarbeiter');
-INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (2,'abteilungsleiter');
-INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (2,'kunde');
+INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (4,'abteilungsleiter');
+INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (5,'kunde');
 
 --kunde-hobby
 INSERT INTO kunde_hobby (kunde_fk, hobby) VALUES (6,'L');
