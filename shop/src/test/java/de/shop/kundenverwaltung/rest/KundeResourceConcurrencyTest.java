@@ -44,12 +44,13 @@ public class KundeResourceConcurrencyTest extends AbstractResourceTest {
 	
 	private static final long TIMEOUT = 5;
 
-	private static final Long KUNDE_ID_UPDATE = Long.valueOf(120);
+	private static final Long KUNDE_ID_UPDATE = Long.valueOf(6);
 	private static final String NEUER_NACHNAME = "Testname";
 	private static final String NEUER_NACHNAME_2 = "Neuername";
-	private static final Long KUNDE_ID_DELETE1 = Long.valueOf(122);
-	private static final Long KUNDE_ID_DELETE2 = Long.valueOf(124);
+	private static final Long KUNDE_ID_DELETE1 = Long.valueOf(5);
+	private static final Long KUNDE_ID_DELETE2 = Long.valueOf(4);
 
+	
 	@Test
 	@InSequence(1)
 	public void updateUpdate() throws InterruptedException, ExecutionException, TimeoutException {
@@ -107,6 +108,7 @@ public class KundeResourceConcurrencyTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
+	
 	@Test
 	@InSequence(2)
 	public void updateDelete() throws InterruptedException, ExecutionException, TimeoutException {
@@ -159,6 +161,7 @@ public class KundeResourceConcurrencyTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
+
 	@Test
 	@InSequence(3)
 	public void deleteUpdate() throws InterruptedException, ExecutionException, TimeoutException {

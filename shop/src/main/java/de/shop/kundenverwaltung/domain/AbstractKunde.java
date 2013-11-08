@@ -90,7 +90,7 @@ import de.shop.util.persistence.File;
 
 @Entity
 @Cacheable
-@Table(name = "kunde", indexes = { @Index(columnList = "nachname"), @Index(columnList = "file_fk")})
+@Table(name = "kunde", indexes = { @Index(columnList = "nachname"), @Index(columnList = "file_fk") })
 @Inheritance
 @DiscriminatorColumn(name = "art", length = 1)
 @NamedQueries({
@@ -192,7 +192,7 @@ groups = { Default.class, PasswordGroup.class })
 @XmlRootElement
 @Formatted
 @XmlSeeAlso({ Firmenkunde.class, Privatkunde.class })
-public abstract class AbstractKunde implements Serializable,Cloneable {
+public abstract class AbstractKunde implements Serializable, Cloneable {
 	private static final long serialVersionUID = 7401524595142572933L;
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
 	
@@ -406,7 +406,7 @@ public abstract class AbstractKunde implements Serializable,Cloneable {
 	
 	public void setValues(AbstractKunde k) {
 		nachname = k.nachname;
-		version= k.version;
+		version = k.version;
 		vorname = k.vorname;
 		umsatz = k.umsatz;
 		rabatt = k.rabatt;

@@ -28,7 +28,7 @@ public class BestellungResourceTest extends AbstractResourceTest {
 	public void findBestellungById() {
 		
 		//Given
-		Long bestellungId = Long.valueOf(10000000);
+		Long bestellungId = Long.valueOf(400);
 		
 		//When
 		final Response response = getHttpsClient().target(BESTELLUNGEN_ID_URI)

@@ -51,7 +51,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.resteasy.api.validation.ResteasyConstraintViolation;
 import org.jboss.resteasy.api.validation.ViolationReport;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -73,17 +72,17 @@ import de.shop.util.AbstractResourceTest;
 public class KundeResourceTest extends AbstractResourceTest {
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
 	
-	private static final Long KUNDE_ID_VORHANDEN_MIT_BESTELLUNGEN = Long.valueOf(101);
+	private static final Long KUNDE_ID_VORHANDEN_MIT_BESTELLUNGEN = Long.valueOf(3);
 	
-	//private static final Long KUNDE_ID_VORHANDEN = Long.valueOf(109);
+	private static final Long KUNDE_ID_VORHANDEN = Long.valueOf(2);
 	private static final Long KUNDE_ID_NICHT_VORHANDEN = Long.valueOf(1000);
 	
-	private static final Long KUNDE_ID_UPDATE = Long.valueOf(120);
-	private static final Long KUNDE_ID_DELETE = Long.valueOf(122);
-	private static final Long KUNDE_ID_DELETE_MIT_BESTELLUNGEN = Long.valueOf(101);
-	private static final Long KUNDE_ID_DELETE_FORBIDDEN = Long.valueOf(101);
+	private static final Long KUNDE_ID_UPDATE = Long.valueOf(6);
+	private static final Long KUNDE_ID_DELETE = Long.valueOf(6);
+	private static final Long KUNDE_ID_DELETE_MIT_BESTELLUNGEN = Long.valueOf(3);
+	private static final Long KUNDE_ID_DELETE_FORBIDDEN = Long.valueOf(2);
 	
-	private static final String NACHNAME_VORHANDEN = "Nina";
+	private static final String NACHNAME_VORHANDEN = "Nine";
 	private static final String NACHNAME_NICHT_VORHANDEN = "Falschername";
 	private static final String NACHNAME_INVALID = "Test9";
 	private static final String NEUER_NACHNAME = "Nachnameneu";
@@ -107,7 +106,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 	private static final String IMAGE_PATH_UPLOAD = "src/test/resources/rest/" + IMAGE_FILENAME;
 	private static final String IMAGE_MIMETYPE = "image/png";
 	private static final String IMAGE_PATH_DOWNLOAD = "target/" + IMAGE_FILENAME;
-	private static final Long KUNDE_ID_UPLOAD = Long.valueOf(102);
+	private static final Long KUNDE_ID_UPLOAD = Long.valueOf(6);
 
 	private static final String IMAGE_INVALID = "image.bmp";
 	private static final String IMAGE_INVALID_PATH = "src/test/resources/rest/" + IMAGE_INVALID;
@@ -122,7 +121,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		assertThat(true).isTrue();
 	}
 	
-	@Ignore
+	
 	@Test
 	@InSequence(10)
 	public void findKundeMitBestellungenById() {
@@ -133,7 +132,9 @@ public class KundeResourceTest extends AbstractResourceTest {
 		
 		// When
 		Response response = getHttpsClient().target(KUNDEN_ID_URI)
-                                            .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId).request().accept(APPLICATION_JSON).get();
+                                            .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId)
+                                            .request()
+                                            .accept(APPLICATION_JSON).get();
 	
 		// Then
 		assertThat(response.getStatus()).isEqualTo(HTTP_OK);
@@ -169,7 +170,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-    /*@Test
+    @Test
     @InSequence(2)
     public void findKundeByIdVorhanden() {
             LOGGER.finer("BEGINN");
@@ -177,13 +178,14 @@ public class KundeResourceTest extends AbstractResourceTest {
             final Long kundeId = KUNDE_ID_VORHANDEN;
 
             final Response response = getHttpsClient().target(KUNDEN_ID_URI)
-                            .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId).request().acceptLanguage(GERMAN).get();
+                            .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId)
+                            .request().acceptLanguage(GERMAN).get();
             assertThat(response.getStatus()).isEqualTo(HTTP_OK);
             final AbstractKunde kunde = response.readEntity(AbstractKunde.class);
             assertThat(kunde.getId()).isEqualTo(kundeId);
 
             LOGGER.finer("ENDE");
-    }*/
+    }
 
     @Test
     @InSequence(3)
@@ -193,7 +195,8 @@ public class KundeResourceTest extends AbstractResourceTest {
             final Long kundeId = KUNDE_ID_NICHT_VORHANDEN;
 
             final Response response = getHttpsClient().target(KUNDEN_ID_URI)
-                            .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId).request().acceptLanguage(GERMAN).get();
+                            .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId)
+                            .request().acceptLanguage(GERMAN).get();
             assertThat(response.getStatus()).isEqualTo(HTTP_NOT_FOUND);
             final String fehlermeldung = response.readEntity(String.class);
             assertThat(fehlermeldung).startsWith("Kein Kunde mit der ID").endsWith("gefunden.");
@@ -201,7 +204,7 @@ public class KundeResourceTest extends AbstractResourceTest {
             LOGGER.finer("ENDE");
     }
 
-	@Ignore
+	
 	@Test
 	@InSequence(20)
 	public void findKundenByNachnameVorhanden() {
@@ -246,7 +249,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+	
 	@Test
 	@InSequence(21)
 	public void findKundenByNachnameNichtVorhanden() {
@@ -270,7 +273,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+	
 	@Test
 	@InSequence(22)
 	public void findKundenByNachnameInvalid() {
@@ -296,7 +299,8 @@ public class KundeResourceTest extends AbstractResourceTest {
 		
 		final ResteasyConstraintViolation violation =
 				                          filter(violations).with("message")
-                                                            .equalsTo("A lastname must start with exactly one capital letter followed by at least one lower letter, and composed names with \"-\" are allowed.")
+                                                            .equalsTo("A lastname must start with exactly one "
+                                                            		+ "capital letter followed by at least one lower letter, and composed names with \"-\" are allowed.")
                                                             .get()
                                                             .iterator()
                                                             .next();
@@ -305,7 +309,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+	
 	@Test
 	@InSequence(30)
 	public void findKundenByGeschlecht() {
@@ -333,7 +337,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+	
 	@Test
 	@InSequence(40)
 	public void createPrivatkunde() throws URISyntaxException {
@@ -406,7 +410,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+	
 	@Test
 	@InSequence(41)
 	public void createPrivatkundeInvalid() {
@@ -458,7 +462,8 @@ public class KundeResourceTest extends AbstractResourceTest {
 		assertThat(violation.getValue()).isEqualTo(String.valueOf(nachname));
 		
 		violation = filter(violations).with("message")
-                                      .equalsTo("A lastname must start with exactly one capital letter followed by at least one lower letter, and composed names with \"-\" are allowed.")
+                                      .equalsTo("A lastname must start with exactly one capital letter"
+                                      		+ " followed by at least one lower letter, and composed names with \"-\" are allowed.")
                                       .get().iterator().next();
 		assertThat(violation.getValue()).isEqualTo(String.valueOf(nachname));
 
@@ -485,7 +490,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 
-	@Ignore
+	
 	@Test
 	@InSequence(42)
 	public void createPrivatkundeFalschesPassword() {
@@ -508,7 +513,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 	}
 	
 	
-	@Ignore
+	
     @Test
     @InSequence(50)
     public void updateKunde() {
@@ -520,7 +525,8 @@ public class KundeResourceTest extends AbstractResourceTest {
 
             // When
             Response response = getHttpsClient().target(KUNDEN_ID_URI)
-                            .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId).request().accept(APPLICATION_JSON).get();
+                            .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId)
+                            .request().accept(APPLICATION_JSON).get();
             AbstractKunde kunde = response.readEntity(AbstractKunde.class);
             assertThat(kunde.getId()).isEqualTo(kundeId);
             final int origVersion = kunde.getVersion();
@@ -549,7 +555,7 @@ public class KundeResourceTest extends AbstractResourceTest {
             LOGGER.finer("ENDE");
     }
 	
-	@Ignore
+	
 	@Test
 	@InSequence(60)
 	public void deleteKunde() {
@@ -588,7 +594,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+	
 	@Test
 	@InSequence(61)
 	public void deleteKundeMitBestellung() {
@@ -615,7 +621,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+	
 	@Test
 	@InSequence(62)
 	public void deleteKundeFehlendeBerechtigung() {
@@ -638,7 +644,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+	
 	@Test
 	@InSequence(70)
 	public void uploadDownload() throws IOException {
@@ -678,7 +684,7 @@ public class KundeResourceTest extends AbstractResourceTest {
                                                      .request()
                                                      .accept(mimeType)
                                                      .get();
-		downloadBytes = response.readEntity(new GenericType<byte[]>() {});
+		downloadBytes = response.readEntity(new GenericType<byte[]>() { } );
 		
 		// Then (2)
 		assertThat(uploadBytes.length).isEqualTo(downloadBytes.length);
@@ -691,7 +697,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+	
 	@Test
 	@InSequence(71)
 	public void uploadInvalidMimeType() throws IOException {

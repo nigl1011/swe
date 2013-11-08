@@ -198,7 +198,7 @@ public class KundeResource {
 			for (AbstractKunde k : kunden) {
 				setStructuralLinks(k, uriInfo);
 			}
-			entity = new GenericEntity<List<? extends AbstractKunde>>(kunden){};
+			entity = new GenericEntity<List<? extends AbstractKunde>>(kunden) { };
 			links = getTransitionalLinksKunden(kunden, uriInfo);
 		}
 		else if (kunde != null) {
@@ -231,7 +231,7 @@ public class KundeResource {
 				bestellungResource.setStructuralLinks(bestellung, uriInfo);
 			}
 		}
-		return Response.ok(new GenericEntity<List<Bestellung>>(bestellungen) {})
+		return Response.ok(new GenericEntity<List<Bestellung>>(bestellungen) { })
                        .links(getTransitionalLinksBestellungen(bestellungen, kunde, uriInfo))
                        .build();
 	}
@@ -252,7 +252,7 @@ public class KundeResource {
 			bestellungenIds.add(bestellung.getId());
 		}
 		
-		return Response.ok(new GenericEntity<Collection<Long>>(bestellungenIds) {})
+		return Response.ok(new GenericEntity<Collection<Long>>(bestellungenIds) { })
 			           .build();
 	}
 
@@ -347,8 +347,10 @@ public class KundeResource {
 		final Link list = Link.fromUri(uriHelper.getUri(KundeResource.class, uriInfo)).rel(LIST_LINK).build();
 		final Link add = Link.fromUri(uriHelper.getUri(KundeResource.class, uriInfo)).rel(ADD_LINK).build();
 		final Link update = Link.fromUri(uriHelper.getUri(KundeResource.class, uriInfo)).rel(UPDATE_LINK).build();
-		final Link remove = Link.fromUri(uriHelper.getUri(KundeResource.class, "deleteKunde", kunde.getId(), uriInfo)).rel(REMOVE_LINK).build();
-		return new Link[] { self, list, add, update, remove };
+		final Link remove = Link.fromUri(uriHelper.getUri(KundeResource.class, "deleteKunde", kunde.getId(), uriInfo))
+				.rel(REMOVE_LINK)
+				.build();
+		return new Link[] {self, list, add, update, remove};
 	}
 	
 	
@@ -359,19 +361,21 @@ public class KundeResource {
 		final Link first = Link.fromUri(getUriKunde(kunden.get(0), uriInfo)).rel(FIRST_LINK).build();
 		final int lastPos = kunden.size() - 1;
 		final Link last = Link.fromUri(getUriKunde(kunden.get(lastPos), uriInfo)).rel(LAST_LINK).build();
-		return new Link[] { first, last };
+		return new Link[] {first, last};
 	}
 	
 	
-	private Link[] getTransitionalLinksBestellungen(List<Bestellung> bestellungen,AbstractKunde kunde,UriInfo uriInfo) {
+	private Link[] getTransitionalLinksBestellungen(List<Bestellung> bestellungen, AbstractKunde kunde, UriInfo uriInfo) {
 				if (bestellungen == null || bestellungen.isEmpty()) {
 					return new Link[0];
 				}
 				final Link self = Link.fromUri(getUriBestellungen(kunde, uriInfo)).rel(SELF_LINK).build();
-				final Link first = Link.fromUri(bestellungResource.getUriBestellung(bestellungen.get(0), uriInfo)).rel(FIRST_LINK).build();
+				final Link first = Link.fromUri(bestellungResource.getUriBestellung(bestellungen.get(0), uriInfo))
+						.rel(FIRST_LINK).build();
 				final int lastPos = bestellungen.size() - 1;
-				final Link last = Link.fromUri(bestellungResource.getUriBestellung(bestellungen.get(lastPos), uriInfo)).rel(LAST_LINK).build();
-				return new Link[] { self, first, last };
+				final Link last = Link.fromUri(bestellungResource.getUriBestellung(bestellungen.get(lastPos), uriInfo))
+						.rel(LAST_LINK).build();
+				return new Link[] {self, first, last};
 			}
 
 	
