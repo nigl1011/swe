@@ -5,7 +5,11 @@ import static de.shop.util.Constants.REST_PATH;
 
 public class TestConstants {
 
-	public static final String WEB_PROJEKT = "TESTshop";
+	public static final String WEB_PROJEKT = "shop";
+	
+	// IDs
+	public static final int BESTELLUNG_ID_EXISTS = 400;
+	public static final int NO_ID = 100000;
 	
 	// https
 	public static final String HTTPS = "https";

@@ -32,4 +32,6 @@ public interface BestellungService {
 	
 	Bestellung findBestellungByPostenId(Long id);
 	
+	void updateBestellung(Bestellung bestellung);
+	
 }

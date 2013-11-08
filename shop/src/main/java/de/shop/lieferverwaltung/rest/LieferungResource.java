@@ -90,6 +90,10 @@ public class LieferungResource {
 		return lieferung;
 	}
 	
+	//TODO: Beim Erstellen der Lieferung muss Bestellung.Status auf Verschickt gesetzt werden
+	/*
+	 * Dafür gibt es schon die Methode updateBestellung(Bestellung bestellung)
+	 */
 	@POST
 	@Consumes(APPLICATION_JSON)
 	@Produces

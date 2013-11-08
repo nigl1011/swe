@@ -234,6 +234,12 @@ public class BestellungServiceImpl implements Serializable, BestellungService {
 		final List<Bestellung> bestellungen = query.getResultList();
 		return bestellungen;
 	}
+	
+	//TODO: update Bestellung (Status auf Verschickt setzen)
+	@Override
+	public void updateBestellung(Bestellung bestellung) {
+		
+	}
 
 
 }

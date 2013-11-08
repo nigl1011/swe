@@ -85,6 +85,15 @@ public class Lieferung implements Serializable {
 	@JsonIgnore
 	private Date aktualisiert;
 
+	//TODO: Mapping zu OneToMany ändern
+	/*
+	 * So wie aktuell ist, würde es bedeuten, 
+	 * dass es zu einer Bestellung mehrere (Teil-)Lieferungen geben würde.
+	 * Das ist so bei uns nur kompliziert zu implementieren.
+	 * Da wir in Bestellung den Status der Bestellung (INBEARBEITUNG; VERSCHICKT)
+	 * haben, können wir eigentlich nur ganz oder gar nicht liefern.
+	 * Daher bitte ändern!
+	 */
 	@ManyToMany(mappedBy = "lieferungen", cascade = { PERSIST, MERGE })
 	@NotEmpty(message = "{bestellverwaltung.lieferung.bestellungen.notEmpty}")
 	@Valid
