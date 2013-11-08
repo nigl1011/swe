@@ -51,7 +51,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.resteasy.api.validation.ResteasyConstraintViolation;
 import org.jboss.resteasy.api.validation.ViolationReport;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -73,15 +72,15 @@ import de.shop.util.AbstractResourceTest;
 public class KundeResourceTest extends AbstractResourceTest {
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
 	
-	private static final Long KUNDE_ID_VORHANDEN_MIT_BESTELLUNGEN = Long.valueOf(101);
+	private static final Long KUNDE_ID_VORHANDEN_MIT_BESTELLUNGEN = Long.valueOf(3);
 	
-	//private static final Long KUNDE_ID_VORHANDEN = Long.valueOf(109);
+	private static final Long KUNDE_ID_VORHANDEN = Long.valueOf(2);
 	private static final Long KUNDE_ID_NICHT_VORHANDEN = Long.valueOf(1000);
 	
-	private static final Long KUNDE_ID_UPDATE = Long.valueOf(120);
-	private static final Long KUNDE_ID_DELETE = Long.valueOf(122);
-	private static final Long KUNDE_ID_DELETE_MIT_BESTELLUNGEN = Long.valueOf(101);
-	private static final Long KUNDE_ID_DELETE_FORBIDDEN = Long.valueOf(101);
+	private static final Long KUNDE_ID_UPDATE = Long.valueOf(6);
+	private static final Long KUNDE_ID_DELETE = Long.valueOf(6);
+	private static final Long KUNDE_ID_DELETE_MIT_BESTELLUNGEN = Long.valueOf(3);
+	private static final Long KUNDE_ID_DELETE_FORBIDDEN = Long.valueOf(2);
 	
 	private static final String NACHNAME_VORHANDEN = "Nine";
 	private static final String NACHNAME_NICHT_VORHANDEN = "Falschername";
@@ -107,7 +106,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 	private static final String IMAGE_PATH_UPLOAD = "src/test/resources/rest/" + IMAGE_FILENAME;
 	private static final String IMAGE_MIMETYPE = "image/png";
 	private static final String IMAGE_PATH_DOWNLOAD = "target/" + IMAGE_FILENAME;
-	private static final Long KUNDE_ID_UPLOAD = Long.valueOf(102);
+	private static final Long KUNDE_ID_UPLOAD = Long.valueOf(6);
 
 	private static final String IMAGE_INVALID = "image.bmp";
 	private static final String IMAGE_INVALID_PATH = "src/test/resources/rest/" + IMAGE_INVALID;
@@ -171,7 +170,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-    /*@Test
+    @Test
     @InSequence(2)
     public void findKundeByIdVorhanden() {
             LOGGER.finer("BEGINN");
@@ -186,7 +185,7 @@ public class KundeResourceTest extends AbstractResourceTest {
             assertThat(kunde.getId()).isEqualTo(kundeId);
 
             LOGGER.finer("ENDE");
-    }*/
+    }
 
     @Test
     @InSequence(3)
@@ -274,7 +273,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+	
 	@Test
 	@InSequence(22)
 	public void findKundenByNachnameInvalid() {
@@ -310,7 +309,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+	
 	@Test
 	@InSequence(30)
 	public void findKundenByGeschlecht() {
@@ -338,7 +337,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+	
 	@Test
 	@InSequence(40)
 	public void createPrivatkunde() throws URISyntaxException {
@@ -411,7 +410,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+	
 	@Test
 	@InSequence(41)
 	public void createPrivatkundeInvalid() {
@@ -491,7 +490,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 
-	@Ignore
+	
 	@Test
 	@InSequence(42)
 	public void createPrivatkundeFalschesPassword() {
@@ -514,7 +513,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 	}
 	
 	
-	@Ignore
+	
     @Test
     @InSequence(50)
     public void updateKunde() {
@@ -556,7 +555,7 @@ public class KundeResourceTest extends AbstractResourceTest {
             LOGGER.finer("ENDE");
     }
 	
-	@Ignore
+	
 	@Test
 	@InSequence(60)
 	public void deleteKunde() {
@@ -595,7 +594,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+	
 	@Test
 	@InSequence(61)
 	public void deleteKundeMitBestellung() {
@@ -622,7 +621,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+	
 	@Test
 	@InSequence(62)
 	public void deleteKundeFehlendeBerechtigung() {
@@ -645,7 +644,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+	
 	@Test
 	@InSequence(70)
 	public void uploadDownload() throws IOException {
@@ -698,7 +697,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+	
 	@Test
 	@InSequence(71)
 	public void uploadInvalidMimeType() throws IOException {
