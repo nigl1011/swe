@@ -5,12 +5,24 @@ INSERT INTO kunde (id, nachname, vorname, seit, art, kategorie, familienstand, n
 INSERT INTO kunde (id, nachname, vorname, seit, art, kategorie, familienstand, newsletter, rabatt, umsatz, version, email, password, erzeugt, aktualisiert,geburtsdatum,geschlecht) VALUES (5,'Beni','Socke','01.01.2002','P',1,null,1,'0,2',10000.00,1,'beni@hska.de','1','01.08.2006 00:00:00','01.08.2006 02:00:00','19.02.1989','M');
 INSERT INTO kunde (id, nachname, vorname, seit, art, kategorie, familienstand, newsletter, rabatt, umsatz, version, email, password, erzeugt, aktualisiert,geburtsdatum,geschlecht) VALUES (6,'Isabella','Kiwi','01.01.2001','P',1,'L',1,'0,2',870.00,1,'isi@hska.de','1','01.08.2006 00:00:00','01.08.2006 02:00:00','12.08.1990','W');
 
+-- FILE_TBL
+
+--CALL insert_file_kunde(6,'01.01.2007 01:00:00',0,'01.01.2007 01:00:00','image.png','Privatkunde_6.png','png','I',1,);
+--CALL insert_file_kunde(5,'01.01.2007 01:00:00',0,'01.01.2007 01:00:00','video.mp4','Privatekunde_5.mp4','mp4','V',2,);
 
 --Kunde_rolle
 INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (2,'admin');
+INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (2,'mitarbeiter');
+INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (2,'kunde');
+INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (2,'abteilungsleiter');
 INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (3,'mitarbeiter');
-INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (4,'abteilungsleiter');
+INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (3,'kunde');
+INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (4,'kunde');
+INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (4,'mitarbeiter');
 INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (5,'kunde');
+INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (5,'mitarbeiter');
+INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (6,'kunde');
+
 
 --kunde-hobby
 INSERT INTO kunde_hobby (kunde_fk, hobby) VALUES (6,'L');

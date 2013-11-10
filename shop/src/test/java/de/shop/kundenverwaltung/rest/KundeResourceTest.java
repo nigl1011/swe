@@ -51,6 +51,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.resteasy.api.validation.ResteasyConstraintViolation;
 import org.jboss.resteasy.api.validation.ViolationReport;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -76,6 +77,9 @@ public class KundeResourceTest extends AbstractResourceTest {
 	
 	private static final Long KUNDE_ID_VORHANDEN = Long.valueOf(2);
 	private static final Long KUNDE_ID_NICHT_VORHANDEN = Long.valueOf(1000);
+	
+    private static final String KUNDE_EMAIL_VORHANDEN = "nine@hska.de";
+    private static final String KUNDE_EMAIL_NICHT_VORHANDEN = "nichtvorhanden@hska.de";
 	
 	private static final Long KUNDE_ID_UPDATE = Long.valueOf(6);
 	private static final Long KUNDE_ID_DELETE = Long.valueOf(6);
@@ -204,7 +208,38 @@ public class KundeResourceTest extends AbstractResourceTest {
             LOGGER.finer("ENDE");
     }
 
-	
+    @Test
+    @InSequence(4)
+    public void findKundeByEmailVorhanden() {
+            LOGGER.finer("BEGINN");
+
+            final String email = KUNDE_EMAIL_VORHANDEN;
+
+            final Response response = getHttpsClient().target(KUNDEN_URI)
+                            .queryParam(KundeResource.KUNDEN_EMAIL_QUERY_PARAM, email).request().accept(APPLICATION_JSON).get();
+            assertThat(response.getStatus()).isEqualTo(HTTP_OK);
+            final AbstractKunde kunde = response.readEntity(AbstractKunde.class);
+            assertThat(kunde.getEmail()).isEqualTo(email);
+
+            LOGGER.finer("ENDE");
+    }
+
+    @Test
+    @InSequence(5)
+    public void findKundeByEmailNichtVorhanden() {
+            LOGGER.finer("BEGINN");
+
+            final String email = KUNDE_EMAIL_NICHT_VORHANDEN;
+
+            final Response response = getHttpsClient().target(KUNDEN_URI)
+                            .queryParam(KundeResource.KUNDEN_EMAIL_QUERY_PARAM, email).request().acceptLanguage(GERMAN).get();
+            assertThat(response.getStatus()).isEqualTo(HTTP_NOT_FOUND);
+            final String fehlermeldung = response.readEntity(String.class);
+            assertThat(fehlermeldung).startsWith("Kein Kunde mit der Email").endsWith("gefunden.");
+
+            LOGGER.finer("ENDE");
+    }
+    
 	@Test
 	@InSequence(20)
 	public void findKundenByNachnameVorhanden() {
@@ -594,7 +629,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	
+	@Ignore
 	@Test
 	@InSequence(61)
 	public void deleteKundeMitBestellung() {
@@ -621,7 +656,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	
+	@Ignore
 	@Test
 	@InSequence(62)
 	public void deleteKundeFehlendeBerechtigung() {
