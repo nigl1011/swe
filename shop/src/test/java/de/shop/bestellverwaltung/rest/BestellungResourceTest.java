@@ -8,6 +8,20 @@ import static de.shop.util.TestConstants.BESTELLUNGEN_ID_PATH_PARAM;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
+import static java.net.HttpURLConnection.HTTP_CREATED;
+import static de.shop.util.TestConstants.ArtikelStuhl;
+import static de.shop.util.TestConstants.ArtikelDoppelbett;
+import static de.shop.util.TestConstants.ARTIKEL_URI;
+import static de.shop.util.TestConstants.USERNAME;
+import static de.shop.util.TestConstants.PASSWORD;
+import static de.shop.util.TestConstants.BESTELLUNGEN_URI;
+import static javax.ws.rs.client.Entity.json;
+
+
+
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import java.lang.invoke.MethodHandles;
@@ -17,9 +31,11 @@ import javax.ws.rs.core.Response;
 
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import de.shop.bestellverwaltung.domain.Bestellposten;
 import de.shop.bestellverwaltung.domain.Bestellung;
 import de.shop.util.AbstractResourceTest;
 
@@ -83,6 +99,58 @@ public class BestellungResourceTest extends AbstractResourceTest {
 	}
 
 	//TODO:  	createBestellungOK 					(204)
+	//Kommt leider bisher 400 raus muss noch bearbeitet werden deshalb auch Ignore!
+	@Test
+	@Ignore
+	@InSequence(3)
+	public void createBestellungOK () throws URISyntaxException {
+		LOGGER.finer("BEGINN");
+		
+		// Given
+		final Long artikelId1 = ArtikelStuhl;
+		final Long artikelId2 = ArtikelDoppelbett;
+		
+		final Bestellung bestellung = new Bestellung();
+		
+		//Ich vermute das hier der fehler entsteht...
+		Bestellposten bp = new Bestellposten();
+		bp.setArtikelUri(new URI(ARTIKEL_URI + "/" + artikelId1));
+		bp.setAnzahl((short) 1);
+		bestellung.addBestellposition(bp);
+		
+		Bestellposten bp1 = new Bestellposten();
+		bp1.setArtikelUri(new URI(ARTIKEL_URI + "/" + artikelId2));
+		bp1.setAnzahl((short) 1);
+		bestellung.addBestellposition(bp1);
+		
+		// When
+		Long id;
+		Response response = getHttpsClient(USERNAME, PASSWORD).target(BESTELLUNGEN_URI)
+																.request()
+																.post(json(bestellung));
+		
+		
+		//Then
+		assertThat(response.getStatus()).isEqualTo(HTTP_CREATED);
+		final String location = response.getLocation().toString();
+		response.close();
+		
+		final int startPos = location.lastIndexOf('/');
+		final String idStr = location.substring(startPos + 1);
+		id = Long.valueOf(idStr);
+		assertThat(id).isPositive();
+		
+		response = getHttpsClient().target(BESTELLUNGEN_ID_URI)
+				.resolveTemplate(BESTELLUNGEN_ID_PATH_PARAM, id)
+				.request()
+				.accept(APPLICATION_JSON)
+				.get();
+		assertThat(response.getStatus()).isEqualTo(HTTP_OK);
+		response.close();
+		
+		
+		LOGGER.finer("ENDE");
+	}
 	//TODO:		createBestellungKundeNotLoggedIn	(HTTP_FORBIDDEN oder UNAUTHORIZED)
 	//TODO:		createBestellungNotOK				(400_BAD_REQUEST)
 	/*			evtl. mehrere Methoden (Kunde gibts nicht, Bestellpos falsch...)

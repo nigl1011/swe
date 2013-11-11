@@ -39,6 +39,9 @@ public class TestConstants {
 	
 	public static final String ARTIKEL_URI = BASE_URI + "/artikel";
 	
+	public static final Long ArtikelStuhl = Long.valueOf(300);
+	public static final Long ArtikelDoppelbett = Long.valueOf(301);
+	
 	// Username und Password
 	public static final String USERNAME = "3";
 	public static final String PASSWORD = "3";
