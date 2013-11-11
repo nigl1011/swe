@@ -66,11 +66,9 @@ import de.shop.util.rest.UriHelper;
 @Produces({ APPLICATION_JSON, APPLICATION_XML + ";qs=0.75", TEXT_XML + ";qs=0.5" })
 @Consumes
 @RequestScoped
-@Transactional
 @Log
 public class KundeResource {
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
-	private static final String VERSION = "1.0";
 	
 	// public fuer Testklassen
 	public static final String KUNDEN_ID_PATH_PARAM = "kundenId";
@@ -113,13 +111,6 @@ public class KundeResource {
 		LOGGER.debugf("CDI-faehiges Bean %s wird geloescht", this);
 	}
 	
-	//TODO Bean Validation für Methodenparameter, z.B: @Valid, @Pattern, ...
-	@GET
-	@Produces(TEXT_PLAIN)
-	@Path("version")
-	public String getVersion() {
-		return VERSION;
-	}
 	
 	@GET
 	@Path("{" + KUNDEN_ID_PATH_PARAM + ":[1-9][0-9]*}")
@@ -307,10 +298,10 @@ public class KundeResource {
 	@DELETE
 	@Produces
 	@Transactional
-	public void deleteKunde(@PathParam("id") Long kundeId) {
-		final AbstractKunde kunde = ks.findKundeById(kundeId, FetchType.NUR_KUNDE);
-		ks.deleteKunde(kunde);
+	public void deleteKunde(@PathParam("id") long kundeId) {
+		ks.deleteKundeById(kundeId);
 	}
+	
 	
 	@Path("{id:[1-9][0-9]*}/file")
 	@POST
@@ -343,13 +334,13 @@ public class KundeResource {
 
 	
 	public Link[] getTransitionalLinks(AbstractKunde kunde, UriInfo uriInfo) {
-		final Link self = Link.fromUri(getUriKunde(kunde, uriInfo)).rel(SELF_LINK).build();
-		final Link list = Link.fromUri(uriHelper.getUri(KundeResource.class, uriInfo)).rel(LIST_LINK).build();
-		final Link add = Link.fromUri(uriHelper.getUri(KundeResource.class, uriInfo)).rel(ADD_LINK).build();
-		final Link update = Link.fromUri(uriHelper.getUri(KundeResource.class, uriInfo)).rel(UPDATE_LINK).build();
-		final Link remove = Link.fromUri(uriHelper.getUri(KundeResource.class, "deleteKunde", kunde.getId(), uriInfo))
-				.rel(REMOVE_LINK)
-				.build();
+			final Link self = Link.fromUri(getUriKunde(kunde, uriInfo)).rel(SELF_LINK).build();
+			final Link list = Link.fromUri(uriHelper.getUri(KundeResource.class, uriInfo)).rel(LIST_LINK).build();
+			final Link add = Link.fromUri(uriHelper.getUri(KundeResource.class, uriInfo)).rel(ADD_LINK).build();
+			final Link update = Link.fromUri(uriHelper.getUri(KundeResource.class, uriInfo)).rel(UPDATE_LINK).build();
+			final Link remove = Link.fromUri(uriHelper.getUri(KundeResource.class, "deleteKunde", kunde.getId(), uriInfo))
+						.rel(REMOVE_LINK)
+						.build();
 		return new Link[] {self, list, add, update, remove};
 	}
 	

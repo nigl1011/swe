@@ -26,6 +26,7 @@ import javax.ws.rs.core.Response;
 
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -60,6 +61,7 @@ public class KundeResourceConcurrencyTest extends AbstractResourceTest {
 		final Long kundeId = KUNDE_ID_UPDATE;
     	final String neuerNachname = NEUER_NACHNAME;
     	final String neuerNachname2 = NEUER_NACHNAME_2;
+    	
 		
 		// When
 		Response response = getHttpsClient().target(KUNDEN_ID_URI)
@@ -108,7 +110,7 @@ public class KundeResourceConcurrencyTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	
+	@Ignore
 	@Test
 	@InSequence(2)
 	public void updateDelete() throws InterruptedException, ExecutionException, TimeoutException {
@@ -161,7 +163,7 @@ public class KundeResourceConcurrencyTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-
+	@Ignore
 	@Test
 	@InSequence(3)
 	public void deleteUpdate() throws InterruptedException, ExecutionException, TimeoutException {
