@@ -1,9 +1,9 @@
 --kunde
-INSERT INTO kunde (id, nachname, vorname, seit, art, kategorie, familienstand, newsletter, rabatt, umsatz, version, email, password, erzeugt, aktualisiert,geburtsdatum,geschlecht) VALUES (2,'Nine','Glas','01.01.2001','P',1,null,1,'0,1',100.00,1,'nine@hska.de','1','01.08.2006 00:00:00','01.08.2006 02:00:00','19.07.1990','W');
-INSERT INTO kunde (id, nachname, vorname, seit, art, kategorie, familienstand, newsletter, rabatt, umsatz, version, email, password, erzeugt, aktualisiert,geburtsdatum,geschlecht) VALUES (3,'Kadda','Blu','01.01.2002','P',1,null,1,'0,8',10.00,1,'kadda@hska.de','1','01.08.2006 00:00:00','01.08.2006 02:00:00','15.02.1997','W');
-INSERT INTO kunde (id, nachname, vorname, seit, art, kategorie, familienstand, newsletter, rabatt, umsatz, version, email, password, erzeugt, aktualisiert,geburtsdatum,geschlecht) VALUES (4,'Andreas','Tube','01.01.2002','P',1,null,1,'0,8',10.00,1,'andi@hska.de','1','01.08.2006 00:00:00','01.08.2006 02:00:00','15.02.1997','M');
-INSERT INTO kunde (id, nachname, vorname, seit, art, kategorie, familienstand, newsletter, rabatt, umsatz, version, email, password, erzeugt, aktualisiert,geburtsdatum,geschlecht) VALUES (5,'Beni','Socke','01.01.2002','P',1,null,1,'0,2',10000.00,1,'beni@hska.de','1','01.08.2006 00:00:00','01.08.2006 02:00:00','19.02.1989','M');
-INSERT INTO kunde (id, nachname, vorname, seit, art, kategorie, familienstand, newsletter, rabatt, umsatz, version, email, password, erzeugt, aktualisiert,geburtsdatum,geschlecht) VALUES (6,'Isabella','Kiwi','01.01.2001','P',1,'L',1,'0,2',870.00,1,'isi@hska.de','1','01.08.2006 00:00:00','01.08.2006 02:00:00','12.08.1990','W');
+INSERT INTO kunde (id, nachname, vorname, seit, art, kategorie, familienstand, newsletter, rabatt, umsatz, version, email, password, erzeugt, aktualisiert,geburtsdatum,geschlecht) VALUES (2,'Nine','Glas','01.01.2001','P',1,null,1,'0,1',100.00,1,'nine@hska.de','1HNeOiZeFu7gP1lxi5tdAwGcB9i2xR+Q2jpmbuwTqzU=','01.08.2006 00:00:00','01.08.2006 02:00:00','19.07.1990','W');
+INSERT INTO kunde (id, nachname, vorname, seit, art, kategorie, familienstand, newsletter, rabatt, umsatz, version, email, password, erzeugt, aktualisiert,geburtsdatum,geschlecht) VALUES (3,'Kadda','Blu','01.01.2002','P',1,null,1,'0,8',10.00,1,'kadda@hska.de','TgdAhWK+24tgzgXB3s/jrRa3IjCWfeAfZAt+Rym0n84=','01.08.2006 00:00:00','01.08.2006 02:00:00','15.02.1997','W');
+INSERT INTO kunde (id, nachname, vorname, seit, art, kategorie, familienstand, newsletter, rabatt, umsatz, version, email, password, erzeugt, aktualisiert,geburtsdatum,geschlecht) VALUES (4,'Andreas','Tube','01.01.2002','P',1,null,1,'0,8',10.00,1,'andi@hska.de','SyJ3d9TdH8Ycb4hPSGQdArTRIdP9Moywi1Ux/Kzav4o=','01.08.2006 00:00:00','01.08.2006 02:00:00','15.02.1997','M');
+INSERT INTO kunde (id, nachname, vorname, seit, art, kategorie, familienstand, newsletter, rabatt, umsatz, version, email, password, erzeugt, aktualisiert,geburtsdatum,geschlecht) VALUES (5,'Beni','Socke','01.01.2002','P',1,null,1,'0,2',10000.00,1,'beni@hska.de','7y0SfeN7lCuq0GFF5UsMYZofIjJ7LrvPvsePVWSv450=','01.08.2006 00:00:00','01.08.2006 02:00:00','19.02.1989','M');
+INSERT INTO kunde (id, nachname, vorname, seit, art, kategorie, familienstand, newsletter, rabatt, umsatz, version, email, password, erzeugt, aktualisiert,geburtsdatum,geschlecht) VALUES (6,'Isabella','Kiwi','01.01.2001','P',1,'L',1,'0,2',870.00,1,'isi@hska.de','5/bAEXdujbfNMwtUF0/Xb30CFrYSOHpf/PuB5vCRloM=','01.08.2006 00:00:00','01.08.2006 02:00:00','12.08.1990','W');
 
 -- FILE_TBL
 
@@ -25,6 +25,10 @@ INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (6,'kunde');
 
 
 --kunde-hobby
+INSERT INTO kunde_hobby (kunde_fk, hobby) VALUES (2,'S');
+INSERT INTO kunde_hobby (kunde_fk, hobby) VALUES (3,'S');
+INSERT INTO kunde_hobby (kunde_fk, hobby) VALUES (4,'R');
+INSERT INTO kunde_hobby (kunde_fk, hobby) VALUES (5,'L');
 INSERT INTO kunde_hobby (kunde_fk, hobby) VALUES (6,'L');
 
 --adresse

@@ -3,8 +3,8 @@ package de.shop.kundenverwaltung.rest;
 import static de.shop.util.Constants.FIRST_LINK;
 import static de.shop.util.Constants.LAST_LINK;
 import static de.shop.util.Constants.SELF_LINK;
-import static de.shop.util.TestConstants.ARTIKEL_URI;
-import static de.shop.util.TestConstants.BESTELLUNGEN_URI;
+//import static de.shop.util.TestConstants.ARTIKEL_URI;
+//import static de.shop.util.TestConstants.BESTELLUNGEN_URI;
 import static de.shop.util.TestConstants.KUNDEN_ID_FILE_URI;
 import static de.shop.util.TestConstants.KUNDEN_ID_URI;
 import static de.shop.util.TestConstants.KUNDEN_URI;
@@ -56,7 +56,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.shop.auth.domain.RolleType;
-import de.shop.bestellverwaltung.domain.Bestellposten;
+//import de.shop.bestellverwaltung.domain.Bestellposten;
 import de.shop.bestellverwaltung.domain.Bestellung;
 import de.shop.kundenverwaltung.domain.AbstractKunde;
 import de.shop.kundenverwaltung.domain.Adresse;
@@ -104,7 +104,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 	private static final String NEUE_STRASSE = "Testweg";
 	private static final String NEUE_HAUSNR = "1";
 	private static final String NEUES_PASSWORD = "neuesPassword";
-	private static final Long ARTIKEL_ID_VORHANDEN = Long.valueOf(300);
+	//private static final Long ARTIKEL_ID_VORHANDEN = Long.valueOf(300);
 	
 	private static final String IMAGE_FILENAME = "image.png";
 	private static final String IMAGE_PATH_UPLOAD = "src/test/resources/rest/" + IMAGE_FILENAME;
@@ -371,7 +371,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+	
 	@Test
 	@InSequence(40)
 	public void createPrivatkunde() throws URISyntaxException {
@@ -420,31 +420,31 @@ public class KundeResourceTest extends AbstractResourceTest {
 		
 		// Einloggen als neuer Kunde und Bestellung aufgeben
 
-		// Given (2)
-		final Long artikelId = ARTIKEL_ID_VORHANDEN;
-		final String username = idStr;
-
-		// When (2)
-		final Bestellung bestellung = new Bestellung();
-		final Bestellposten bp = new Bestellposten();
-		bp.setArtikelUri(new URI(ARTIKEL_URI + "/" + artikelId));
-		bp.setAnzahl((short) 1);
-		bestellung.addBestellposition(bp);
-		
-		// Then (2)
-		response = getHttpsClient(username, neuesPassword).target(BESTELLUNGEN_URI)
-                                                          .request()
-                                                          .post(json(bestellung));
-
-		assertThat(response.getStatus()).isEqualTo(HTTP_CREATED);
-		location = response.getLocation().toString();
-		response.close();
-		assertThat(location).isNotEmpty();
+//		// Given (2)
+//		final Long artikelId = ARTIKEL_ID_VORHANDEN;
+//		final String username = idStr;
+//
+//		// When (2)
+//		final Bestellung bestellung = new Bestellung();
+//		final Bestellposten bp = new Bestellposten();
+//		bp.setArtikelUri(new URI(ARTIKEL_URI + "/" + artikelId));
+//		bp.setAnzahl((short) 1);
+//		bestellung.addBestellposition(bp);
+//		
+//		// Then (2)
+//		response = getHttpsClient(username, neuesPassword).target(BESTELLUNGEN_URI)
+//                                                          .request()
+//                                                          .post(json(bestellung));
+//
+//		assertThat(response.getStatus()).isEqualTo(HTTP_CREATED);
+//		location = response.getLocation().toString();
+//		response.close();
+//		assertThat(location).isNotEmpty();
 
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+	
 	@Test
 	@InSequence(41)
 	public void createPrivatkundeInvalid() {
@@ -547,7 +547,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 	}
 	
 	
-	@Ignore
+	
     @Test
     @InSequence(50)
     public void updateKunde() {

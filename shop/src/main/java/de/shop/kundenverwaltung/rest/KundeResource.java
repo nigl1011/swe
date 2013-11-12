@@ -70,6 +70,8 @@ import de.shop.util.rest.UriHelper;
 public class KundeResource {
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
 	
+	
+	private static final String VERSION = "1.0";
 	// public fuer Testklassen
 	public static final String KUNDEN_ID_PATH_PARAM = "kundenId";
 	public static final String KUNDEN_NACHNAME_QUERY_PARAM = "nachname";
@@ -111,6 +113,12 @@ public class KundeResource {
 		LOGGER.debugf("CDI-faehiges Bean %s wird geloescht", this);
 	}
 	
+	@GET
+	@Produces(TEXT_PLAIN)
+	@Path("version")
+	public String getVersion() {
+		return VERSION;
+	}
 	
 	@GET
 	@Path("{" + KUNDEN_ID_PATH_PARAM + ":[1-9][0-9]*}")
@@ -142,7 +150,7 @@ public class KundeResource {
 	
 	@GET
 	public Response findKunden(@QueryParam(KUNDEN_NACHNAME_QUERY_PARAM)
-	                           @Pattern(regexp = AbstractKunde.NACHNAME_PATTERN, message = "{kunde.nachname.pattern}")
+	                           @Pattern(regexp = AbstractKunde.NACHNAME_PATTERN, message = "{kundenverwaltung.kunde.nachname.pattern}")
 	                           String nachname,
 	                           @QueryParam(KUNDEN_PLZ_QUERY_PARAM)
 	                           @Pattern(regexp = "\\d{5}", message = "{adresse.plz}")
