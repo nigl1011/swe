@@ -5,6 +5,9 @@ import static de.shop.util.TestConstants.BESTELLUNG_ID_EXISTS;
 import static de.shop.util.TestConstants.NO_ID;
 import static de.shop.util.TestConstants.BESTELLUNGEN_ID_URI;
 import static de.shop.util.TestConstants.BESTELLUNGEN_ID_PATH_PARAM;
+import static de.shop.util.TestConstants.BESTELLUNGEN_ID_KUNDE_URI;
+import static de.shop.util.TestConstants.KUNDEN_ID_URI;
+import static de.shop.util.TestConstants.KUNDEN_ID_PATH_PARAM;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
@@ -16,6 +19,7 @@ import static de.shop.util.TestConstants.USERNAME;
 import static de.shop.util.TestConstants.PASSWORD;
 import static de.shop.util.TestConstants.BESTELLUNGEN_URI;
 import static javax.ws.rs.client.Entity.json;
+
 
 
 
@@ -37,6 +41,7 @@ import org.junit.runner.RunWith;
 
 import de.shop.bestellverwaltung.domain.Bestellposten;
 import de.shop.bestellverwaltung.domain.Bestellung;
+import de.shop.kundenverwaltung.domain.AbstractKunde;
 import de.shop.util.AbstractResourceTest;
 
 
@@ -100,8 +105,8 @@ public class BestellungResourceTest extends AbstractResourceTest {
 
 	//TODO:  	createBestellungOK 					(204)
 	//Kommt leider bisher 400 raus muss noch bearbeitet werden deshalb auch Ignore!
-	@Test
 	@Ignore
+	@Test
 	@InSequence(3)
 	public void createBestellungOK () throws URISyntaxException {
 		LOGGER.finer("BEGINN");
@@ -157,6 +162,48 @@ public class BestellungResourceTest extends AbstractResourceTest {
 	 * 			
 	 */
 	//TODO:		findKundeByBestellungId				(200)
+	@Test
+	@InSequence(4)
+	public void findKundeByBestellungId() {
+		LOGGER.finer("BEGINN");
+		
+		//Given
+		Long bestellungId = Long.valueOf(BESTELLUNG_ID_EXISTS);
+			
+		//When
+		
+		/*
+		 * Zunächst Kundenobjekt anhand ID suchen
+		 */
+		Response response = getHttpsClient().target(BESTELLUNGEN_ID_KUNDE_URI)
+				 								  .resolveTemplate(BESTELLUNGEN_ID_PATH_PARAM, bestellungId)
+				 								  .request()
+				 								  .accept(APPLICATION_JSON)
+				 								  .get();
+		//Then
+		assertThat(response.getStatus()).isEqualTo(HTTP_OK);
+		/*
+		 * Wenn HTTP_OK, dann Kundenobjekt auslesen und überprüfen ob dieses nicht NULL ist,
+		 * anschließend Kunde anhand der URI und der gefundenen ID suchen
+		 */
+		final AbstractKunde kunde = response.readEntity(AbstractKunde.class);
+		assertThat(kunde).isNotNull();
+		
+		response = getHttpsClient().target(KUNDEN_ID_URI)
+								  .resolveTemplate(KUNDEN_ID_PATH_PARAM, kunde.getId())
+								  .request()
+								  .accept(APPLICATION_JSON)
+								  .get();
+		
+		/*
+		 * Abschließend nochmals überprüfen auf HTTP_OK und ob die Links auch gesetzt sind
+		 */
+		assertThat(response.getStatus()).isEqualTo(HTTP_OK);
+		assertThat(response.getLinks()).isNotEmpty();
+		
+		LOGGER.finer("ENDE");
+		
+	}
 	//TODO:		findNoKundeByBestellungId			(404)
 	//TODO: 	findLieferungByBestellungId			(200)
 	/*
