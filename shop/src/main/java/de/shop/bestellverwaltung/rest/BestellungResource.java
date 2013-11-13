@@ -136,7 +136,7 @@ public class BestellungResource {
 		final List<Bestellposten> bestellposten = bestellung.getBestellposten();
 		if (bestellposten != null && !bestellposten.isEmpty()) {
 			for (Bestellposten bp : bestellposten) {
-				final URI artikelUri = artikelResource.getArtikelUri(bp.getArtikel(), uriInfo);
+				final URI artikelUri = artikelResource.getUriArtikel(bp.getArtikel(), uriInfo);
 				bp.setArtikelUri(artikelUri);
 			}
 			

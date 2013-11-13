@@ -56,7 +56,7 @@ public class ArtikelResource {
 	public static final String ARTIKEL_KATEGORIE_QUERY_PARAM = "kategorie";
 	
 	
-	@Inject
+	@Context
 	private UriInfo uriInfo;
 	
 	@Inject
