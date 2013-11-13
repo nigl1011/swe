@@ -5,9 +5,6 @@ import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 import java.util.List;
 
-
-
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;

@@ -5,8 +5,9 @@ import javax.persistence.Converter;
 
 
 /**
- * @author <a href="mailto:Juergen.Zimmermann@HS-Karlsruhe.de">J&uuml;rgen Zimmermann</a>
+ 		* @author <a href="mailto:Juergen.Zimmermann@HS-Karlsruhe.de">J&uuml;rgen Zimmermann</a>
  */
+
 @Converter(autoApply = true)
 public class RolleTypeConverter implements AttributeConverter<RolleType, String> {
 	@Override
