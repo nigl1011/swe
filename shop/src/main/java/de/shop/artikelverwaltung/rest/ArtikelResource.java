@@ -48,19 +48,12 @@ import de.shop.util.rest.UriHelper;
 public class ArtikelResource {
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
 	
-	private static final String VERSION = "1.0";
 	// public fuer Testklassen
 	public static final String ARTIKEL_ID_PATH_PARAM = "kundenId";
 	public static final String ARTIKEL_BEZEICHNUNG_QUERY_PARAM = "bezeichnung";
 	public static final String ARTIKEL_PREIS_QUERY_PARAM = "preis";
 	public static final String ARTIKEL_FARBE_QUERY_PARAM = "farbe";
 	public static final String ARTIKEL_KATEGORIE_QUERY_PARAM = "kategorie";
-	
-	private static final String NOT_FOUND_ID = "artikel.notFound.id";
-	private static final String NOT_FOUND_BEZEICHNUNG = "artikel.notFound.bezeichnung";
-	private static final String NOT_FOUND_PREIS = "artikel.notFound.preis";
-	private static final String NOT_FOUND_FARBE = "artikel.notFound.farbe";
-	private static final String NOT_FOUND_FILE = "artikel.notFound.file";
 	
 	
 	@Inject
