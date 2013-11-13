@@ -26,7 +26,6 @@ import javax.ws.rs.core.Response;
 
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -110,7 +109,7 @@ public class KundeResourceConcurrencyTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+
 	@Test
 	@InSequence(2)
 	public void updateDelete() throws InterruptedException, ExecutionException, TimeoutException {
@@ -163,7 +162,7 @@ public class KundeResourceConcurrencyTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+
 	@Test
 	@InSequence(3)
 	public void deleteUpdate() throws InterruptedException, ExecutionException, TimeoutException {
@@ -205,8 +204,7 @@ public class KundeResourceConcurrencyTest extends AbstractResourceTest {
 		
     	// Erfolgreiches Delete trotz konkurrierendem Update
 		response = getHttpsClient(USERNAME_ADMIN, PASSWORD_ADMIN).target(KUNDEN_ID_URI)
-                                                                 .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM,
-                                                                		          kundeId)
+                                                                 .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM,kundeId)
                                                                  .request()
                                                                  .delete();
 			
