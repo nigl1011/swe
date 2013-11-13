@@ -1,14 +1,18 @@
 package de.shop.artikelverwaltung.domain;
 
+import static de.shop.util.Constants.ERSTE_VERSION;
 import static de.shop.util.Constants.KEINE_ID;
 import static de.shop.util.Constants.MIN_ID;
 import static javax.persistence.TemporalType.TIMESTAMP;
+
+import javax.persistence.Index;
 
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import javax.persistence.Basic;
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,22 +22,27 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.PostPersist;
+import javax.persistence.PostUpdate;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.persistence.Version;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+
+
+//import org.codehaus.jackson.annotate.JsonIgnore;
 import org.jboss.logging.Logger;
 
 
-@Cacheable
 @Entity
-@Table(name = "artikel")
+@Table(indexes = @Index(columnList = "artikel"))
 @NamedQueries({
 	@NamedQuery(name  = Artikel.FIND_ARTIKEL,
             query = "SELECT a"
@@ -69,6 +78,8 @@ import org.jboss.logging.Logger;
 			 	        + " ORDER BY a.id ASC")
 })
 
+@Cacheable
+@XmlRootElement
 public class Artikel implements Serializable {
 
 private static final long serialVersionUID = 1472129607838538329L;
@@ -103,6 +114,10 @@ private static final String FARBE_PATTERN = FARBEN_PATTERN;
 @Min(value = MIN_ID, message = "{artikelverwaltung.artikel.id.min}")
 private Long id = KEINE_ID;
 
+@Version
+@Basic(optional = false)
+private int version = ERSTE_VERSION;
+
 @Column(length = BEZEICHNUNG_LENGTH_MAX, nullable = false)
 @NotNull(message = "{artikelverwaltung.artikel.bezeichnung.notNull}")
 @Size(min = BEZEICHNUNG_LENGTH_MIN, max = BEZEICHNUNG_LENGTH_MAX,
@@ -125,16 +140,18 @@ private String farbe;
 @Column(nullable = false, precision = 7, scale = 2)
 private BigDecimal preis;
 
-private boolean verfuegbar;
+private boolean verfuegbar = true;
 
+@Basic(optional = false)
 @Column(nullable = false)
 @Temporal(TIMESTAMP)
-@JsonIgnore
+@XmlTransient
 private Date erstellt;
 
+@Basic(optional = false)
 @Column(nullable = false)
 @Temporal(TIMESTAMP)
-@JsonIgnore
+@XmlTransient
 private Date aktualisiert;
 
 
@@ -149,6 +166,7 @@ public void setValues(Artikel a) {
 	this.preis = a.getPreis();
 	this.farbe = a.getFarbe();
 	this.kategorie = a.getKategorie();
+	this.version = a.getVersion();
 }
 
 public Artikel(String bezeichnung, KategorieType kategorie, String farbe, BigDecimal preis) {
@@ -173,6 +191,11 @@ private void postPersist() {
 @PreUpdate
 private void preUpdate() {
 	aktualisiert = new Date();
+}
+
+@PostUpdate
+private void postUpdate() {
+	LOGGER.debugf("Artikel mit ID=%s aktualisiert: version=%d", id, version);
 }
 
 public Long getId() {
@@ -223,7 +246,12 @@ return aktualisiert == null ? null : (Date) aktualisiert.clone();
 public void setAktualisiert(Date aktualisiert) {
 this.aktualisiert = aktualisiert == null ? null : (Date) aktualisiert.clone();
 }
-
+public int getVersion() {
+	return version;
+}
+public void setVersion(int version) {
+	this.version = version;
+}
 
 
 
@@ -291,6 +319,18 @@ public boolean equals(Object obj) {
 	return true;
 }
 
-
+@Override
+public Object clone() throws CloneNotSupportedException {
+	final Artikel neuesObjekt = Artikel.class.cast(super.clone());
+	neuesObjekt.id = id;
+	neuesObjekt.version = version;
+	neuesObjekt.bezeichnung = bezeichnung;
+	neuesObjekt.kategorie = kategorie;
+	neuesObjekt.farbe = farbe;
+	neuesObjekt.preis = preis;
+	neuesObjekt.erstellt = erstellt;
+	neuesObjekt.aktualisiert = aktualisiert;
+	return neuesObjekt;
+}
 
 }

@@ -1,7 +1,10 @@
 package de.shop.artikelverwaltung.rest;
 
+import static de.shop.util.Constants.KEINE_ID;
+import static de.shop.util.Constants.SELF_LINK;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
+import static javax.ws.rs.core.MediaType.APPLICATION_XML;
+import static javax.ws.rs.core.MediaType.TEXT_XML;
 
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
@@ -12,6 +15,7 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -22,7 +26,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Link;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
@@ -33,25 +37,30 @@ import de.shop.artikelverwaltung.domain.KategorieType;
 import de.shop.artikelverwaltung.service.ArtikelService;
 import de.shop.util.interceptor.Log;
 import de.shop.util.rest.NotFoundException;
+import de.shop.util.rest.UriHelper;
 
 
 @Path("/artikel")
-@Produces(APPLICATION_JSON)
+@Produces({ APPLICATION_JSON, APPLICATION_XML + ";qs=0.75", TEXT_XML + ";qs=0.5" })
 @Consumes
 @RequestScoped
-@Transactional
 @Log
 public class ArtikelResource {
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
 	
-	@Context
-	private UriInfo uriInfo;
+	// public fuer Testklassen
+	public static final String ARTIKEL_ID_PATH_PARAM = "kundenId";
+	public static final String ARTIKEL_BEZEICHNUNG_QUERY_PARAM = "bezeichnung";
+	public static final String ARTIKEL_PREIS_QUERY_PARAM = "preis";
+	public static final String ARTIKEL_FARBE_QUERY_PARAM = "farbe";
+	public static final String ARTIKEL_KATEGORIE_QUERY_PARAM = "kategorie";
 	
-	@Context
-	private HttpHeaders headers;
 	
 	@Inject
-	private UriHelperArtikel uriHelperArtikel;
+	private UriInfo uriInfo;
+	
+	@Inject
+	private UriHelper uriHelper;
 	
 	@Inject
 	private ArtikelService as;
@@ -67,7 +76,7 @@ public class ArtikelResource {
 	}
 	
 	@GET
-	@Produces(TEXT_PLAIN)
+	@Produces(TEXT_XML)
 	@Path("version")
 	public String getVersion() {
 		return "1.0";
@@ -77,13 +86,23 @@ public class ArtikelResource {
 	//TODO Bean Validation für Methodenparameter, z.B: @Valid, @Pattern, ...
 	@GET
 	@Path("{id:[1-9][0-9]*}")
-	public Artikel findArtikelById(@PathParam("id") Long id, @Context UriInfo uirInfo) {
+	public Response findArtikelById(@PathParam("id") Long id, @Context UriInfo uirInfo) {
 		final Artikel artikel = as.findArtikelById(id);
 		if (artikel == null) {
 			throw new NotFoundException("Kein Artikel mit der ID " + id + " gefunden.");
 		}
 		
-		return artikel;
+		return Response.ok(artikel)
+                .links(getTransitionalLinks(artikel, uriInfo))
+                .build();
+	}
+
+	private Link[] getTransitionalLinks(Artikel artikel, UriInfo uriInfo) {
+		final Link self = Link.fromUri(getUriArtikel(artikel, uriInfo))
+                              .rel(SELF_LINK)
+                              .build();
+
+		return new Link[] { self };
 	}
 	
 	//TODO @DefaultValue("") kann bei Enums nicht klappen und hier krachts auch. Loesung: Wrapper
@@ -112,20 +131,22 @@ public class ArtikelResource {
 
 	
 	@POST
-	@Consumes(APPLICATION_JSON)
+	@Consumes({ APPLICATION_JSON, APPLICATION_XML, TEXT_XML })
 	@Produces
-	public Response createArtikel(Artikel artikel) {
+	@Transactional
+	public Response createArtikel(@Valid Artikel artikel) {
 		//@SuppressWarnings("unused")
-
-		artikel = as.createArtikel(artikel);
-		final URI artikelUri = uriHelperArtikel.getUriArtikel(artikel, uriInfo);
-		return Response.created(artikelUri).build();
-
+		artikel.setId(KEINE_ID);
+		artikel = as.createArtikel(artikel);		
+		LOGGER.trace(artikel);
+		
+		return Response.created(getUriArtikel(artikel, uriInfo)).build();
 	}
 	
 	@PUT
-	@Consumes(APPLICATION_JSON)
+	@Consumes({ APPLICATION_JSON, APPLICATION_XML, TEXT_XML })
 	@Produces
+	@Transactional
 	public void updateArtikel(Artikel artikel) {
 		// Vorhandenen Kunden ermitteln
 		final Artikel origArtikel = as.findArtikelById(artikel.getId());
@@ -149,8 +170,7 @@ public class ArtikelResource {
 	
 	}
 
-	public URI getArtikelUri(Artikel artikel, UriInfo uriInfo) {
-		// TODO Methode erstellen, damit URI zurückgegeben wird. Siehe sein Beispiel
-		return null;
+	public URI getUriArtikel(Artikel artikel, UriInfo uriInfo) {
+		return uriHelper.getUri(ArtikelResource.class, "findArtikelById", artikel.getId(), uriInfo);
 	}
 }

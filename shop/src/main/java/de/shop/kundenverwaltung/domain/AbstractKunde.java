@@ -1,3 +1,4 @@
+
 package de.shop.kundenverwaltung.domain;
 
 import static de.shop.util.Constants.KEINE_ID;
@@ -296,7 +297,7 @@ public abstract class AbstractKunde implements Serializable, Cloneable {
 	private String email;
 	
 	@Column(precision = 5, scale = 4)
-	@DecimalMax(value = RABATT_MAX, message = "{kunde.rabatt.max}")
+	@DecimalMax(value = RABATT_MAX, message = "{kundenverwaltung.kunde.rabatt.max}")
 	private BigDecimal rabatt = BigDecimal.ZERO;
 	
 	@Column(precision = 15, scale = 3)
@@ -311,7 +312,7 @@ public abstract class AbstractKunde implements Serializable, Cloneable {
 	
 	
 	@Column(length = PASSWORD_LENGTH_MAX)
-	@Size(max = PASSWORD_LENGTH_MAX, message = "{kunde.password.length}")
+	@Size(max = PASSWORD_LENGTH_MAX, message = "{kundenverwaltung.kunde.password.length}")
 	private String password;
 	
 	@Transient

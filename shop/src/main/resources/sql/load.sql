@@ -7,8 +7,9 @@ INSERT INTO kunde (id, nachname, vorname, seit, art, kategorie, familienstand, n
 
 -- FILE_TBL
 
---CALL insert_file_kunde(6,'01.01.2007 01:00:00',0,'01.01.2007 01:00:00','image.png','Privatkunde_6.png','png','I',1);
---CALL insert_file_kunde(5,'01.01.2007 01:00:00',0,'01.01.2007 01:00:00','video.mp4','Privatekunde_5.mp4','mp4','V',2);
+CALL insert_file_kunde(6,1,0,'image.png','Privatkunde_6.png','png','I','01.01.2007 01:00:00','01.01.2007 01:00:00');
+CALL insert_file_kunde(5,2,0,'video.mp4','Privatkunde_5.mp4','mp4','V','01.01.2007 01:00:00','01.01.2007 01:00:00');
+
 
 --Kunde_rolle
 INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (2,'admin');

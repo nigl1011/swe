@@ -90,7 +90,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 	private static final String NACHNAME_NICHT_VORHANDEN = "Falschername";
 	private static final String NACHNAME_INVALID = "Test9";
 	private static final String NEUER_NACHNAME = "Nachnameneu";
-	private static final String NEUER_NACHNAME_INVALID = "!";
+	private static final String NEUER_NACHNAME_INVALID = "Test";
 	private static final String NEUER_VORNAME = "Vorname";
 	private static final String NEUE_EMAIL = NEUER_NACHNAME + "@test.de";
 	private static final String NEUE_EMAIL_INVALID = "?";
@@ -486,13 +486,16 @@ public class KundeResourceTest extends AbstractResourceTest {
 		final ViolationReport violationReport = response.readEntity(ViolationReport.class);
 		response.close();
 		
+		
 		final List<ResteasyConstraintViolation> violations = violationReport.getParameterViolations();
 		assertThat(violations).isNotEmpty();
 		
 		ResteasyConstraintViolation violation =
 				                    filter(violations).with("message")
                                                       .equalsTo("A lastname must have at least 2 and may only have up to 32 characters.")
-                                                      .get().iterator().next();
+                                                      .get()
+                                                      .iterator()
+                                                      .next();
 		assertThat(violation.getValue()).isEqualTo(String.valueOf(nachname));
 		
 		violation = filter(violations).with("message")
@@ -589,7 +592,7 @@ public class KundeResourceTest extends AbstractResourceTest {
             LOGGER.finer("ENDE");
     }
 	
-	@Ignore
+
 	@Test
 	@InSequence(60)
 	public void deleteKunde() {
@@ -628,7 +631,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+
 	@Test
 	@InSequence(61)
 	public void deleteKundeMitBestellung() {
@@ -655,7 +658,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+
 	@Test
 	@InSequence(62)
 	public void deleteKundeFehlendeBerechtigung() {
