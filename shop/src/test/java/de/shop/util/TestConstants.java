@@ -36,8 +36,11 @@ public class TestConstants {
 	public static final String BESTELLUNGEN_ID_URI = BESTELLUNGEN_URI + "/{" + BESTELLUNGEN_ID_PATH_PARAM + "}";
 	public static final String BESTELLUNGEN_ID_KUNDE_URI = BESTELLUNGEN_ID_URI + "/kunde";
 	
-	
+	//Artikel
 	public static final String ARTIKEL_URI = BASE_URI + "/artikel";
+	public static final String ARTIKEL_ID_PATH_PARAM = "artikelId";
+	public static final String ARTIKEL_ID_URI = ARTIKEL_URI + "/{" + ARTIKEL_ID_PATH_PARAM + "}";
+	public static final String ARTIKEL_ID_FILE_URI = ARTIKEL_ID_URI + "/file";
 	
 	public static final Long ArtikelStuhl = Long.valueOf(300);
 	public static final Long ArtikelDoppelbett = Long.valueOf(301);
@@ -48,6 +51,8 @@ public class TestConstants {
 	public static final String USERNAME_ADMIN = "2";
 	public static final String PASSWORD_ADMIN = "2";
 	public static final String PASSWORD_FALSCH = "falsch";
+	
+	
 	
 	// Testklassen fuer Service- und Domain-Tests (nicht in Software Engineering)
 	public static final Class<?>[] TEST_CLASSES = { };
