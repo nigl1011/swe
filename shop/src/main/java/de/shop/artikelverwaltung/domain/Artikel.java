@@ -16,7 +16,6 @@ import javax.persistence.Basic;
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
@@ -42,7 +41,7 @@ import org.jboss.logging.Logger;
 
 
 @Entity
-@Table(indexes = @Index(columnList = "artikel"))
+@Table(indexes = @Index(columnList = "bezeichnung"))
 @NamedQueries({
 	@NamedQuery(name  = Artikel.FIND_ARTIKEL,
             query = "SELECT a"
@@ -125,8 +124,7 @@ message = "{artikelverwaltung.artikel.bezeichnung.length}")
 @Pattern(regexp = BEZEICHNUNG_PATTERN, message = "{artikelverwaltung.artikel.bezeichnung.pattern}")
 private String bezeichnung = "";
 
-@Column(nullable = false)
-@Enumerated
+@Column(nullable = false, name = "kategorie", length = 32)
 private KategorieType kategorie;
 
 @Column(length = FARBE_LENGTH_MAX, nullable = false)
