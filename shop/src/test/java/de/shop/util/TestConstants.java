@@ -54,6 +54,7 @@ public class TestConstants {
 	
 	//Allgemein gültige Attribute
 	public static final int VERSION = 1;
+	public static final Double GESAMTPREIS = 300.0;
 	
 	// Testklassen fuer Service- und Domain-Tests (nicht in Software Engineering)
 	public static final Class<?>[] TEST_CLASSES = { };

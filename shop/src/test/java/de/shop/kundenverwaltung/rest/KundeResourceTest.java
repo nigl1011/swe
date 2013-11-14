@@ -3,8 +3,8 @@ package de.shop.kundenverwaltung.rest;
 import static de.shop.util.Constants.FIRST_LINK;
 import static de.shop.util.Constants.LAST_LINK;
 import static de.shop.util.Constants.SELF_LINK;
-//import static de.shop.util.TestConstants.ARTIKEL_URI;
-//import static de.shop.util.TestConstants.BESTELLUNGEN_URI;
+import static de.shop.util.TestConstants.ARTIKEL_URI;
+import static de.shop.util.TestConstants.BESTELLUNGEN_URI;
 import static de.shop.util.TestConstants.KUNDEN_ID_FILE_URI;
 import static de.shop.util.TestConstants.KUNDEN_ID_URI;
 import static de.shop.util.TestConstants.KUNDEN_URI;
@@ -13,6 +13,8 @@ import static de.shop.util.TestConstants.PASSWORD_ADMIN;
 import static de.shop.util.TestConstants.PASSWORD_FALSCH;
 import static de.shop.util.TestConstants.USERNAME;
 import static de.shop.util.TestConstants.USERNAME_ADMIN;
+import static de.shop.util.TestConstants.VERSION;
+import static de.shop.util.TestConstants.GESAMTPREIS;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_CONFLICT;
 import static java.net.HttpURLConnection.HTTP_CREATED;
@@ -51,12 +53,11 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.resteasy.api.validation.ResteasyConstraintViolation;
 import org.jboss.resteasy.api.validation.ViolationReport;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.shop.auth.domain.RolleType;
-//import de.shop.bestellverwaltung.domain.Bestellposten;
+import de.shop.bestellverwaltung.domain.Bestellposten;
 import de.shop.bestellverwaltung.domain.Bestellung;
 import de.shop.kundenverwaltung.domain.AbstractKunde;
 import de.shop.kundenverwaltung.domain.Adresse;
@@ -104,7 +105,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 	private static final String NEUE_STRASSE = "Testweg";
 	private static final String NEUE_HAUSNR = "1";
 	private static final String NEUES_PASSWORD = "neuesPassword";
-	//private static final Long ARTIKEL_ID_VORHANDEN = Long.valueOf(300);
+	private static final Long ARTIKEL_ID_VORHANDEN = Long.valueOf(300);
 	
 	private static final String IMAGE_FILENAME = "image.png";
 	private static final String IMAGE_PATH_UPLOAD = "src/test/resources/rest/" + IMAGE_FILENAME;
@@ -381,8 +382,8 @@ public class KundeResourceTest extends AbstractResourceTest {
 		final String nachname = NEUER_NACHNAME;
 		final String vorname = NEUER_VORNAME;
 		final String email = NEUE_EMAIL;
-		final short kategorie = NEUE_KATEGORIE;
 		final BigDecimal rabatt = NEUER_RABATT;
+		final short kategorie = NEUE_KATEGORIE;
 		final BigDecimal umsatz = NEUER_UMSATZ;
 		final Date seit = NEU_SEIT;
 		final boolean agbAkzeptiert = true;
@@ -397,6 +398,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		kunde.setKategorie(kategorie);
 		kunde.setRabatt(rabatt);
 		kunde.setUmsatz(umsatz);
+		kunde.setVersion(VERSION);
 		kunde.setAgbAkzeptiert(agbAkzeptiert);
 		final Adresse adresse = new Adresse(plz, ort, strasse, hausnr);
 		kunde.setAdresse(adresse);
@@ -420,26 +422,28 @@ public class KundeResourceTest extends AbstractResourceTest {
 		
 		// Einloggen als neuer Kunde und Bestellung aufgeben
 
-//		// Given (2)
-//		final Long artikelId = ARTIKEL_ID_VORHANDEN;
-//		final String username = idStr;
-//
-//		// When (2)
-//		final Bestellung bestellung = new Bestellung();
-//		final Bestellposten bp = new Bestellposten();
-//		bp.setArtikelUri(new URI(ARTIKEL_URI + "/" + artikelId));
-//		bp.setAnzahl((short) 1);
-//		bestellung.addBestellposition(bp);
-//		
-//		// Then (2)
-//		response = getHttpsClient(username, neuesPassword).target(BESTELLUNGEN_URI)
-//                                                          .request()
-//                                                          .post(json(bestellung));
-//
-//		assertThat(response.getStatus()).isEqualTo(HTTP_CREATED);
-//		location = response.getLocation().toString();
-//		response.close();
-//		assertThat(location).isNotEmpty();
+		// Given (2)
+		final Long artikelId = ARTIKEL_ID_VORHANDEN;
+		final String username = idStr;
+
+		// When (2)
+		final Bestellung bestellung = new Bestellung();
+		final Bestellposten bp = new Bestellposten();
+		bp.setArtikelUri(new URI(ARTIKEL_URI + "/" + artikelId));
+		bp.setAnzahl((short) 1);
+		bestellung.setVersion(VERSION);
+		bestellung.setGesamtpreis(GESAMTPREIS);
+		bestellung.addBestellposition(bp);
+		
+		// Then (2)
+		response = getHttpsClient(username, neuesPassword).target(BESTELLUNGEN_URI)
+                                                          .request()
+                                                          .post(json(bestellung));
+
+		assertThat(response.getStatus()).isEqualTo(HTTP_CREATED);
+		location = response.getLocation().toString();
+		response.close();
+		assertThat(location).isNotEmpty();
 
 		LOGGER.finer("ENDE");
 	}
