@@ -75,7 +75,7 @@ public class Adresse implements Serializable {
 	
 	@Column(length = PLZ_LENGTH_MAX, nullable = false)
 	@NotNull(message = "{kundenverwaltung.adresse.plz.notNull}")
-	@Pattern(regexp = "\\d{5}", message = "{kundenverwaltung.adresse.plz.digits}")
+	@Pattern(regexp = "\\d{5}", message = "{kundenverwaltung.adresse.plz}")
 	private String plz;
 	
 	@Column(length = ORT_LENGTH_MAX, nullable = false)
