@@ -10,9 +10,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Temporal;
 import javax.validation.Valid;
@@ -23,6 +21,7 @@ import static de.shop.util.Constants.ERSTE_VERSION;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
 
 
 
@@ -41,8 +40,6 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Inheritance;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -50,6 +47,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.PostPersist;
+import javax.persistence.PostUpdate;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -64,7 +62,7 @@ import org.jboss.logging.Logger;
 
 
 @Entity
-@Table(indexes = { @Index(columnList = "kunde_fk"), @Index(columnList = "erzeugt")})
+@Table(indexes = { @Index(columnList = "kunde_fk"), @Index(columnList = "erzeugt") })
 @Inheritance
 @NamedQueries({
 	@NamedQuery(name  = Bestellung.FIND_BESTELLUNGEN_BY_KUNDE,
@@ -162,6 +160,7 @@ public class Bestellung implements Serializable {
 		
 		public Bestellung() {
 			super();
+			this.status = StatusType.INBEARBEITUNG;
 		}
 		
 		public Bestellung(List<Bestellposten> bestellpositionen) {
@@ -183,6 +182,10 @@ public class Bestellung implements Serializable {
 		@PreUpdate
 		private void preUpdate() {
 			aktualisiert = new Date();
+		}
+		@PostUpdate
+		private void postUpdate() {
+			LOGGER.debugf("Bestellung mit ID=%d aktualisiert: version=%d", id, version);
 		}
 		
 		public Long getId() {
@@ -227,7 +230,7 @@ public class Bestellung implements Serializable {
 		public void setStatus(StatusType status) {
 			this.status = status;
 		}
-	
+		
 		public int getVersion() {
 			return version;
 		}

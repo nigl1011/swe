@@ -6,6 +6,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import static de.shop.util.Constants.SELF_LINK;
 import static de.shop.util.Constants.ADD_LINK;
+import static de.shop.util.Constants.UPDATE_LINK;
 import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 
 import java.lang.invoke.MethodHandles;
@@ -52,7 +53,7 @@ import de.shop.util.rest.NotFoundException;
 import de.shop.util.rest.UriHelper;
 
 @Path("/bestellung")
-@Produces({ APPLICATION_JSON, APPLICATION_XML + ";qs=0.75", TEXT_XML + ";qs=0.5", TEXT_PLAIN})
+@Produces({ APPLICATION_JSON, APPLICATION_XML + ";qs=0.75", TEXT_XML + ";qs=0.5", TEXT_PLAIN })
 @RequestScoped
 @Consumes
 @Log
@@ -123,9 +124,12 @@ public class BestellungResource {
 		final Link add = Link.fromUri(uriHelper.getUri(BestellungResource.class, uriInfo))
 				             .rel(ADD_LINK)
 				             .build();
+		final Link update = Link.fromUri(uriHelper.getUri(BestellungResource.class, uriInfo))
+				                .rel(UPDATE_LINK)
+				                .build();
 		
 				
-		return new Link[] { self, add };
+		return new Link[] {self, add, update };
 	}
 
 	public void setStructuralLinks(Bestellung bestellung, UriInfo uriInfo) {
@@ -142,8 +146,7 @@ public class BestellungResource {
 			bestellung.setLieferungUri(lieferungUri);
 		}
 		
-		//TODO: Anpassen auf URI-Helper in util/rest
-		// URI für Artikel in den Bestellpositionen setzen
+		
 		final List<Bestellposten> bestellposten = bestellung.getBestellposten();
 		if (bestellposten != null && !bestellposten.isEmpty()) {
 			for (Bestellposten bp : bestellposten) {
@@ -299,11 +302,12 @@ public class BestellungResource {
 		
 		//Update durchführen
 		bestellung = bs.updateBestellung(orgBestellung);
-		bestellung.getLieferungUri();
+		
 		
 		setStructuralLinks(bestellung, uriInfo);
 		
-		return Response.ok(bestellung).links(getTransitionalLinks(bestellung, uriInfo))
+		return Response.ok(bestellung)
+					   .links(getTransitionalLinks(bestellung, uriInfo))
 					   .build();
 		
 	}

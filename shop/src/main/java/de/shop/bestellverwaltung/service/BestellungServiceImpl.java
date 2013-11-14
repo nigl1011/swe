@@ -217,7 +217,7 @@ public class BestellungServiceImpl implements Serializable, BestellungService {
 		return bestellungen;
 	}
 	
-	//TODO: update Bestellung (Status auf Verschickt setzen)
+	
 	@Override
 	public Bestellung updateBestellung(Bestellung bestellung) {
 		if (bestellung == null) {
@@ -227,10 +227,31 @@ public class BestellungServiceImpl implements Serializable, BestellungService {
 		
 		em.detach(bestellung);
 		
-		//Status Flag auf Verschickt setzen und anschließend Lieferung auslösen
-		//bestellung.setStatus(StatusType.VERSCHICKT);
 		
-		ls.createLieferung(bestellung);
+		/*	Prüfen ob Lieferung schon existiert 
+		 * Wenn das der Fall ist prüfen ob StatusFlag noch InBearbeitung, dann auf Verschickt setzen
+		 * auf jeden Fall eine Exception werfen, da nach Versenden
+		 * keine Bearbeitung an der Bestellung mehr möglich !
+		 *  
+		 */
+		if (bestellung.getLieferung() != null && bestellung.getStatus().equals(StatusType.VERSCHICKT)) 	{
+					
+			throw new BestellungVerschicktException(bestellung.getId());
+		}
+			
+		/*
+		 * Nochmal prüfen ob das Flag auf verschickt gesetzt wurde
+		 * --> Lieferung absetzen
+		 * 
+		 */
+		else {
+			if (bestellung.getStatus().equals(StatusType.VERSCHICKT)) {
+				ls.createLieferung(bestellung);
+			}
+						
+		}
+		
+		
 		bestellung = em.merge(bestellung);
 		
 		return bestellung;
