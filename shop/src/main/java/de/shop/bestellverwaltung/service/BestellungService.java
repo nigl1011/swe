@@ -28,10 +28,10 @@ public interface BestellungService {
 	//List<Bestellung> findBestellungenByKundeId(Long kundeId, Locale locale);
 	List<Lieferung> findLieferungen(String nr);
 	
-	Lieferung createLieferung(Lieferung lieferung, List<Bestellung> bestellungen);
+	//Lieferung createLieferung(Lieferung lieferung, List<Bestellung> bestellungen);
 	
 	Bestellung findBestellungByPostenId(Long id);
 	
-	void updateBestellung(Bestellung bestellung);
+	Bestellung updateBestellung(Bestellung bestellung);
 	
 }

@@ -2,8 +2,6 @@ package de.shop.lieferverwaltung.domain;
 
 import static de.shop.util.Constants.KEINE_ID;
 //import static javax.persistence.CascadeType.MERGE;
-import static javax.persistence.CascadeType.PERSIST;
-import static javax.persistence.CascadeType.REMOVE;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 import java.io.Serializable;
@@ -16,12 +14,16 @@ import java.util.Date;
 //import java.util.List;
 //import java.util.Set;
 
+
+
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 //import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 //import javax.persistence.JoinColumn;
 //import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
@@ -44,6 +46,9 @@ import javax.xml.bind.annotation.XmlTransient;
 
 
 
+
+
+
 //import org.codehaus.jackson.annotate.JsonIgnore;
 //import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.logging.Logger;
@@ -52,13 +57,13 @@ import de.shop.bestellverwaltung.domain.Bestellung;
 
 @Entity
 @Table(name = "lieferung")
-@NamedQueries({
+/*@NamedQueries({
 	@NamedQuery(name  = Lieferung.FIND_LIEFERUNGEN_BY_LIEFERNR_FETCH_BESTELLUNGEN,
                 query = "SELECT l"
                 	    + " FROM Lieferung l LEFT JOIN FETCH l.bestellungen"
 			            + " WHERE l.lieferNr LIKE :" + Lieferung.PARAM_LIEFERNR)
 })
-
+*/
 @XmlRootElement
 public class Lieferung implements Serializable {
 
@@ -66,7 +71,7 @@ public class Lieferung implements Serializable {
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
 	private static final long MIN_ID = 1;
 	
-	private static final int LIEFERNR_LENGTH = 12;
+
 	
 	private static final String PREFIX = "Lieferung.";
 	public static final String FIND_LIEFERUNGEN_BY_LIEFERNR_FETCH_BESTELLUNGEN =
@@ -79,12 +84,6 @@ public class Lieferung implements Serializable {
 	@Min(value = MIN_ID, message = "{lieferverwaltung.lieferung.id.min}")
 	private Long id = KEINE_ID;
 	
-	@Column(length = LIEFERNR_LENGTH, unique = true)
-	@NotNull(message = "{bestellverwaltung.lieferung.lieferNr.notNull}")
-	private String lieferNr;
-	
-	@Column(name = "transport_art_fk", length = 3)
-	private TransportType transportArt;
 	
 	@Basic(optional = false)
 	@Temporal(TIMESTAMP)
@@ -97,30 +96,21 @@ public class Lieferung implements Serializable {
 	private Date aktualisiert;
 
 	
-	@OneToOne(cascade = { PERSIST, REMOVE }, mappedBy = "lieferung")
-	@Valid
-	@NotNull(message = "{lieferverwaltung.lieferung.bestellung.notNull}")
-	private Bestellung bestellung_fk;
+	@OneToOne
+	@JoinColumn(name = "bestellung_fk", nullable=false, unique=true)
+	private Bestellung bestellung;
+	
+	@Transient
+	@XmlTransient
+	private URI bestellungUri;
 	
 	
-	public void setValues(Lieferung l) {
-		lieferNr = l.lieferNr;
-		transportArt = l.transportArt;
-	}
-	
+
 
 	public Lieferung() {
 		super();
 	}
 	
-	public Lieferung(String lieferNr, TransportType transportArt) {
-		super();
-		this.lieferNr = lieferNr;
-		this.transportArt = transportArt;
-	}
-	
-	@Transient
-	private URI bestellungUri;
 
 	/*
 	 * public Lieferung(Long id, Date lieferdatum, Timestamp aktuell) { super();
@@ -157,28 +147,24 @@ public class Lieferung implements Serializable {
 		this.aktualisiert = aktualisiert == null ? null : (Date) aktualisiert.clone();
 	}
 
-	public String getLieferNr() {
-		return lieferNr;
-	}
-	public void setLieferNr(String lieferNr) {
-		this.lieferNr = lieferNr;
-	}
-
-	public TransportType getTransportArt() {
-		return transportArt;
-	}
-
-	public void setTransportArt(TransportType transportArt) {
-		this.transportArt = transportArt;
-	}
+	@XmlTransient
 	public Bestellung getBestellung() {
-		return bestellung_fk;
+		return bestellung;
 	}
 	
 	public void setBestellung(Bestellung bestellung) {
-		if (this.bestellung_fk == null) {
-			this.bestellung_fk = bestellung;
+		if (this.bestellung == null) {
+			this.bestellung = bestellung;
 		}
+	}
+	
+	public URI getBestellungUri() {
+		return bestellungUri;
+	}
+
+
+	public void setBestellungUri(URI bestellungUri) {
+		this.bestellungUri = bestellungUri;
 	}
 		
 		// Wiederverwendung der vorhandenen Collection
@@ -213,53 +199,59 @@ public class Lieferung implements Serializable {
 		this.erzeugt = erzeugt == null ? null : (Date) erzeugt.clone();
 	}
 
-	public URI getBestellungUri() {
-		return bestellungUri;
-	}
-
-	public void setBestellungUri(URI bestellungUri) {
-		this.bestellungUri = bestellungUri;
-	}
-
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((lieferNr == null) ? 0 : lieferNr.hashCode());
+		result = prime * result
+				+ ((aktualisiert == null) ? 0 : aktualisiert.hashCode());
+		result = prime * result
+				+ ((bestellung == null) ? 0 : bestellung.hashCode());
+		result = prime * result + ((erzeugt == null) ? 0 : erzeugt.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
+		if (this == obj)
 			return true;
-		}
-		if (obj == null) {
+		if (obj == null)
 			return false;
-		}
-		if (getClass() != obj.getClass()) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
-		final Lieferung other = (Lieferung) obj;
-		
-		if (lieferNr == null) {
-			if (other.lieferNr != null) {
+		Lieferung other = (Lieferung) obj;
+		if (aktualisiert == null) {
+			if (other.aktualisiert != null)
 				return false;
-			}
-		}
-		else if (!lieferNr.equals(other.lieferNr)) {
+		} else if (!aktualisiert.equals(other.aktualisiert))
 			return false;
-		}
-
+		if (bestellung == null) {
+			if (other.bestellung != null)
+				return false;
+		} else if (!bestellung.equals(other.bestellung))
+			return false;
+		if (erzeugt == null) {
+			if (other.erzeugt != null)
+				return false;
+		} else if (!erzeugt.equals(other.erzeugt))
+			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "Lieferung [id=" + id + ", lieferNr=" + lieferNr + ", transportArt=" + transportArt
-		       + ", erzeugt=" + erzeugt
-		       + ", aktualisiert=" + aktualisiert + ']';
+		return "Lieferung [id=" + id + ", erzeugt=" + erzeugt
+				+ ", aktualisiert=" + aktualisiert + ", bestellung_fk="
+				+ bestellung + "]";
 	}
+
+	public void setValues(Lieferung lieferung) {
+		
+		
+	}
+
+
+
 
 }
