@@ -12,6 +12,7 @@ import static de.shop.util.Constants.ERSTE_VERSION;
 
 
 
+
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 
@@ -73,6 +74,7 @@ import javax.validation.groups.Default;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
+
 
 
 import org.codehaus.jackson.annotate.JsonSubTypes;
@@ -210,7 +212,7 @@ public abstract class AbstractKunde implements Serializable, Cloneable {
 	public static final String NACHNAME_PATTERN = NACHNAME_PREFIX + NAME_PATTERN + "(-" + NAME_PATTERN + ")?";
 	public static final int NACHNAME_LENGTH_MIN = 2;
 	public static final int NACHNAME_LENGTH_MAX = 32;
-	public static final int EMAIL_LENGTH_MAX = 128;
+	public static final int EMAIL_LENGTH_MAX = 200;
 	public static final int DETAILS_LENGTH_MAX = 128 * 1024;
 	public static final int PASSWORD_LENGTH_MAX = 256;
 	private static final String RABATT_MAX = "0.5";
@@ -305,6 +307,7 @@ public abstract class AbstractKunde implements Serializable, Cloneable {
 	
 	private boolean newsletter = false;
 	
+	@XmlTransient
 	@Column(length = PASSWORD_LENGTH_MAX)
 	@Size(max = PASSWORD_LENGTH_MAX, message = "{kundenverwaltung.kunde.password.length}")
 	private String password;
