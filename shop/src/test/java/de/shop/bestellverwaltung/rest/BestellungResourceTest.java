@@ -1,8 +1,8 @@
 package de.shop.bestellverwaltung.rest;
 
-
 import static de.shop.util.TestConstants.BESTELLUNG_ID_EXISTS;
 import static de.shop.util.TestConstants.NO_ID;
+import static de.shop.util.TestConstants.VERSION;
 import static de.shop.util.TestConstants.BESTELLUNGEN_ID_URI;
 import static de.shop.util.TestConstants.BESTELLUNGEN_ID_PATH_PARAM;
 import static de.shop.util.TestConstants.BESTELLUNGEN_ID_KUNDE_URI;
@@ -20,9 +20,6 @@ import static de.shop.util.TestConstants.PASSWORD;
 import static de.shop.util.TestConstants.BESTELLUNGEN_URI;
 import static javax.ws.rs.client.Entity.json;
 
-
-
-
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -31,16 +28,17 @@ import static org.fest.assertions.api.Assertions.assertThat;
 import java.lang.invoke.MethodHandles;
 import java.util.logging.Logger;
 
+import javax.ws.rs.client.Client;
 import javax.ws.rs.core.Response;
 
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.shop.bestellverwaltung.domain.Bestellposten;
 import de.shop.bestellverwaltung.domain.Bestellung;
+import de.shop.bestellverwaltung.domain.StatusType;
 import de.shop.kundenverwaltung.domain.AbstractKunde;
 import de.shop.util.AbstractResourceTest;
 
@@ -49,6 +47,7 @@ import de.shop.util.AbstractResourceTest;
 public class BestellungResourceTest extends AbstractResourceTest {
 
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
+	
 	
 	/* Suche nach exisitierender BestellId
 	 * 
@@ -105,16 +104,15 @@ public class BestellungResourceTest extends AbstractResourceTest {
 
 	//TODO:  	createBestellungOK 					(204)
 	//Kommt leider bisher 400 raus muss noch bearbeitet werden deshalb auch Ignore!
-	@Ignore
 	@Test
 	@InSequence(3)
 	public void createBestellungOK () throws URISyntaxException {
-		LOGGER.finer("BEGINN");
+		LOGGER.finer("BEGINN createBestellungOK");
 		
 		// Given
 		final Long artikelId1 = ArtikelStuhl;
 		final Long artikelId2 = ArtikelDoppelbett;
-		
+				
 		final Bestellung bestellung = new Bestellung();
 		
 		//Ich vermute das hier der fehler entsteht...
@@ -127,18 +125,25 @@ public class BestellungResourceTest extends AbstractResourceTest {
 		bp1.setArtikelUri(new URI(ARTIKEL_URI + "/" + artikelId2));
 		bp1.setAnzahl((short) 1);
 		bestellung.addBestellposition(bp1);
+		bestellung.setStatus(StatusType.INBEARBEITUNG);
+		bestellung.setVersion(VERSION);
+		bestellung.setGesamtpreis(300.0);
 		
 		// When
 		Long id;
-		Response response = getHttpsClient(USERNAME, PASSWORD).target(BESTELLUNGEN_URI)
-																.request()
-																.post(json(bestellung));
+		final Client client = getHttpsClient(USERNAME, PASSWORD);
+		
+		
+		 Response response = client.target(BESTELLUNGEN_URI)
+						  			     .request()
+						  			     .accept(APPLICATION_JSON)
+						  			     .post(json(bestellung));
 		
 		
 		//Then
 		assertThat(response.getStatus()).isEqualTo(HTTP_CREATED);
 		final String location = response.getLocation().toString();
-		response.close();
+		
 		
 		final int startPos = location.lastIndexOf('/');
 		final String idStr = location.substring(startPos + 1);
@@ -154,7 +159,7 @@ public class BestellungResourceTest extends AbstractResourceTest {
 		response.close();
 		
 		
-		LOGGER.finer("ENDE");
+		LOGGER.finer("ENDE createBestellungOK");
 	}
 	//TODO:		createBestellungKundeNotLoggedIn	(HTTP_FORBIDDEN oder UNAUTHORIZED)
 	//TODO:		createBestellungNotOK				(400_BAD_REQUEST)

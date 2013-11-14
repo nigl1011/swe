@@ -52,7 +52,8 @@ public class TestConstants {
 	public static final String PASSWORD_ADMIN = "2";
 	public static final String PASSWORD_FALSCH = "falsch";
 	
-	
+	//Allgemein gültige Attribute
+	public static final int VERSION = 1;
 	
 	// Testklassen fuer Service- und Domain-Tests (nicht in Software Engineering)
 	public static final Class<?>[] TEST_CLASSES = { };
