@@ -13,8 +13,8 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static java.net.HttpURLConnection.HTTP_CREATED;
-import static de.shop.util.TestConstants.ArtikelStuhl;
-import static de.shop.util.TestConstants.ArtikelDoppelbett;
+import static de.shop.util.TestConstants.ARTIKEL_STUHL;
+import static de.shop.util.TestConstants.ARTIKEL_DOPPELBETT;
 import static de.shop.util.TestConstants.ARTIKEL_URI;
 import static de.shop.util.TestConstants.USERNAME;
 import static de.shop.util.TestConstants.PASSWORD;
@@ -27,13 +27,11 @@ import java.net.URISyntaxException;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import java.lang.invoke.MethodHandles;
-import java.util.Date;
 import java.util.logging.Logger;
 
-import javax.ws.rs.client.Client;
+
 import javax.ws.rs.core.Response;
 
-import org.apache.http.client.HttpClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.junit.Ignore;
@@ -63,7 +61,7 @@ public class BestellungResourceTest extends AbstractResourceTest {
 		
 		LOGGER.finer("BEGINN");
 		//Given
-		Long bestellungId = Long.valueOf(BESTELLUNG_ID_EXISTS);
+		final Long bestellungId = Long.valueOf(BESTELLUNG_ID_EXISTS);
 		
 		//When
 		final Response response = getHttpsClient().target(BESTELLUNGEN_ID_URI)
@@ -91,7 +89,7 @@ public class BestellungResourceTest extends AbstractResourceTest {
 		
 		LOGGER.finer("BEGINN");
 		//Given
-		Long bestellungId = Long.valueOf(NO_ID);
+		final Long bestellungId = Long.valueOf(NO_ID);
 		
 		//When
 		
@@ -118,18 +116,18 @@ public class BestellungResourceTest extends AbstractResourceTest {
 		LOGGER.finer("BEGINN createBestellungOK");
 		
 		// Given
-		final Long artikelId1 = ArtikelStuhl;
-		final Long artikelId2 = ArtikelDoppelbett;
+		final Long artikelId1 = ARTIKEL_STUHL;
+		final Long artikelId2 = ARTIKEL_DOPPELBETT;
 				
 		final Bestellung bestellung = new Bestellung();
 		
 		//Ich vermute das hier der fehler entsteht...
-		Bestellposten bp = new Bestellposten();
+		final Bestellposten bp = new Bestellposten();
 		bp.setArtikelUri(new URI(ARTIKEL_URI + "/" + artikelId1));
 		bp.setAnzahl((short) 1);
 		bestellung.addBestellposition(bp);
 		
-		Bestellposten bp1 = new Bestellposten();
+		final Bestellposten bp1 = new Bestellposten();
 		bp1.setArtikelUri(new URI(ARTIKEL_URI + "/" + artikelId2));
 		bp1.setAnzahl((short) 1);
 		bestellung.addBestellposition(bp1);
@@ -182,7 +180,7 @@ public class BestellungResourceTest extends AbstractResourceTest {
 		LOGGER.finer("BEGINN");
 		
 		//Given
-		Long bestellungId = Long.valueOf(BESTELLUNG_ID_EXISTS);
+		final Long bestellungId = Long.valueOf(BESTELLUNG_ID_EXISTS);
 			
 		
 		/*

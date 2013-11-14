@@ -1,10 +1,7 @@
 package de.shop.lieferverwaltung.service;
 
-import static de.shop.util.Constants.KEINE_ID;
-
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,7 +20,6 @@ import javax.persistence.criteria.Root;
 import org.jboss.logging.Logger;
 
 import de.shop.bestellverwaltung.domain.Bestellung;
-import de.shop.bestellverwaltung.service.BestellungService;
 import de.shop.lieferverwaltung.domain.Lieferung;
 import de.shop.util.interceptor.Log;
 

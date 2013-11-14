@@ -3,7 +3,7 @@ package de.shop.util;
 
 import static de.shop.util.Constants.REST_PATH;
 
-public class TestConstants {
+public final class TestConstants {
 
 	public static final String WEB_PROJEKT = "shop";
 	
@@ -42,8 +42,8 @@ public class TestConstants {
 	public static final String ARTIKEL_ID_URI = ARTIKEL_URI + "/{" + ARTIKEL_ID_PATH_PARAM + "}";
 	public static final String ARTIKEL_ID_FILE_URI = ARTIKEL_ID_URI + "/file";
 	
-	public static final Long ArtikelStuhl = Long.valueOf(300);
-	public static final Long ArtikelDoppelbett = Long.valueOf(301);
+	public static final Long ARTIKEL_STUHL = Long.valueOf(300);
+	public static final Long ARTIKEL_DOPPELBETT = Long.valueOf(301);
 	
 	// Username und Password
 	public static final String USERNAME = "3";
@@ -57,7 +57,7 @@ public class TestConstants {
 	public static final Double GESAMTPREIS = 300.0;
 	
 	// Testklassen fuer Service- und Domain-Tests (nicht in Software Engineering)
-	public static final Class<?>[] TEST_CLASSES = { };
+	public static final Class<?>[] TEST_CLASSES = {};
 	
 	private TestConstants() {
 		

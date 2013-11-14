@@ -2,7 +2,7 @@ package de.shop.lieferverwaltung.rest;
 
 
 import static de.shop.util.Constants.SELF_LINK;
-
+import static de.shop.util.Constants.UPDATE_LINK;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 
@@ -16,7 +16,6 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -31,7 +30,6 @@ import org.jboss.logging.Logger;
 
 import de.shop.bestellverwaltung.domain.Bestellung;
 import de.shop.bestellverwaltung.rest.BestellungResource;
-import de.shop.kundenverwaltung.rest.KundeResource;
 import de.shop.lieferverwaltung.domain.Lieferung;
 import de.shop.lieferverwaltung.service.LieferService;
 import de.shop.util.interceptor.Log;
@@ -56,8 +54,6 @@ public class LieferungResource {
 	@Context
 	private HttpHeaders headers;
 
-	@Inject
-	private UriHelperLieferung uriHelperLieferung;
 	
 	@Inject
 	private BestellungResource bestellungResource;
@@ -65,8 +61,6 @@ public class LieferungResource {
 	@Inject
 	private LieferService ls;
 	
-	//@Inject
-	//private BestellungService bs;
 	
 	@Inject
 	private UriHelper uriHelper;
@@ -103,7 +97,6 @@ public class LieferungResource {
 	}
 	
 	public void setStructuralLinks(Lieferung lieferung, UriInfo uriInfo) {
-		
 		
 		final URI uri = getUriBestellung(lieferung, uriInfo);
 		lieferung.setBestellungUri(uri);
@@ -185,8 +178,12 @@ public class LieferungResource {
 		final Link self = Link.fromUri(getUriLieferung(lieferung, uriInfo))
 				  			  .rel(SELF_LINK)
 				  			  .build();
+		final Link update = Link.fromUri(getUriLieferung(lieferung, uriInfo))
+	  			  .rel(UPDATE_LINK)
+	  			  .build();
 		
-		return new Link[] { self };
+			
+		return new Link[] { self , update };
 	}
 	
 	public URI getUriLieferung(Lieferung lieferung, UriInfo uriInfo) {
