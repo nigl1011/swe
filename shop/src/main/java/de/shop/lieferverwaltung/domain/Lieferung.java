@@ -1,28 +1,34 @@
 package de.shop.lieferverwaltung.domain;
 
 import static de.shop.util.Constants.KEINE_ID;
-import static javax.persistence.CascadeType.MERGE;
+//import static javax.persistence.CascadeType.MERGE;
 import static javax.persistence.CascadeType.PERSIST;
+import static javax.persistence.CascadeType.REMOVE;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
+//import java.util.ArrayList;
+//import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+//import java.util.HashSet;
+//import java.util.List;
+//import java.util.Set;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
+//import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+//import javax.persistence.JoinColumn;
+//import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+//import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+//import javax.persistence.OrderColumn;
 import javax.persistence.PostPersist;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -30,11 +36,16 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import javax.validation.Valid;
+//import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.hibernate.validator.constraints.NotEmpty;
+
+
+//import org.codehaus.jackson.annotate.JsonIgnore;
+//import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.logging.Logger;
 
 import de.shop.bestellverwaltung.domain.Bestellung;
@@ -48,6 +59,7 @@ import de.shop.bestellverwaltung.domain.Bestellung;
 			            + " WHERE l.lieferNr LIKE :" + Lieferung.PARAM_LIEFERNR)
 })
 
+@XmlRootElement
 public class Lieferung implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -71,34 +83,24 @@ public class Lieferung implements Serializable {
 	@NotNull(message = "{bestellverwaltung.lieferung.lieferNr.notNull}")
 	private String lieferNr;
 	
-	@Column(name = "transport_art_fk")
-	@Enumerated
+	@Column(name = "transport_art_fk", length = 3)
 	private TransportType transportArt;
 	
-	@Column(nullable = false)
+	@Basic(optional = false)
 	@Temporal(TIMESTAMP)
-	@JsonIgnore
+	@XmlTransient
 	private Date erzeugt;
 	
-	@Column(nullable = false)
+	@Basic(optional = false)
 	@Temporal(TIMESTAMP)
-	@JsonIgnore
+	@XmlTransient
 	private Date aktualisiert;
 
-	//TODO: Mapping zu OneToMany ändern
-	/*
-	 * So wie aktuell ist, würde es bedeuten, 
-	 * dass es zu einer Bestellung mehrere (Teil-)Lieferungen geben würde.
-	 * Das ist so bei uns nur kompliziert zu implementieren.
-	 * Da wir in Bestellung den Status der Bestellung (INBEARBEITUNG; VERSCHICKT)
-	 * haben, können wir eigentlich nur ganz oder gar nicht liefern.
-	 * Daher bitte ändern!
-	 */
-	@ManyToMany(mappedBy = "lieferungen", cascade = { PERSIST, MERGE })
-	@NotEmpty(message = "{bestellverwaltung.lieferung.bestellungen.notEmpty}")
+	
+	@OneToOne(cascade = { PERSIST, REMOVE }, mappedBy = "lieferung")
 	@Valid
-	@JsonIgnore
-	private Set<Bestellung> bestellungen;
+	@NotNull(message = "{lieferverwaltung.lieferung.bestellung.notNull}")
+	private Bestellung bestellung_fk;
 	
 	
 	public void setValues(Lieferung l) {
@@ -118,7 +120,7 @@ public class Lieferung implements Serializable {
 	}
 	
 	@Transient
-	private List<URI> bestellungUri;
+	private URI bestellungUri;
 
 	/*
 	 * public Lieferung(Long id, Date lieferdatum, Timestamp aktuell) { super();
@@ -169,17 +171,19 @@ public class Lieferung implements Serializable {
 	public void setTransportArt(TransportType transportArt) {
 		this.transportArt = transportArt;
 	}
-	public Set<Bestellung> getBestellungen() {
-		return bestellungen == null ? null : Collections.unmodifiableSet(bestellungen);
+	public Bestellung getBestellung() {
+		return bestellung_fk;
 	}
 	
-	public void setBestellungen(Set<Bestellung> bestellungen) {
-		if (this.bestellungen == null) {
-			this.bestellungen = bestellungen;
-			return;
+	public void setBestellung(Bestellung bestellung) {
+		if (this.bestellung_fk == null) {
+			this.bestellung_fk = bestellung;
 		}
+	}
 		
 		// Wiederverwendung der vorhandenen Collection
+		
+	/*	
 		this.bestellungen.clear();
 		if (bestellungen != null) {
 			this.bestellungen.addAll(bestellungen);
@@ -193,15 +197,15 @@ public class Lieferung implements Serializable {
 		bestellungen.add(bestellung);
 	}
 
-	@JsonIgnore
 	public List<Bestellung> getBestellungenAsList() {
 		return bestellungen == null ? null : new ArrayList<>(bestellungen);
 	}
 
-	@JsonIgnore
 	public void setBestellungenAsList(List<Bestellung> bestellungen) {
 		this.bestellungen = bestellungen == null ? null : new HashSet<>(bestellungen);
 	}
+	
+	*/
 	public Date getErzeugt() {
 		return erzeugt == null ? null : (Date) erzeugt.clone();
 	}
@@ -209,11 +213,11 @@ public class Lieferung implements Serializable {
 		this.erzeugt = erzeugt == null ? null : (Date) erzeugt.clone();
 	}
 
-	public List<URI> getBestellungUri() {
+	public URI getBestellungUri() {
 		return bestellungUri;
 	}
 
-	public void setBestellungUri(List<URI> bestellungUri) {
+	public void setBestellungUri(URI bestellungUri) {
 		this.bestellungUri = bestellungUri;
 	}
 
