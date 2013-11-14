@@ -226,6 +226,14 @@ public class Bestellung implements Serializable {
 		public void setStatus(StatusType status) {
 			this.status = status;
 		}
+	
+		public int getVersion() {
+			return version;
+		}
+
+		public void setVersion(int version) {
+			this.version = version;
+		}
 
 		public Double getGesamtpreis() {
 			return gesamtpreis;
