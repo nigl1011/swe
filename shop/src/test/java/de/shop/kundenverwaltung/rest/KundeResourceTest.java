@@ -91,7 +91,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 	private static final String NACHNAME_NICHT_VORHANDEN = "Falschername";
 	private static final String NACHNAME_INVALID = "Test9";
 	private static final String NEUER_NACHNAME = "Nachnameneu";
-	private static final String NEUER_NACHNAME_INVALID = "t";
+	private static final String NEUER_NACHNAME_INVALID = "!";
 	private static final String NEUER_VORNAME = "Vorname";
 	private static final String NEUE_EMAIL = NEUER_NACHNAME + "@test.de";
 	private static final String NEUE_EMAIL_INVALID = "?";
@@ -506,8 +506,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		assertThat(violation.getValue()).isEqualTo(String.valueOf(nachname));
 		
 		violation = filter(violations).with("message")
-                                      .equalsTo("A lastname must start with exactly one capital letter"
-                                      		+ " followed by at least one lower letter, and composed names with \"-\" are allowed.")
+                                      .equalsTo("A lastname must start with exactly one capital letter followed by at least one lower letter, and composed names with \"-\" are allowed.")
                                       .get().iterator().next();
 		assertThat(violation.getValue()).isEqualTo(String.valueOf(nachname));
 

@@ -293,7 +293,7 @@ public abstract class AbstractKunde implements Serializable, Cloneable {
 	private Date geburtsdatum;
 	
 	@Column(length = EMAIL_LENGTH_MAX, nullable = false, unique = true)
-	@Email(message = "{kundenverwaltung.kunde.email.pattern}")
+	@Email(message = "{kundenverwaltung.kunde.email}")
 	@NotNull(message = "{kundenverwaltung.kunde.email.notNull}")
 	@Size(max = EMAIL_LENGTH_MAX, message = "{kundenverwaltung.kunde.email.length}")
 	private String email;
