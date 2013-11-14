@@ -1,9 +1,6 @@
 package de.shop.lieferverwaltung.rest;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -33,14 +30,11 @@ public class UriHelperLieferung {
 
 	
 	public void updateUriLieferung(Lieferung lieferung, UriInfo uriInfo) {
-		final Set<Bestellung> bestellungen = lieferung.getBestellungen();
-		final List<URI> uris = new ArrayList<URI>();
-		if (bestellungen != null && !bestellungen.isEmpty()) {
-			for (Bestellung bestellung : bestellungen) {
-				uris.add(uriHelperBestellung.getUriBestellung(bestellung, uriInfo));
-			}
-			
-			lieferung.setBestellungUri(uris);
+		final Bestellung bestellung = lieferung.getBestellung();
+		final URI bestellungUri = uriHelperBestellung.getUriBestellung(bestellung, uriInfo);
+		if (bestellung != null) {
+
+			lieferung.setBestellungUri(bestellungUri);
 			
 			
 		}	

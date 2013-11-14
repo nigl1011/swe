@@ -69,6 +69,12 @@ INSERT INTO bestellposten (id, version, bestellung_fk, artikel_fk, anzahl, idx) 
 INSERT INTO bestellposten (id, version, bestellung_fk, artikel_fk, anzahl, idx) VALUES (507,1,404,301,2,1);
 INSERT INTO bestellposten (id, version, bestellung_fk, artikel_fk, anzahl, idx) VALUES (508,1,404,302,8,1);
 
+--lieferung
+INSERT INTO lieferung (id, lieferNr, transportArt, erzeugt, aktualisiert, bestellung_fk) VALUES (700,1,'L','01.10.2006 00:00:00','01.10.2006 00:00:00',400);
+INSERT INTO lieferung (id, lieferNr, transportArt, erzeugt, aktualisiert, bestellung_fk) VALUES (701,2,'W','05.10.2006 00:00:00','05.10.2006 00:00:00',401);
+INSERT INTO lieferung (id, lieferNr, transportArt, erzeugt, aktualisiert, bestellung_fk) VALUES (702,3,'SCH','11.10.2006 00:00:00','11.10.2006 00:00:00',402);
+INSERT INTO lieferung (id, lieferNr, transportArt, erzeugt, aktualisiert, bestellung_fk) VALUES (703,4,'L','20.10.2006 00:00:00','20.10.2006 00:00:00',403);
+INSERT INTO lieferung (id, lieferNr, transportArt, erzeugt, aktualisiert, bestellung_fk) VALUES (702,5,'ST','28.10.2006 00:00:00','28.10.2006 00:00:00',404);
 
 
 
