@@ -49,7 +49,7 @@ public class UriHelperBestellung {
                                      .path(BestellungResource.class)
                                      .path(BestellungResource.class, "findLieferungenByBestellungId");
 		final URI uri = ub.build(bestellung.getId());
-		bestellung.setLieferungenUri(uri);
+		bestellung.setLieferungUri(uri);
 		
 	}
 

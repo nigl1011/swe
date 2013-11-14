@@ -6,7 +6,6 @@ import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import static de.shop.util.Constants.SELF_LINK;
 import static de.shop.util.Constants.ADD_LINK;
-
 import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 
 import java.lang.invoke.MethodHandles;
@@ -23,6 +22,7 @@ import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -45,6 +45,7 @@ import de.shop.bestellverwaltung.service.BestellungServiceImpl;
 import de.shop.kundenverwaltung.domain.AbstractKunde;
 import de.shop.kundenverwaltung.rest.KundeResource;
 import de.shop.lieferverwaltung.domain.Lieferung;
+import de.shop.lieferverwaltung.rest.LieferungResource;
 import de.shop.lieferverwaltung.service.LieferService;
 import de.shop.util.interceptor.Log;
 import de.shop.util.rest.NotFoundException;
@@ -73,6 +74,9 @@ public class BestellungResource {
 	
 	@Inject
 	private UriHelper uriHelper;
+	
+	@Inject
+	private LieferungResource lieferungResource;
 	
 	@Inject
 	private KundeResource kundeResource;
@@ -112,13 +116,14 @@ public class BestellungResource {
 			
 	}
 		
-	private Link[] getTransitionalLinks(Bestellung bestellung, UriInfo uriInfo2) {
+	public Link[] getTransitionalLinks(Bestellung bestellung, UriInfo uriInfo) {
 		final Link self = Link.fromUri(getUriBestellung(bestellung, uriInfo))
 							  .rel(SELF_LINK)
 							  .build();
 		final Link add = Link.fromUri(uriHelper.getUri(BestellungResource.class, uriInfo))
 				             .rel(ADD_LINK)
 				             .build();
+		
 				
 		return new Link[] { self, add };
 	}
@@ -129,6 +134,12 @@ public class BestellungResource {
 		if (kunde != null) {
 			final URI kundeUri = kundeResource.getUriKunde(bestellung.getKunde(), uriInfo);
 			bestellung.setKundeUri(kundeUri);
+		}
+		//URI fuer die Lieferung setzen
+		final Lieferung lieferung = bestellung.getLieferung();
+		if (lieferung != null) {
+			final URI lieferungUri = lieferungResource.getUriLieferung(bestellung.getLieferung(), uriInfo);
+			bestellung.setLieferungUri(lieferungUri);
 		}
 		
 		//TODO: Anpassen auf URI-Helper in util/rest
@@ -143,10 +154,6 @@ public class BestellungResource {
 		}
 		LOGGER.trace(bestellung);
 		
-	}
-
-	public URI getUriBestellung(Bestellung bestellung, UriInfo uriInfo) {
-		return uriHelper.getUri(BestellungResource.class, "findBestellungById", bestellung.getId(), uriInfo);
 	}
 
 	@GET
@@ -270,6 +277,41 @@ public class BestellungResource {
 								.build();
 	}
 	
+	/*
+	 * Bestellung Updaten --> d.h. Flag Status auf Verschickt setzen 
+	 * und Lieferung auslösen
+	 */
+	@PUT
+	@Consumes({ APPLICATION_JSON, APPLICATION_XML, TEXT_XML })
+	@Produces({ APPLICATION_JSON, APPLICATION_XML, TEXT_XML })
+	@Transactional
+	public Response updateBestellung(@Valid Bestellung bestellung) {
+		//Vorhandene Bestellung ermitteln
+		final Bestellung orgBestellung = bs.findBestellungById(bestellung.getId());
+		if (orgBestellung == null) {
+			throw new NotFoundException(NOT_FOUND_ID, bestellung.getId());
+		}
+		LOGGER.tracef("Bestellung vorher = %s", orgBestellung);
+		
+		//Daten der vorhandenen Bestellung überschreiben
+		orgBestellung.setValues(bestellung);
+		LOGGER.tracef("Bestellung nachher %s", orgBestellung);
+		
+		//Update durchführen
+		bestellung = bs.updateBestellung(orgBestellung);
+		bestellung.getLieferungUri();
+		
+		setStructuralLinks(bestellung, uriInfo);
+		
+		return Response.ok(bestellung).links(getTransitionalLinks(bestellung, uriInfo))
+					   .build();
+		
+	}
+
+
 	
+	public URI getUriBestellung(Bestellung bestellung, UriInfo uriInfo) {
+		return uriHelper.getUri(BestellungResource.class, "findBestellungById", bestellung.getId(), uriInfo);
+	}
 	
 }
