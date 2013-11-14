@@ -27,12 +27,16 @@ import javax.persistence.criteria.Root;
 
 
 
+
+
 import org.jboss.logging.Logger;
 
 import de.shop.artikelverwaltung.domain.Artikel;
 import de.shop.bestellverwaltung.domain.Bestellposten;
 import de.shop.bestellverwaltung.domain.Bestellung;
+import de.shop.bestellverwaltung.domain.StatusType;
 import de.shop.lieferverwaltung.domain.Lieferung;
+import de.shop.lieferverwaltung.service.LieferService;
 import de.shop.kundenverwaltung.domain.AbstractKunde;
 import de.shop.kundenverwaltung.service.KundeService;
 import de.shop.util.interceptor.Log;
@@ -48,6 +52,9 @@ public class BestellungServiceImpl implements Serializable, BestellungService {
 	
 	@Inject
 	private KundeService ks;
+	
+	@Inject
+	private LieferService ls;
 	
 	@Inject
 	@NeueBestellung
@@ -179,31 +186,6 @@ public class BestellungServiceImpl implements Serializable, BestellungService {
 
 
 	@Override
-	public Lieferung createLieferung(Lieferung lieferung, List<Bestellung> bestellungen) {
-		if (lieferung == null || bestellungen == null || bestellungen.isEmpty()) {
-			return null;
-		}
-		
-		// Beziehungen zu existierenden Bestellungen aktualisieren
-		
-		// Ids ermitteln
-		final List<Long> ids = new ArrayList<>();
-		for (Bestellung b : bestellungen) {
-			ids.add(b.getId());
-		}
-		
-		bestellungen = findBestellungenByIds(ids);
-		lieferung.setBestellungenAsList(bestellungen);
-		for (Bestellung bestellung : bestellungen) {
-			bestellung.addLieferung(lieferung);
-		}
-		
-		lieferung.setId(KEINE_ID);
-		em.persist(lieferung);		
-		return lieferung;
-	}	
-
-	@Override
 	public List<Bestellung> findBestellungenByIds(List<Long> ids) {
 		if (ids == null || ids.isEmpty()) {
 			return null;
@@ -237,7 +219,25 @@ public class BestellungServiceImpl implements Serializable, BestellungService {
 	
 	//TODO: update Bestellung (Status auf Verschickt setzen)
 	@Override
-	public void updateBestellung(Bestellung bestellung) {
+	public Bestellung updateBestellung(Bestellung bestellung) {
+		if (bestellung == null) {
+			return null;
+		}
+		//Bestellung vom EntityManager trennen
+		
+		em.detach(bestellung);
+		
+		//Status Flag auf Verschickt setzen und anschließend Lieferung auslösen
+		//bestellung.setStatus(StatusType.VERSCHICKT);
+		
+		ls.createLieferung(bestellung);
+		bestellung = em.merge(bestellung);
+		
+		return bestellung;
+		
+		
+		
+		
 		
 	}
 

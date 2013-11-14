@@ -1,11 +1,8 @@
 package de.shop.lieferverwaltung.rest;
 
 
-import static de.shop.util.Constants.ADD_LINK;
-import static de.shop.util.Constants.LIST_LINK;
-import static de.shop.util.Constants.REMOVE_LINK;
 import static de.shop.util.Constants.SELF_LINK;
-import static de.shop.util.Constants.UPDATE_LINK;
+
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 
@@ -42,7 +39,7 @@ import de.shop.util.rest.NotFoundException;
 import de.shop.util.rest.UriHelper;
 
 
-@Path("/lieferungen")
+@Path("/lieferung")
 @Produces(APPLICATION_JSON)
 @Consumes
 @RequestScoped
@@ -106,24 +103,45 @@ public class LieferungResource {
 	}
 	
 	public void setStructuralLinks(Lieferung lieferung, UriInfo uriInfo) {
-		// URI fuer Bestellungen setzen
 		
 		
-		final Bestellung bestellung = lieferung.getBestellung();
-		if (bestellung != null) {
-				final URI bestellungUri = bestellungResource.getUriBestellung(bestellung, uriInfo);
-				lieferung.setBestellungUri(bestellungUri);
-			}
-		
-		
+		final URI uri = getUriBestellung(lieferung, uriInfo);
+		lieferung.setBestellungUri(uri);
 		LOGGER.trace(lieferung);
 	}
 	
+	// Bestellung anhand LieferungId finden
+	//TODO läuft nicht so wie gewollt
+	@GET
+	@Path("{id:[1-9][0-9]*}/bestellung")
+	public Response findBestellungByLieferungId(@PathParam("id") Long id) {
+		//Zuerst die Lieferung aus der Id suchen
+		final Lieferung lieferung = ls.findLieferungById(id);
+		if (lieferung == null) {
+			throw new NotFoundException(NOT_FOUND_ID, id);
+		}
+		/*Wenn wirklich eine Lieferung existiert 
+		 * aus dieser die ID der Bestellung extrahieren
+		 * und die Bestellung suchen
+		 */
+		final Long bestellungId = lieferung.getBestellung().getId();
+		final Bestellung bestellung = ls.findBestellungByLieferungId(bestellungId);
+		if (bestellung == null) {
+			throw new NotFoundException(NOT_FOUND_ID, id);
+		}
+		
+		bestellungResource.setStructuralLinks(bestellung, uriInfo);
+		
+		//Link Header setzen
+		return Response.ok(bestellung)
+				       .links(bestellungResource.getTransitionalLinks(bestellung, uriInfo))
+				       .build();
+	}
 	//TODO: Beim Erstellen der Lieferung muss Bestellung.Status auf Verschickt gesetzt werden
 	/*
 	 * Dafür gibt es schon die Methode updateBestellung(Bestellung bestellung)
 	 */
-	@POST
+	/*@POST
 	@Consumes(APPLICATION_JSON)
 	@Produces
 	@Transactional
@@ -136,7 +154,7 @@ public class LieferungResource {
 		final URI lieferungUri = uriHelperLieferung.getUriLieferung(lieferung, uriInfo);
 		return Response.created(lieferungUri).build();
 	}
-	
+	*/
 	@PUT
 	@Consumes(APPLICATION_JSON)
 	@Produces
@@ -164,17 +182,18 @@ public class LieferungResource {
 	}
 
 	public Link[] getTransitionalLinks(Lieferung lieferung, UriInfo uriInfo) {
-			final Link self = Link.fromUri(getUriLieferung(lieferung, uriInfo)).rel(SELF_LINK).build();
-			final Link list = Link.fromUri(uriHelper.getUri(LieferungResource.class, uriInfo)).rel(LIST_LINK).build();
-			final Link add = Link.fromUri(uriHelper.getUri(LieferungResource.class, uriInfo)).rel(ADD_LINK).build();
-			final Link update = Link.fromUri(uriHelper.getUri(LieferungResource.class, uriInfo)).rel(UPDATE_LINK).build();
-			final Link remove = Link.fromUri(uriHelper.getUri(LieferungResource.class, "deleteKunde", lieferung.getId(), uriInfo))
-					.rel(REMOVE_LINK)
-					.build();
-			return new Link[] {self, list, add, update, remove};
+		final Link self = Link.fromUri(getUriLieferung(lieferung, uriInfo))
+				  			  .rel(SELF_LINK)
+				  			  .build();
+		
+		return new Link[] { self };
 	}
 	
 	public URI getUriLieferung(Lieferung lieferung, UriInfo uriInfo) {
-        return uriHelper.getUri(KundeResource.class, "findLieferungById", lieferung.getId(), uriInfo);
+        return uriHelper.getUri(LieferungResource.class, "findLieferungById", lieferung.getId(), uriInfo);
     }
+	
+	public URI getUriBestellung(Lieferung lieferung, UriInfo uriInfo) {
+		return uriHelper.getUri(LieferungResource.class, "findBestellungByLieferungId", lieferung.getId(), uriInfo);
+	}
 }

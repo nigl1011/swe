@@ -1,7 +1,10 @@
 package de.shop.lieferverwaltung.service;
 
+import static de.shop.util.Constants.KEINE_ID;
+
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,6 +22,8 @@ import javax.persistence.criteria.Root;
 
 import org.jboss.logging.Logger;
 
+import de.shop.bestellverwaltung.domain.Bestellung;
+import de.shop.bestellverwaltung.service.BestellungService;
 import de.shop.lieferverwaltung.domain.Lieferung;
 import de.shop.util.interceptor.Log;
 
@@ -47,10 +52,13 @@ public class LieferService implements Serializable {
 		return lieferung;
 	}
 	
-	public Lieferung createLieferung(Lieferung lieferung) {
-		if (lieferung == null) {
-			return lieferung;
+	public Lieferung createLieferung(Bestellung bestellung) {
+		if (bestellung == null) {
+			return null;
 		}
+		final Lieferung lieferung = new Lieferung();
+		lieferung.setBestellung(bestellung);
+		
 		
 		em.persist(lieferung);
 		return lieferung;
@@ -94,6 +102,24 @@ public class LieferService implements Serializable {
 		return lieferung;
 	}
 
+	/*
+	 * Lieferung für eine Bestellung auslösen
+	 */
+	/*
+	public Lieferung createLieferung(Lieferung lieferung, Bestellung bestellung) {
+		if (lieferung == null || bestellung == null) {
+			return null;
+		}
+			
+		lieferung.setBestellung(bestellung);
+		//bestellung.setLieferung(lieferung);
+		
+		lieferung.setId(KEINE_ID);
+		
+		em.persist(lieferung);		
+		return lieferung;
+	}	
+	*/
 	public Lieferung updateLieferung(Lieferung lieferung) {
 		if (lieferung == null) {
 			return null;
@@ -103,6 +129,11 @@ public class LieferService implements Serializable {
 		em.merge(lieferung);
 
 		return lieferung;
+	}
+
+	public Bestellung findBestellungByLieferungId(Long id) {
+		final Bestellung bestellung = em.find(Bestellung.class, id);
+		return bestellung;
 	}
 }
 
