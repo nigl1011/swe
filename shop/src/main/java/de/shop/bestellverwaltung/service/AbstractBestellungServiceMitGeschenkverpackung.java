@@ -19,7 +19,7 @@ import de.shop.kundenverwaltung.domain.AbstractKunde;
 
 @Decorator
 @Dependent
-public abstract class BestellungServiceMitGeschenkverpackung implements BestellungService {
+public abstract class AbstractBestellungServiceMitGeschenkverpackung implements BestellungService {
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
 	
 	@Inject

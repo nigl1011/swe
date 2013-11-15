@@ -47,7 +47,7 @@ public abstract class AbstractResourceTest {
 	private static SSLSocketFactory socketFactory;
 	private AbstractHttpClient httpClient;
 	private Client client;
-	
+		
 	@Deployment(name = ArchiveBuilder.TEST_WAR, testable = false) // Tests laufen nicht im Container
 	@OverProtocol(value = "Servlet 3.0")  // https://docs.jboss.org/author/display/ARQ/Servlet+3.0
 	protected static Archive<?> deployment() {
@@ -56,8 +56,7 @@ public abstract class AbstractResourceTest {
 	
 	@BeforeClass
 	public static void init() {
-		resteasyClientBuilder = new ResteasyClientBuilder();
-		
+				
 		try {
 			final KeyStore trustStore = KeyStore.getInstance(KEYSTORE_TYPE);
 			final Path path = Paths.get(System.getenv("JBOSS_HOME"), "standalone", "configuration", TRUSTSTORE_NAME);
@@ -72,6 +71,7 @@ public abstract class AbstractResourceTest {
 		       | KeyManagementException | UnrecoverableKeyException e) {
 			throw new IllegalStateException(e);
 		}
+		resteasyClientBuilder = new ResteasyClientBuilder();
 	}
 	
 	@Before
@@ -104,6 +104,7 @@ public abstract class AbstractResourceTest {
 		final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
 		httpClient.getCredentialsProvider().setCredentials(AuthScope.ANY, credentials);
 		return client;
+		
 	}
 	
 	static ResteasyClientBuilder getResteasyClientBuilder() {

@@ -1,3 +1,4 @@
+
 package de.shop.kundenverwaltung.domain;
 
 import static de.shop.util.Constants.KEINE_ID;
@@ -8,6 +9,7 @@ import static javax.persistence.CascadeType.REMOVE;
 import static javax.persistence.TemporalType.DATE;
 import static javax.persistence.TemporalType.TIMESTAMP;
 import static de.shop.util.Constants.ERSTE_VERSION;
+
 
 
 
@@ -73,7 +75,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+
+
 import org.codehaus.jackson.annotate.JsonSubTypes;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.annotate.JsonSubTypes.Type;
@@ -290,13 +293,13 @@ public abstract class AbstractKunde implements Serializable, Cloneable {
 	private Date geburtsdatum;
 	
 	@Column(length = EMAIL_LENGTH_MAX, nullable = false, unique = true)
-	@Email(message = "{kundenverwaltung.kunde.email.pattern}")
+	@Email(message = "{kundenverwaltung.kunde.email}")
 	@NotNull(message = "{kundenverwaltung.kunde.email.notNull}")
 	@Size(max = EMAIL_LENGTH_MAX, message = "{kundenverwaltung.kunde.email.length}")
 	private String email;
 	
 	@Column(precision = 5, scale = 4)
-	@DecimalMax(value = RABATT_MAX, message = "{kunde.rabatt.max}")
+	@DecimalMax(value = RABATT_MAX, message = "{kundenverwaltung.kunde.rabatt.max}")
 	private BigDecimal rabatt = BigDecimal.ZERO;
 	
 	@Column(precision = 15, scale = 3)
@@ -304,20 +307,15 @@ public abstract class AbstractKunde implements Serializable, Cloneable {
 	
 	private boolean newsletter = false;
 	
-	@Basic(optional = false)
-	@Temporal(TIMESTAMP)
-	@XmlTransient
-	private Date erzeugt;
-	
-	
+
 	@Column(length = PASSWORD_LENGTH_MAX)
-	@Size(max = PASSWORD_LENGTH_MAX, message = "{kunde.password.length}")
+	@Size(max = PASSWORD_LENGTH_MAX, message = "{kundenverwaltung.kunde.password.length}")
 	private String password;
 	
 	@Transient
 	private String passwordWdh;
 	
-	@Basic(optional = false)
+	
 	@Temporal(TIMESTAMP)
 	@XmlTransient
 	private Date aktualisiert;
@@ -367,7 +365,6 @@ public abstract class AbstractKunde implements Serializable, Cloneable {
 	
 	@PrePersist
 	protected void prePersist() {
-		erzeugt = new Date();
 		aktualisiert = new Date();
 	}
 	
@@ -551,13 +548,7 @@ public abstract class AbstractKunde implements Serializable, Cloneable {
 	public void setPasswordWdh(String passwordWdh) {
 		this.passwordWdh = passwordWdh;
 	}
-	@JsonProperty("Erzeugt am:")
-	public Date getErzeugt() {
-		return erzeugt == null ? null : (Date) erzeugt.clone();
-	}
-	public void setErzeugt(Date erzeugt) {
-		this.erzeugt = erzeugt == null ? null : (Date) erzeugt.clone();
-	}
+
 	public void setAgbAkzeptiert(boolean agbAkzeptiert) {
 		this.agbAkzeptiert = agbAkzeptiert;
 	}
@@ -704,7 +695,6 @@ public abstract class AbstractKunde implements Serializable, Cloneable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((aktualisiert == null) ? 0 : aktualisiert.hashCode());
-		result = prime * result + ((erzeugt == null) ? 0 : erzeugt.hashCode());
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((geburtsdatum == null) ? 0 : geburtsdatum.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
@@ -751,7 +741,6 @@ public abstract class AbstractKunde implements Serializable, Cloneable {
 			   + ", email=" + email + ", kategorie=" + kategorie 
 			   + ", rollen=" + rollen + ", password=" + password + ", passwordWdh=" + passwordWdh
 			   + ", password=" + password + ", passwordWdh=" + passwordWdh
-			   + ", erzeugt=" + erzeugt
 			   + ", aktualisiert=" + aktualisiert 
 			   + "]";
 	}
@@ -771,7 +760,6 @@ public abstract class AbstractKunde implements Serializable, Cloneable {
 		neuesObjekt.agbAkzeptiert = agbAkzeptiert;
 		neuesObjekt.adresse = adresse;
 		neuesObjekt.bemerkungen = bemerkungen;
-		neuesObjekt.erzeugt = erzeugt;
 		neuesObjekt.aktualisiert = aktualisiert;
 		return neuesObjekt;
 	}

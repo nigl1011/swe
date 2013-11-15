@@ -13,12 +13,14 @@ import static de.shop.util.TestConstants.PASSWORD_ADMIN;
 import static de.shop.util.TestConstants.PASSWORD_FALSCH;
 import static de.shop.util.TestConstants.USERNAME;
 import static de.shop.util.TestConstants.USERNAME_ADMIN;
+import static de.shop.util.TestConstants.VERSION;
+//import static de.shop.util.TestConstants.GESAMTPREIS;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_CONFLICT;
 import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_FORBIDDEN;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
-import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
+//import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 import static java.net.HttpURLConnection.HTTP_UNSUPPORTED_TYPE;
@@ -34,7 +36,6 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -51,13 +52,13 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.resteasy.api.validation.ResteasyConstraintViolation;
 import org.jboss.resteasy.api.validation.ViolationReport;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.shop.auth.domain.RolleType;
 //import de.shop.bestellverwaltung.domain.Bestellposten;
 import de.shop.bestellverwaltung.domain.Bestellung;
+//import de.shop.bestellverwaltung.domain.StatusType;
 import de.shop.kundenverwaltung.domain.AbstractKunde;
 import de.shop.kundenverwaltung.domain.Adresse;
 import de.shop.kundenverwaltung.domain.GeschlechtType;
@@ -76,13 +77,13 @@ public class KundeResourceTest extends AbstractResourceTest {
 	private static final Long KUNDE_ID_VORHANDEN_MIT_BESTELLUNGEN = Long.valueOf(3);
 	
 	private static final Long KUNDE_ID_VORHANDEN = Long.valueOf(2);
-	private static final Long KUNDE_ID_NICHT_VORHANDEN = Long.valueOf(1000);
+	private static final Long KUNDE_ID_NICHT_VORHANDEN = Long.valueOf(100);
 	
     private static final String KUNDE_EMAIL_VORHANDEN = "nine@hska.de";
-    private static final String KUNDE_EMAIL_NICHT_VORHANDEN = "nichtvorhanden@hska.de";
+    private static final String KUNDE_EMAIL_NICHT_VORHANDEN = "nichtvor@hska.de";
 	
 	private static final Long KUNDE_ID_UPDATE = Long.valueOf(6);
-	private static final Long KUNDE_ID_DELETE = Long.valueOf(6);
+//	private static final Long KUNDE_ID_DELETE = Long.valueOf(6);
 	private static final Long KUNDE_ID_DELETE_MIT_BESTELLUNGEN = Long.valueOf(3);
 	private static final Long KUNDE_ID_DELETE_FORBIDDEN = Long.valueOf(2);
 	
@@ -96,7 +97,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 	private static final String NEUE_EMAIL_INVALID = "?";
 	private static final short NEUE_KATEGORIE = 1;
 	private static final BigDecimal NEUER_RABATT = new BigDecimal("0.15");
-	private static final BigDecimal NEUER_UMSATZ = new BigDecimal(10_000_000);
+	private static final BigDecimal NEUER_UMSATZ = new BigDecimal(10_001);
 	private static final Date NEU_SEIT = new GregorianCalendar(2000, 0, 31).getTime();
 	private static final String NEUE_PLZ = "76133";
 	private static final String NEUE_PLZ_FALSCH = "1234";
@@ -374,15 +375,15 @@ public class KundeResourceTest extends AbstractResourceTest {
 	
 	@Test
 	@InSequence(40)
-	public void createPrivatkunde() throws URISyntaxException {
+	public void createPrivatkunde() {
 		LOGGER.finer("BEGINN");
 		
 		// Given
 		final String nachname = NEUER_NACHNAME;
 		final String vorname = NEUER_VORNAME;
 		final String email = NEUE_EMAIL;
-		final short kategorie = NEUE_KATEGORIE;
 		final BigDecimal rabatt = NEUER_RABATT;
+		final short kategorie = NEUE_KATEGORIE;
 		final BigDecimal umsatz = NEUER_UMSATZ;
 		final Date seit = NEU_SEIT;
 		final boolean agbAkzeptiert = true;
@@ -397,6 +398,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		kunde.setKategorie(kategorie);
 		kunde.setRabatt(rabatt);
 		kunde.setUmsatz(umsatz);
+		kunde.setVersion(VERSION);
 		kunde.setAgbAkzeptiert(agbAkzeptiert);
 		final Adresse adresse = new Adresse(plz, ort, strasse, hausnr);
 		kunde.setAdresse(adresse);
@@ -418,29 +420,33 @@ public class KundeResourceTest extends AbstractResourceTest {
 		final Long id = Long.valueOf(idStr);
 		assertThat(id).isPositive();
 		
+		/*
 		// Einloggen als neuer Kunde und Bestellung aufgeben
+	
+		// Given (2)
+		final Long artikelId = ARTIKEL_ID_VORHANDEN;
+		final String username = idStr;
 
-//		// Given (2)
-//		final Long artikelId = ARTIKEL_ID_VORHANDEN;
-//		final String username = idStr;
-//
-//		// When (2)
-//		final Bestellung bestellung = new Bestellung();
-//		final Bestellposten bp = new Bestellposten();
-//		bp.setArtikelUri(new URI(ARTIKEL_URI + "/" + artikelId));
-//		bp.setAnzahl((short) 1);
-//		bestellung.addBestellposition(bp);
-//		
-//		// Then (2)
-//		response = getHttpsClient(username, neuesPassword).target(BESTELLUNGEN_URI)
-//                                                          .request()
-//                                                          .post(json(bestellung));
-//
-//		assertThat(response.getStatus()).isEqualTo(HTTP_CREATED);
-//		location = response.getLocation().toString();
-//		response.close();
-//		assertThat(location).isNotEmpty();
+		// When (2)
+		final Bestellung bestellung = new Bestellung();
+		final Bestellposten bp = new Bestellposten();
+		bp.setArtikelUri(new URI(ARTIKEL_URI + "/" + artikelId));
+		bp.setAnzahl((short) 1);
+		//bestellung.setVersion(VERSION);
+		//bestellung.setStatus(StatusType.INBEARBEITUNG);
+		//bestellung.setGesamtpreis(GESAMTPREIS);
+		bestellung.addBestellposition(bp);
+		
+		// Then (2)
+		response = getHttpsClient(username, neuesPassword).target(BESTELLUNGEN_URI)
+                                                          .request()
+                                                          .post(json(bestellung));
 
+		assertThat(response.getStatus()).isEqualTo(HTTP_CREATED);
+		location = response.getLocation().toString();
+		response.close();
+		assertThat(location).isNotEmpty();
+		*/
 		LOGGER.finer("ENDE");
 	}
 	
@@ -468,6 +474,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		kunde.setAgbAkzeptiert(agbAkzeptiert);
 		kunde.setPassword(password);
 		kunde.setPasswordWdh(passwordWdh);
+		kunde.setVersion(VERSION);
 		final Adresse adresse = new Adresse(plz, ort, strasse, hausnr);
 		adresse.setKunde(kunde);
 		kunde.setAdresse(adresse);
@@ -486,18 +493,20 @@ public class KundeResourceTest extends AbstractResourceTest {
 		final ViolationReport violationReport = response.readEntity(ViolationReport.class);
 		response.close();
 		
+		
 		final List<ResteasyConstraintViolation> violations = violationReport.getParameterViolations();
 		assertThat(violations).isNotEmpty();
 		
 		ResteasyConstraintViolation violation =
 				                    filter(violations).with("message")
                                                       .equalsTo("A lastname must have at least 2 and may only have up to 32 characters.")
-                                                      .get().iterator().next();
+                                                      .get()
+                                                      .iterator()
+                                                      .next();
 		assertThat(violation.getValue()).isEqualTo(String.valueOf(nachname));
 		
 		violation = filter(violations).with("message")
-                                      .equalsTo("A lastname must start with exactly one capital letter"
-                                      		+ " followed by at least one lower letter, and composed names with \"-\" are allowed.")
+                                      .equalsTo("A lastname must start with exactly one capital letter followed by at least one lower letter, and composed names with \"-\" are allowed.")
                                       .get().iterator().next();
 		assertThat(violation.getValue()).isEqualTo(String.valueOf(nachname));
 
@@ -588,8 +597,8 @@ public class KundeResourceTest extends AbstractResourceTest {
 
             LOGGER.finer("ENDE");
     }
-	
-	@Ignore
+	/*
+    @Ignore
 	@Test
 	@InSequence(60)
 	public void deleteKunde() {
@@ -627,8 +636,8 @@ public class KundeResourceTest extends AbstractResourceTest {
         
 		LOGGER.finer("ENDE");
 	}
-	
-	@Ignore
+*/	
+
 	@Test
 	@InSequence(61)
 	public void deleteKundeMitBestellung() {
@@ -655,7 +664,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE");
 	}
 	
-	@Ignore
+
 	@Test
 	@InSequence(62)
 	public void deleteKundeFehlendeBerechtigung() {

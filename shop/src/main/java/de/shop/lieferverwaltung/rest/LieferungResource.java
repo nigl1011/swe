@@ -1,6 +1,8 @@
 package de.shop.lieferverwaltung.rest;
 
 
+import static de.shop.util.Constants.SELF_LINK;
+import static de.shop.util.Constants.UPDATE_LINK;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 
@@ -14,27 +16,28 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Link;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.jboss.logging.Logger;
 
 import de.shop.bestellverwaltung.domain.Bestellung;
-import de.shop.bestellverwaltung.service.BestellungService;
+import de.shop.bestellverwaltung.rest.BestellungResource;
 import de.shop.lieferverwaltung.domain.Lieferung;
 import de.shop.lieferverwaltung.service.LieferService;
 import de.shop.util.interceptor.Log;
 import de.shop.util.rest.NotFoundException;
+import de.shop.util.rest.UriHelper;
 
 
-@Path("/lieferungen")
+@Path("/lieferung")
 @Produces(APPLICATION_JSON)
 @Consumes
 @RequestScoped
@@ -43,6 +46,7 @@ import de.shop.util.rest.NotFoundException;
 public class LieferungResource {
 	
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
+	private static final String NOT_FOUND_ID = "bestellung.notFound.id";
 		
 	@Context
 	private UriInfo uriInfo;
@@ -50,14 +54,16 @@ public class LieferungResource {
 	@Context
 	private HttpHeaders headers;
 
+	
 	@Inject
-	private UriHelperLieferung uriHelperLieferung;
+	private BestellungResource bestellungResource;
 	
 	@Inject
 	private LieferService ls;
 	
+	
 	@Inject
-	private BestellungService bs;
+	private UriHelper uriHelper;
 	
 	@PostConstruct
 	private void postConstruct() {
@@ -79,48 +85,79 @@ public class LieferungResource {
 	
 	@GET
 	@Path("{id:[1-9][0-9]*}")
-	public Lieferung findLieferungById(@PathParam("id") Long id) {
+	public Response findLieferungById(@PathParam("id") Long id) {
 		final Lieferung lieferung = ls.findLieferungById(id);
 		if (lieferung == null) {
 			throw new NotFoundException("Keine Lieferung mit der ID " + id + " gefunden.");
 		}
 		
-		// TODO URLs innerhalb der gefundenen Lieferung anpassen
-		uriHelperLieferung.updateUriLieferung(lieferung, uriInfo);
-		return lieferung;
+		setStructuralLinks(lieferung, uriInfo);
+		
+		return Response.ok(lieferung).links(getTransitionalLinks(lieferung, uriInfo)).build();
 	}
 	
+	public void setStructuralLinks(Lieferung lieferung, UriInfo uriInfo) {
+		
+		final URI uri = getUriBestellung(lieferung, uriInfo);
+		lieferung.setBestellungUri(uri);
+		LOGGER.trace(lieferung);
+	}
+	
+	// Bestellung anhand LieferungId finden
+	//TODO läuft nicht so wie gewollt
+	@GET
+	@Path("{id:[1-9][0-9]*}/bestellung")
+	public Response findBestellungByLieferungId(@PathParam("id") Long id) {
+		//Zuerst die Lieferung aus der Id suchen
+		final Lieferung lieferung = ls.findLieferungById(id);
+		if (lieferung == null) {
+			throw new NotFoundException(NOT_FOUND_ID, id);
+		}
+		/*Wenn wirklich eine Lieferung existiert 
+		 * aus dieser die ID der Bestellung extrahieren
+		 * und die Bestellung suchen
+		 */
+		final Long bestellungId = lieferung.getBestellung().getId();
+		final Bestellung bestellung = ls.findBestellungByLieferungId(bestellungId);
+		if (bestellung == null) {
+			throw new NotFoundException(NOT_FOUND_ID, id);
+		}
+		
+		bestellungResource.setStructuralLinks(bestellung, uriInfo);
+		
+		//Link Header setzen
+		return Response.ok(bestellung)
+				       .links(bestellungResource.getTransitionalLinks(bestellung, uriInfo))
+				       .build();
+	}
 	//TODO: Beim Erstellen der Lieferung muss Bestellung.Status auf Verschickt gesetzt werden
 	/*
 	 * Dafür gibt es schon die Methode updateBestellung(Bestellung bestellung)
 	 */
-	@POST
+	/*@POST
 	@Consumes(APPLICATION_JSON)
 	@Produces
+	@Transactional
 	public Response createLieferung(Lieferung lieferung) {
-		for(URI bestellUri : lieferung.getBestellungUri()){
-			String bestellungString=bestellUri.toString();
-			int startPos = bestellungString.lastIndexOf('/') + 1;
-			final String bestellungId = bestellungString.substring(startPos);
-			Bestellung bestellung = bs.findBestellungById(Long.valueOf(bestellungId));
-			lieferung.addBestellung(bestellung);
-			bestellung.addLieferung(lieferung);
-		}
 		lieferung = ls.createLieferung(lieferung);
+		
+		if(lieferung == null) {
+			return null;
+		}
 		final URI lieferungUri = uriHelperLieferung.getUriLieferung(lieferung, uriInfo);
 		return Response.created(lieferungUri).build();
 	}
-	
+	*/
 	@PUT
 	@Consumes(APPLICATION_JSON)
 	@Produces
+	@Transactional
 	public void updateLieferung(Lieferung lieferung) {
-		// Vorhandenen Kunden ermitteln
+		// Vorhandene Lieferung ermitteln
 		final Lieferung origLieferung = ls.findLieferungById(lieferung.getId());
 		if (origLieferung == null) {
-			// TODO msg passend zu locale
-			final String msg = "Kein Lieferng gefunden mit der ID " + lieferung.getId();
-			throw new NotFoundException(msg);
+			// msg passend zu locale
+			throw new NotFoundException(NOT_FOUND_ID, lieferung.getId());
 		}
 		LOGGER.tracef("Lieferung vorher: %s", origLieferung);
 	
@@ -131,11 +168,29 @@ public class LieferungResource {
 		// Update durchfuehren
 		lieferung = ls.updateLieferung(origLieferung);
 		if (lieferung == null) {
-			// TODO msg passend zu locale
-			final String msg = "Kein Leiferung gefunden mit der ID " + origLieferung.getId();
-			throw new NotFoundException(msg);
+			// msg passend zu locale
+			throw new NotFoundException(NOT_FOUND_ID, origLieferung.getId());
 		}
 	
 	}
 
+	public Link[] getTransitionalLinks(Lieferung lieferung, UriInfo uriInfo) {
+		final Link self = Link.fromUri(getUriLieferung(lieferung, uriInfo))
+				  			  .rel(SELF_LINK)
+				  			  .build();
+		final Link update = Link.fromUri(getUriLieferung(lieferung, uriInfo))
+	  			  .rel(UPDATE_LINK)
+	  			  .build();
+		
+			
+		return new Link[] { self , update };
+	}
+	
+	public URI getUriLieferung(Lieferung lieferung, UriInfo uriInfo) {
+        return uriHelper.getUri(LieferungResource.class, "findLieferungById", lieferung.getId(), uriInfo);
+    }
+	
+	public URI getUriBestellung(Lieferung lieferung, UriInfo uriInfo) {
+		return uriHelper.getUri(LieferungResource.class, "findBestellungByLieferungId", lieferung.getId(), uriInfo);
+	}
 }

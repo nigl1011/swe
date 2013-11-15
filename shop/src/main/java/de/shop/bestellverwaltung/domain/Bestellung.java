@@ -10,9 +10,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Temporal;
 import javax.validation.Valid;
@@ -23,6 +21,8 @@ import static de.shop.util.Constants.ERSTE_VERSION;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+
 
 
 import de.shop.kundenverwaltung.domain.AbstractKunde;
@@ -40,14 +40,14 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Inheritance;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.PostPersist;
+import javax.persistence.PostUpdate;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -62,17 +62,18 @@ import org.jboss.logging.Logger;
 
 
 @Entity
-@Table(indexes = { @Index(columnList = "kunde_fk"), @Index(columnList = "erzeugt")})
+@Table(indexes = { @Index(columnList = "kunde_fk"), @Index(columnList = "erzeugt") })
 @Inheritance
 @NamedQueries({
 	@NamedQuery(name  = Bestellung.FIND_BESTELLUNGEN_BY_KUNDE,
                 query = "SELECT b"
 			            + " FROM   Bestellung b"
 						+ " WHERE  b.kunde = :" + Bestellung.PARAM_KUNDE),
-   	@NamedQuery(name  = Bestellung.FIND_BESTELLUNG_BY_ID_FETCH_LIEFERUNGEN,
+   /*	@NamedQuery(name  = Bestellung.FIND_BESTELLUNG_BY_ID_FETCH_LIEFERUNGEN,
 			    query = "SELECT DISTINCT b"
                         + " FROM   Bestellung b LEFT JOIN FETCH b.lieferungen"
    			            + " WHERE  b.id = :" + Bestellung.PARAM_ID),
+   			 */
 	@NamedQuery(name  = Bestellung.FIND_KUNDE_BY_ID,
  			    query = "SELECT b.kunde"
                         + " FROM   Bestellung b"
@@ -138,15 +139,13 @@ public class Bestellung implements Serializable {
 		@XmlTransient
 		private Date aktualisiert;
 		
-		@ManyToMany
-		@JoinTable(name = "bestellung_lieferung",
-				   joinColumns = @JoinColumn(name = "bestellung_fk"),
-				                 inverseJoinColumns = @JoinColumn(name = "lieferung_fk"))
+		@OneToOne(cascade = { PERSIST, REMOVE }, mappedBy = "bestellung")
 		@XmlTransient
-		private Set<Lieferung> lieferungen;
+		private Lieferung lieferung;
+		
 		
 		@Transient
-		private URI lieferungenUri;
+		private URI lieferungUri;
 		
 		
 		@Transient
@@ -161,6 +160,7 @@ public class Bestellung implements Serializable {
 		
 		public Bestellung() {
 			super();
+			this.status = StatusType.INBEARBEITUNG;
 		}
 		
 		public Bestellung(List<Bestellposten> bestellpositionen) {
@@ -182,6 +182,10 @@ public class Bestellung implements Serializable {
 		@PreUpdate
 		private void preUpdate() {
 			aktualisiert = new Date();
+		}
+		@PostUpdate
+		private void postUpdate() {
+			LOGGER.debugf("Bestellung mit ID=%d aktualisiert: version=%d", id, version);
 		}
 		
 		public Long getId() {
@@ -226,6 +230,14 @@ public class Bestellung implements Serializable {
 		public void setStatus(StatusType status) {
 			this.status = status;
 		}
+		
+		public int getVersion() {
+			return version;
+		}
+
+		public void setVersion(int version) {
+			this.version = version;
+		}
 
 		public Double getGesamtpreis() {
 			return gesamtpreis;
@@ -246,45 +258,21 @@ public class Bestellung implements Serializable {
 		public void setKundeUri(URI kundeUri) {
 			this.kundeUri = kundeUri;
 		}
-		public Set<Lieferung> getLieferungen() {
-			return lieferungen == null ? null : Collections.unmodifiableSet(lieferungen);
-		}
 		
-		public void setLieferungen(Set<Lieferung> lieferungen) {
-			if (this.lieferungen == null) {
-				this.lieferungen = lieferungen;
-				return;
-			}
-			
-			// Wiederverwendung der vorhandenen Collection
-			this.lieferungen.clear();
-			if (lieferungen != null) {
-				this.lieferungen.addAll(lieferungen);
-			}
-		}
 		
-		public void addLieferung(Lieferung lieferung) {
-			if (lieferungen == null) {
-				lieferungen = new HashSet<>();
-			}
-			lieferungen.add(lieferung);
+		public URI getLieferungUri() {
+			return lieferungUri;
 		}
-		
-		@XmlTransient
-		public List<Lieferung> getLieferungenAsList() {
-			return lieferungen == null ? null : new ArrayList<>(lieferungen);
+		public void setLieferungUri(URI lieferungUri) {
+			this.lieferungUri = lieferungUri;
 		}
 
-		
-		public void setLieferungenAsList(List<Lieferung> lieferungen) {
-			this.lieferungen = lieferungen == null ? null : new HashSet<>(lieferungen);
+		public Lieferung getLieferung() {
+			return lieferung;
 		}
-		
-		public URI getLieferungenUri() {
-			return lieferungenUri;
-		}
-		public void setLieferungenUri(URI lieferungenUri) {
-			this.lieferungenUri = lieferungenUri;
+
+		public void setLieferung(Lieferung lieferung) {
+			this.lieferung = lieferung;
 		}
 
 		@JsonProperty("datum")
