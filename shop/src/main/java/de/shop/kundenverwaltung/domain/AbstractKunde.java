@@ -202,7 +202,7 @@ public abstract class AbstractKunde implements Serializable, Cloneable {
 	public static final String PRIVATKUNDE = "P";
 	public static final String FIRMENKUNDE = "F";
 	
-	//Pattern mit UTF-8 (statt Latin-1 bzw. ISO-8859-1) Schreibweise fuer Umlaute:
+	//Pattern
 	private static final String NAME_PATTERN = "[A-Z\u00C4\u00D6\u00DC][a-z\u00E4\u00F6\u00FC\u00DF]+";
 	private static final String NACHNAME_PREFIX = "(o'|von|von der|von und zu|van)?";
 	
