@@ -12,6 +12,7 @@ CALL insert_file_kunde(6,1,0,'image.png','Privatkunde_6.png','png','I','01.01.20
 CALL insert_file_kunde(5,2,0,'video.mp4','Privatkunde_5.mp4','mp4','V','01.01.2007 01:00:00','01.01.2007 01:00:00');
 
 
+
 --Kunde_rolle
 INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (2,'admin');
 INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (2,'mitarbeiter');
