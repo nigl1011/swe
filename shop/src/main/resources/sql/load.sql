@@ -5,10 +5,12 @@ INSERT INTO kunde (id, nachname, vorname, seit, art, kategorie, familienstand, n
 INSERT INTO kunde (id, nachname, vorname, seit, art, kategorie, familienstand, newsletter, rabatt, umsatz, version, email, password, aktualisiert,geburtsdatum,geschlecht) VALUES (5,'Beni','Socke','01.01.2002','P',1,null,1,'0,2',10000.00,1,'beni@hska.de','7y0SfeN7lCuq0GFF5UsMYZofIjJ7LrvPvsePVWSv450=','01.08.2006 02:00:00','19.02.1989','M');
 INSERT INTO kunde (id, nachname, vorname, seit, art, kategorie, familienstand, newsletter, rabatt, umsatz, version, email, password, aktualisiert,geburtsdatum,geschlecht) VALUES (6,'Isabella','Kiwi','01.01.2001','P',1,'L',1,'0,2',870.00,1,'isi@hska.de','5/bAEXdujbfNMwtUF0/Xb30CFrYSOHpf/PuB5vCRloM=','01.08.2006 02:00:00','12.08.1990','W');
 
+
 -- FILE_TBL
 
 CALL insert_file_kunde(6,1,0,'image.png','Privatkunde_6.png','png','I','01.01.2007 01:00:00','01.01.2007 01:00:00');
 CALL insert_file_kunde(5,2,0,'video.mp4','Privatkunde_5.mp4','mp4','V','01.01.2007 01:00:00','01.01.2007 01:00:00');
+
 
 
 --Kunde_rolle

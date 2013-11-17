@@ -181,6 +181,7 @@ public class KundeService implements Serializable {
 						   .getResultList();
 				break;
 		}
+		
 		// FIXME https://hibernate.atlassian.net/browse/HHH-8285 : @NamedEntityGraph ab Java EE 7 bzw. JPA 2.1
 				//final TypedQuery<AbstractKunde> query = em.createNamedQuery(AbstractKunde.FIND_KUNDEN_BY_NACHNAME,
 				//                                                            AbstractKunde.class)
