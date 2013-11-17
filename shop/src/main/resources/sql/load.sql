@@ -88,14 +88,3 @@ INSERT INTO lieferung (id, erzeugt, aktualisiert, bestellung_fk) VALUES (703,'20
 
 
 
-
-
-
-
-
-
-
-
-
-
-
