@@ -1,4 +1,4 @@
-package de.shop.artikelverwaltung;
+package de.shop.artikelverwaltung.rest;
 
 import static de.shop.util.Constants.FIRST_LINK;
 import static de.shop.util.Constants.LAST_LINK;
