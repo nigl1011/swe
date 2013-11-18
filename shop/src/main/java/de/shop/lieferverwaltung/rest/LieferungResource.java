@@ -16,7 +16,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -134,20 +134,39 @@ public class LieferungResource {
 	/*
 	 * Dafür gibt es schon die Methode updateBestellung(Bestellung bestellung)
 	 */
-	/*@POST
+	@POST
 	@Consumes(APPLICATION_JSON)
 	@Produces
 	@Transactional
 	public Response createLieferung(Lieferung lieferung) {
-		lieferung = ls.createLieferung(lieferung);
 		
+		final URI bestellungUri = lieferung.getBestellungUri();
+		final String bestellungUriStr = bestellungUri.toString();
+		final int startPos = bestellungUriStr.lastIndexOf('/') + 1;
+		final String bestellungIdStr = bestellungUriStr.substring(startPos);
+		Long bestellungId = null;
+		
+		// eventuell try weg...
+		try {
+			bestellungId = Long.valueOf(bestellungIdStr);
+		}
+		catch (NumberFormatException ignore){
+			
+		}
+		
+		lieferung = ls.createLieferung(lieferung, bestellungId);
+		
+		// TODO: Exception werfen
 		if(lieferung == null) {
 			return null;
 		}
-		final URI lieferungUri = uriHelperLieferung.getUriLieferung(lieferung, uriInfo);
-		return Response.created(lieferungUri).build();
+		if(lieferung.getBestellung() == null) {
+			throw new NotFoundException(NOT_FOUND_ID, bestellungId);
+		}
+		return Response.created(getUriLieferung(lieferung, uriInfo)).build();
 	}
-	*/
+
+	/*
 	@PUT
 	@Consumes(APPLICATION_JSON)
 	@Produces
@@ -173,6 +192,7 @@ public class LieferungResource {
 		}
 	
 	}
+	*/
 
 	public Link[] getTransitionalLinks(Lieferung lieferung, UriInfo uriInfo) {
 		final Link self = Link.fromUri(getUriLieferung(lieferung, uriInfo))
@@ -193,4 +213,5 @@ public class LieferungResource {
 	public URI getUriBestellung(Lieferung lieferung, UriInfo uriInfo) {
 		return uriHelper.getUri(LieferungResource.class, "findBestellungByLieferungId", lieferung.getId(), uriInfo);
 	}
+	
 }
