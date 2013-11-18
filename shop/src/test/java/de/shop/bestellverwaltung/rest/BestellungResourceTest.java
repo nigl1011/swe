@@ -107,8 +107,7 @@ public class BestellungResourceTest extends AbstractResourceTest {
 		
 	}
 
-	//TODO:  	createBestellungOK 					(204)
-	//Internal Server Error 500, irgendwie klappt die Übergabe des Username nicht..
+
 	@Test
 	@InSequence(3)
 	public void createBestellungOK () throws URISyntaxException {
@@ -150,6 +149,7 @@ public class BestellungResourceTest extends AbstractResourceTest {
 		assertThat(response.getStatus()).isEqualTo(HTTP_CREATED);
 		final String location = response.getLocation().toString();
 		
+		response.close();
 		
 		final int startPos = location.lastIndexOf('/');
 		final String idStr = location.substring(startPos + 1);
