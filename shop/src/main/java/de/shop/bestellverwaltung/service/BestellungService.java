@@ -25,10 +25,8 @@ public interface BestellungService {
 	
 	List<Artikel> ladenhueter(int anzahl);
 	
-	//List<Bestellung> findBestellungenByKundeId(Long kundeId, Locale locale);
-	List<Lieferung> findLieferungen(String nr);
 	
-	//Lieferung createLieferung(Lieferung lieferung, List<Bestellung> bestellungen);
+	List<Lieferung> findLieferungen(String nr);
 	
 	Bestellung findBestellungByPostenId(Long id);
 	

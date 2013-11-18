@@ -231,7 +231,7 @@ public class BestellungServiceImpl implements Serializable, BestellungService {
 		 * keine Bearbeitung an der Bestellung mehr möglich !
 		 *  
 		 */
-		if (bestellung.getLieferung() != null && bestellung.getStatus().equals(StatusType.VERSCHICKT)) 	{
+		if (bestellung.getLieferung() != null) 	{
 					
 			throw new BestellungVerschicktException(bestellung.getId());
 		}

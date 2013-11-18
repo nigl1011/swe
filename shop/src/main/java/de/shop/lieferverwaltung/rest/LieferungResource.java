@@ -2,7 +2,6 @@ package de.shop.lieferverwaltung.rest;
 
 
 import static de.shop.util.Constants.SELF_LINK;
-import static de.shop.util.Constants.UPDATE_LINK;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 
@@ -166,44 +165,15 @@ public class LieferungResource {
 		return Response.created(getUriLieferung(lieferung, uriInfo)).build();
 	}
 
-	/*
-	@PUT
-	@Consumes(APPLICATION_JSON)
-	@Produces
-	@Transactional
-	public void updateLieferung(Lieferung lieferung) {
-		// Vorhandene Lieferung ermitteln
-		final Lieferung origLieferung = ls.findLieferungById(lieferung.getId());
-		if (origLieferung == null) {
-			// msg passend zu locale
-			throw new NotFoundException(NOT_FOUND_ID, lieferung.getId());
-		}
-		LOGGER.tracef("Lieferung vorher: %s", origLieferung);
 	
-		// Daten des vorhandenen Kunden ueberschreiben
-		origLieferung.setValues(lieferung);
-		LOGGER.tracef("Lieferung nachher: %s", origLieferung);
-		
-		// Update durchfuehren
-		lieferung = ls.updateLieferung(origLieferung);
-		if (lieferung == null) {
-			// msg passend zu locale
-			throw new NotFoundException(NOT_FOUND_ID, origLieferung.getId());
-		}
-	
-	}
-	*/
 
 	public Link[] getTransitionalLinks(Lieferung lieferung, UriInfo uriInfo) {
 		final Link self = Link.fromUri(getUriLieferung(lieferung, uriInfo))
 				  			  .rel(SELF_LINK)
 				  			  .build();
-		final Link update = Link.fromUri(getUriLieferung(lieferung, uriInfo))
-	  			  .rel(UPDATE_LINK)
-	  			  .build();
-		
+	
 			
-		return new Link[] { self , update };
+		return new Link[] { self };
 	}
 	
 	public URI getUriLieferung(Lieferung lieferung, UriInfo uriInfo) {

@@ -21,7 +21,6 @@ import org.jboss.logging.Logger;
 
 import de.shop.bestellverwaltung.domain.Bestellung;
 import de.shop.bestellverwaltung.service.BestellungService;
-import de.shop.bestellverwaltung.service.InvalidBestellungIdException;
 import de.shop.lieferverwaltung.domain.Lieferung;
 import de.shop.util.interceptor.Log;
 import static de.shop.util.Constants.KEINE_ID;;
@@ -126,19 +125,7 @@ public class LieferService implements Serializable {
 		em.persist(lieferung);		
 		return lieferung;
 	}	
-	
-	/*
-	public Lieferung updateLieferung(Lieferung lieferung) {
-		if (lieferung == null) {
-			return null;
-		}
-		em.detach(lieferung);
-		// Werden alle Constraints beim Modifizieren gewahrt?
-		em.merge(lieferung);
 
-		return lieferung;
-	}
-	*/
 	public Bestellung findBestellungByLieferungId(Long id) {
 		final Bestellung bestellung = em.find(Bestellung.class, id);
 		return bestellung;
