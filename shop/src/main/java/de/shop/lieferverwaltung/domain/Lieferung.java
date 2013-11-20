@@ -82,6 +82,7 @@ public class Lieferung implements Serializable {
 	private Bestellung bestellung;
 	
 	@Transient
+	@XmlTransient
 	private URI bestellungUri;
 	
 	
