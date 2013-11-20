@@ -3,8 +3,8 @@ package de.shop.kundenverwaltung.rest;
 import static de.shop.util.Constants.FIRST_LINK;
 import static de.shop.util.Constants.LAST_LINK;
 import static de.shop.util.Constants.SELF_LINK;
-//import static de.shop.util.TestConstants.ARTIKEL_URI;
-//import static de.shop.util.TestConstants.BESTELLUNGEN_URI;
+import static de.shop.util.TestConstants.ARTIKEL_URI;
+import static de.shop.util.TestConstants.BESTELLUNGEN_URI;
 import static de.shop.util.TestConstants.KUNDEN_ID_FILE_URI;
 import static de.shop.util.TestConstants.KUNDEN_ID_URI;
 import static de.shop.util.TestConstants.KUNDEN_URI;
@@ -14,7 +14,7 @@ import static de.shop.util.TestConstants.PASSWORD_FALSCH;
 import static de.shop.util.TestConstants.USERNAME;
 import static de.shop.util.TestConstants.USERNAME_ADMIN;
 import static de.shop.util.TestConstants.VERSION;
-//import static de.shop.util.TestConstants.GESAMTPREIS;
+import static de.shop.util.TestConstants.GESAMTPREIS;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_CONFLICT;
 import static java.net.HttpURLConnection.HTTP_CREATED;
@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -56,9 +57,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.shop.auth.domain.RolleType;
+import de.shop.bestellverwaltung.domain.Bestellposten;
 //import de.shop.bestellverwaltung.domain.Bestellposten;
 import de.shop.bestellverwaltung.domain.Bestellung;
-//import de.shop.bestellverwaltung.domain.StatusType;
 import de.shop.kundenverwaltung.domain.AbstractKunde;
 import de.shop.kundenverwaltung.domain.Adresse;
 import de.shop.kundenverwaltung.domain.GeschlechtType;
@@ -105,7 +106,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 	private static final String NEUE_STRASSE = "Testweg";
 	private static final String NEUE_HAUSNR = "1";
 	private static final String NEUES_PASSWORD = "neuesPassword";
-	//private static final Long ARTIKEL_ID_VORHANDEN = Long.valueOf(300);
+	private static final Long ARTIKEL_ID_VORHANDEN = Long.valueOf(300);
 	
 	private static final String IMAGE_FILENAME = "image.png";
 	private static final String IMAGE_PATH_UPLOAD = "src/test/resources/rest/" + IMAGE_FILENAME;
@@ -116,6 +117,8 @@ public class KundeResourceTest extends AbstractResourceTest {
 	private static final String IMAGE_INVALID = "image.bmp";
 	private static final String IMAGE_INVALID_PATH = "src/test/resources/rest/" + IMAGE_INVALID;
 	private static final String IMAGE_INVALID_MIMETYPE = "image/bmp";
+	
+
 
 
 	
@@ -375,7 +378,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 	
 	@Test
 	@InSequence(40)
-	public void createPrivatkunde() {
+	public void createPrivatkunde() throws URISyntaxException {
 		LOGGER.finer("BEGINN");
 		
 		// Given
@@ -420,7 +423,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		final Long id = Long.valueOf(idStr);
 		assertThat(id).isPositive();
 		
-		/*
+		
 		// Einloggen als neuer Kunde und Bestellung aufgeben
 	
 		// Given (2)
@@ -432,9 +435,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		final Bestellposten bp = new Bestellposten();
 		bp.setArtikelUri(new URI(ARTIKEL_URI + "/" + artikelId));
 		bp.setAnzahl((short) 1);
-		//bestellung.setVersion(VERSION);
-		//bestellung.setStatus(StatusType.INBEARBEITUNG);
-		//bestellung.setGesamtpreis(GESAMTPREIS);
+		bestellung.setGesamtpreis(GESAMTPREIS);
 		bestellung.addBestellposition(bp);
 		
 		// Then (2)
@@ -446,7 +447,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		location = response.getLocation().toString();
 		response.close();
 		assertThat(location).isNotEmpty();
-		*/
+		
 		LOGGER.finer("ENDE");
 	}
 	
