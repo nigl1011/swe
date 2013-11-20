@@ -55,7 +55,7 @@ public class ArtikelResourceTest extends AbstractResourceTest{
 private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
 	
 	private static final Long ARTIKEL_ID_VORHANDEN = Long.valueOf(300);
-	private static final Long ARTIKEL_ID_NICHT_VORHANDEN = Long.valueOf(500);
+	private static final Long ARTIKEL_ID_NICHT_VORHANDEN = Long.valueOf(300);
 	
 	private static final Long ARTIKEL_ID_UPDATE = Long.valueOf(300);
 	
