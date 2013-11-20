@@ -6,9 +6,6 @@ import static de.shop.util.TestConstants.VERSION;
 import static de.shop.util.TestConstants.GESAMTPREIS;
 import static de.shop.util.TestConstants.BESTELLUNGEN_ID_URI;
 import static de.shop.util.TestConstants.BESTELLUNGEN_ID_PATH_PARAM;
-import static de.shop.util.TestConstants.BESTELLUNGEN_ID_KUNDE_URI;
-import static de.shop.util.TestConstants.KUNDEN_ID_URI;
-import static de.shop.util.TestConstants.KUNDEN_ID_PATH_PARAM;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
@@ -54,7 +51,6 @@ public class BestellungResourceTest extends AbstractResourceTest {
 	/* Suche nach exisitierender BestellId
 	 * 
 	 */
-	@Ignore
 	@Test
 	@InSequence(1)
 	public void findBestellungByIdVorhanden() {
@@ -82,7 +78,6 @@ public class BestellungResourceTest extends AbstractResourceTest {
 	/* Suche nach einer BestellungId die NICHT existiert
 	 * 
 	 */
-	@Ignore
 	@Test
 	@InSequence(2)
 	public void findBestellungIdNichtVorhanden() {
@@ -167,70 +162,9 @@ public class BestellungResourceTest extends AbstractResourceTest {
 		
 		LOGGER.finer("ENDE createBestellungOK");
 	}
-	//TODO:		createBestellungKundeNotLoggedIn	(HTTP_FORBIDDEN oder UNAUTHORIZED)
+	//TODO:		createBestellungKundeNotLoggedIn	(HTTP_FORBIDDEN oder UNAUTHORIZED
 	//TODO:		createBestellungNotOK				(400_BAD_REQUEST)
 	/*			evtl. mehrere Methoden (Kunde gibts nicht, Bestellpos falsch...)
 	 * 			
-	 */
-	@Ignore
-	@Test
-	@InSequence(4)
-	public void findKundeByBestellungId() {
-		LOGGER.finer("BEGINN");
-		
-		//Given
-		final Long bestellungId = Long.valueOf(BESTELLUNG_ID_EXISTS);
-			
-		
-		/*
-		 * Zunächst Kundenobjekt anhand ID suchen
-		 */
-		Response response = getHttpsClient().target(BESTELLUNGEN_ID_KUNDE_URI)
-				 								  .resolveTemplate(BESTELLUNGEN_ID_PATH_PARAM, bestellungId)
-				 								  .request()
-				 								  .accept(APPLICATION_JSON)
-				 								  .get();
-		//Then
-		assertThat(response.getStatus()).isEqualTo(HTTP_OK);
-		/*
-		 * Wenn HTTP_OK, dann Kundenobjekt auslesen und überprüfen ob dieses nicht NULL ist,
-		 * anschließend Kunde anhand der URI und der gefundenen ID suchen
-		 */
-		final AbstractKunde kunde = response.readEntity(AbstractKunde.class);
-		assertThat(kunde).isNotNull();
-		
-		response = getHttpsClient().target(KUNDEN_ID_URI)
-								  .resolveTemplate(KUNDEN_ID_PATH_PARAM, kunde.getId())
-								  .request()
-								  .accept(APPLICATION_JSON)
-								  .get();
-		
-		/*
-		 * Abschließend nochmals überprüfen auf HTTP_OK und ob die Links auch gesetzt sind
-		 */
-		assertThat(response.getStatus()).isEqualTo(HTTP_OK);
-		assertThat(response.getLinks()).isNotEmpty();
-		
-		LOGGER.finer("ENDE");
-		
-	}
-	
-		
-	//TODO: 	findLieferungByBestellungId			(200)
-	/*
-	 * 			lieferung und status verschickt
-	 * 			
-	 * 			
-	 * 			 			
-	 * 			
-	 */
-	//TODO:		findNoLieferungByBestellungId		(404)
-	/*
-	 * 			keine Lieferung und IB
-	 * 			
-	 */
-	
-
-
-	
+	 */	
 }
