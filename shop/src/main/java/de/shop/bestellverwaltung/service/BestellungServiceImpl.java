@@ -36,7 +36,6 @@ import de.shop.bestellverwaltung.domain.Bestellposten;
 import de.shop.bestellverwaltung.domain.Bestellung;
 import de.shop.bestellverwaltung.domain.StatusType;
 import de.shop.lieferverwaltung.domain.Lieferung;
-import de.shop.lieferverwaltung.service.LieferService;
 import de.shop.kundenverwaltung.domain.AbstractKunde;
 import de.shop.kundenverwaltung.service.KundeService;
 import de.shop.util.interceptor.Log;
@@ -52,9 +51,7 @@ public class BestellungServiceImpl implements Serializable, BestellungService {
 	
 	@Inject
 	private KundeService ks;
-	
-	@Inject
-	private LieferService ls;
+
 	
 	@Inject
 	@NeueBestellung
@@ -234,23 +231,12 @@ public class BestellungServiceImpl implements Serializable, BestellungService {
 		 * keine Bearbeitung an der Bestellung mehr möglich !
 		 *  
 		 */
-		if (bestellung.getLieferung() != null && bestellung.getStatus().equals(StatusType.VERSCHICKT)) 	{
+		if (bestellung.getLieferung() != null) 	{
 					
 			throw new BestellungVerschicktException(bestellung.getId());
 		}
-			
-		/*
-		 * Nochmal prüfen ob das Flag auf verschickt gesetzt wurde
-		 * --> Lieferung absetzen
-		 * 
-		 */
-		else {
-			if (bestellung.getStatus().equals(StatusType.VERSCHICKT)) {
-				ls.createLieferung(bestellung);
-			}
-						
-		}
 		
+		bestellung.setStatus(StatusType.VERSCHICKT);
 		
 		bestellung = em.merge(bestellung);
 		

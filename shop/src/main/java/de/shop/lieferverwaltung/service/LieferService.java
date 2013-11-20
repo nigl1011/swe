@@ -20,8 +20,10 @@ import javax.persistence.criteria.Root;
 import org.jboss.logging.Logger;
 
 import de.shop.bestellverwaltung.domain.Bestellung;
+import de.shop.bestellverwaltung.service.BestellungService;
 import de.shop.lieferverwaltung.domain.Lieferung;
 import de.shop.util.interceptor.Log;
+import static de.shop.util.Constants.KEINE_ID;;
 
 @Dependent
 @Log
@@ -31,6 +33,9 @@ public class LieferService implements Serializable {
 	
 	@Inject
 	private transient EntityManager em;
+	
+	@Inject
+	private BestellungService bs;
 	
 
 	@PostConstruct
@@ -101,31 +106,25 @@ public class LieferService implements Serializable {
 	/*
 	 * Lieferung für eine Bestellung auslösen
 	 */
-	/*
-	public Lieferung createLieferung(Lieferung lieferung, Bestellung bestellung) {
-		if (lieferung == null || bestellung == null) {
+	
+	public Lieferung createLieferung(Lieferung lieferung, Long bestellungId) {
+		if (lieferung == null || bestellungId == null) {
 			return null;
 		}
-			
+		
+		Bestellung bestellung = bs.findBestellungById(bestellungId);
+		/*
+		 * Status auf Verschickt setzen
+		 */
+		bs.updateBestellung(bestellung);
+		
 		lieferung.setBestellung(bestellung);
-		//bestellung.setLieferung(lieferung);
 		
 		lieferung.setId(KEINE_ID);
 		
 		em.persist(lieferung);		
 		return lieferung;
 	}	
-	*/
-	public Lieferung updateLieferung(Lieferung lieferung) {
-		if (lieferung == null) {
-			return null;
-		}
-		em.detach(lieferung);
-		// Werden alle Constraints beim Modifizieren gewahrt?
-		em.merge(lieferung);
-
-		return lieferung;
-	}
 
 	public Bestellung findBestellungByLieferungId(Long id) {
 		final Bestellung bestellung = em.find(Bestellung.class, id);
