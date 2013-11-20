@@ -100,6 +100,8 @@ public static final String PARAM_KATEGORIE = "kategorie";
 public static final String PARAM_FARBE = "farbe";
 public static final String PARAM_PREIS = "preis";
 
+public static final String PARAM_ARTIKEL_BEZEICHNUNG = "bezeichnung";
+
 private static final int BEZEICHNUNG_LENGTH_MIN = 3;
 private static final int BEZEICHNUNG_LENGTH_MAX = 32;
 private static final String BEZEICHNUNG_PATTERN = NAME_PATTERN;
