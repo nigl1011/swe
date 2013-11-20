@@ -49,7 +49,7 @@ public class ArtikelResource {
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
 	
 	// public fuer Testklassen
-	public static final String ARTIKEL_ID_PATH_PARAM = "kundenId";
+	public static final String ARTIKEL_ID_PATH_PARAM = "artikelId";
 	public static final String ARTIKEL_BEZEICHNUNG_QUERY_PARAM = "bezeichnung";
 	public static final String ARTIKEL_PREIS_QUERY_PARAM = "preis";
 	public static final String ARTIKEL_FARBE_QUERY_PARAM = "farbe";

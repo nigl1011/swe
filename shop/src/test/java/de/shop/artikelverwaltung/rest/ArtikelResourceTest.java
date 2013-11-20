@@ -55,14 +55,15 @@ public class ArtikelResourceTest extends AbstractResourceTest{
 private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
 	
 	private static final Long ARTIKEL_ID_VORHANDEN = Long.valueOf(300);
-	private static final Long ARTIKEL_ID_NICHT_VORHANDEN = Long.valueOf(300);
+	private static final Long ARTIKEL_ID_NICHT_VORHANDEN = Long.valueOf(350);
 	
-	private static final Long ARTIKEL_ID_UPDATE = Long.valueOf(300);
+	private static final Long ARTIKEL_ID_UPDATE = Long.valueOf(302);
 	
 	private static final String BEZEICHNUNG_VORHANDEN = "Tisch";
-	private static final String BEZEICHNUNG_NICHT_VORHANDEN = "Falschebezeichnung";
+	private static final String BEZEICHNUNG_NICHT_VORHANDEN = "Falschebez";
 	private static final String BEZEICHNUNG_INVALID = "Test9";
 	private static final String NEUE_BEZEICHNUNG = "Neuebezeichnung";
+    private static final String NEUE_BEZEICHNUNG_UPDATE = "Schrank";
 	private static final String NEUE_BEZEICHNUNG_INVALID = "!";
 	private static final String NEUE_FARBE = "Neuefarbe";
 	private static final String NEUE_FARBE_INVALID = "Test9";
@@ -253,33 +254,6 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
 	}
 	
 	
-	@Test
-	@InSequence(30)
-	public void findArtikelByKategorie() {
-		LOGGER.finer("BEGINN");
-		
-		for (KategorieType kategorie : KategorieType.values()) {
-			// When
-			final Response response = getHttpsClient().target(ARTIKEL_URI)
-                                                      .queryParam(ArtikelResource.ARTIKEL_KATEGORIE_QUERY_PARAM,
-                                                    		      kategorie)
-                                                      .request()
-                                                      .accept(APPLICATION_JSON)
-                                                      .get();
-			final Collection<Artikel> artikel = response.readEntity(new GenericType<Collection<Artikel>>() { });
-			
-			// Then
-            assertThat(artikel).isNotEmpty()             // siehe Testdaten
-                              .doesNotContainNull()
-                              .doesNotHaveDuplicates();
-            for (Artikel a : artikel) {
-    			assertThat(a.getKategorie()).isEqualTo(kategorie);
-            }
-		}
-		
-		LOGGER.finer("ENDE");
-	}
-	
 	
 	@Test
 	@InSequence(40)
@@ -353,12 +327,12 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
 		
 		ResteasyConstraintViolation violation =
 				                    filter(violations).with("message")
-                                                      .equalsTo("The description must have at least 2 an may only have up to 32 character..")
+                                                      .equalsTo("The description must have at least 2 an may only have up to 32 character.")
                                                       .get().iterator().next();
 		assertThat(violation.getValue()).isEqualTo(String.valueOf(bezeichnung));
 		
 		violation = filter(violations).with("message")
-                                      .equalsTo("A description must start with exactly one capital letter followed by lower letters.")
+                                      .equalsTo("A description have to start with exactly one capital letter followed by lower letters.")
                                       .get().iterator().next();
 		assertThat(violation.getValue()).isEqualTo(String.valueOf(bezeichnung));
 		
@@ -372,42 +346,28 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
 	
 	
     @Test
-    @InSequence(50)
+    @InSequence(9)
     public void updateArtikel() {
             LOGGER.finer("BEGINN");
 
-            // Given
             final Long artikelId = ARTIKEL_ID_UPDATE;
-            final String neueBezeichnung = NEUE_BEZEICHNUNG;
+            final String neueBezeichnung = NEUE_BEZEICHNUNG_UPDATE;
 
-            // When
             Response response = getHttpsClient().target(ARTIKEL_ID_URI)
-                            .resolveTemplate(ArtikelResource.ARTIKEL_ID_PATH_PARAM, artikelId)
-                            .request().accept(APPLICATION_JSON).get();
-            Artikel artikel = response.readEntity(Artikel.class);
+                            .resolveTemplate(ArtikelResource.ARTIKEL_ID_PATH_PARAM, artikelId).request().accept(APPLICATION_JSON)
+                            .get();
+            final Artikel artikel = response.readEntity(Artikel.class);
             assertThat(artikel.getId()).isEqualTo(artikelId);
-            final int origVersion = artikel.getVersion();
 
-            // Aus den gelesenen JSON-Werten ein neues JSON-Objekt mit neuer Bezeichnung bauen
-            
             artikel.setBezeichnung(neueBezeichnung);
 
-            // Then
-            assertThat(response.getStatus()).isEqualTo(HTTP_OK);
-            artikel = response.readEntity(Artikel.class);
-            assertThat(artikel.getVersion()).isGreaterThan(origVersion);
+            response = getHttpsClient(USERNAME_ADMIN, PASSWORD_ADMIN).target(ARTIKEL_URI).request()
+                            .accept(APPLICATION_JSON).put(json(artikel));
 
-            //?? Erneutes Update funktioniert, da die Versionsnr. aktualisiert ist
-            response = getHttpsClient(USERNAME, PASSWORD).target(KUNDEN_URI).request().put(json(artikel));
             assertThat(response.getStatus()).isEqualTo(HTTP_OK);
-            response.close();
 
-            //?? Erneutes Update funktioniert NICHT, da die Versionsnr. NICHT aktualisiert ist
-            response = getHttpsClient(USERNAME, PASSWORD).target(KUNDEN_URI).request().put(json(artikel));
-            assertThat(response.getStatus()).isEqualTo(HTTP_CONFLICT);
             response.close();
 
             LOGGER.finer("ENDE");
     }
-	
 }
