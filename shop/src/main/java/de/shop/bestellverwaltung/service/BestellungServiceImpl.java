@@ -23,12 +23,6 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-
-
-
-
-
-
 import org.jboss.logging.Logger;
 
 import de.shop.artikelverwaltung.domain.Artikel;
@@ -148,6 +142,7 @@ public class BestellungServiceImpl implements Serializable, BestellungService {
 		}
 		kunde.addBestellung(bestellung);
 		bestellung.setKunde(kunde);
+		bestellung.setVersion(1);
 		
 		// Vor dem Abspeichern IDs zuruecksetzen:
 		// IDs koennten einen Wert != null haben, wenn sie durch einen Web Service uebertragen wurden
