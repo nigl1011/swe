@@ -31,14 +31,12 @@ import javax.ws.rs.core.Response;
 
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.shop.bestellverwaltung.domain.Bestellposten;
 import de.shop.bestellverwaltung.domain.Bestellung;
 import de.shop.bestellverwaltung.domain.StatusType;
-import de.shop.kundenverwaltung.domain.AbstractKunde;
 import de.shop.util.AbstractResourceTest;
 
 
