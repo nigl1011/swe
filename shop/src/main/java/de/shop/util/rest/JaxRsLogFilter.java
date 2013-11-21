@@ -1,3 +1,4 @@
+
 package de.shop.util.rest;
 
 import java.io.IOException;
@@ -48,3 +49,4 @@ public class JaxRsLogFilter implements ContainerRequestFilter, ContainerResponse
 		LOGGER.debugf("Location: %s", responseCtx.getLocation());		
 	}
 }
+
