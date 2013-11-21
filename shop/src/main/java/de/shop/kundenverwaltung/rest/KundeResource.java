@@ -151,8 +151,7 @@ public class KundeResource {
 	
 	@GET
 	public Response findKunden(@QueryParam(KUNDEN_NACHNAME_QUERY_PARAM)
-	                           @Pattern(regexp = AbstractKunde.NACHNAME_PATTERN,
-	                           message = "{kundenverwaltung.kunde.nachname.pattern}")
+	                           @Pattern(regexp = AbstractKunde.NACHNAME_PATTERN, message = "{kundenverwaltung.kunde.nachname.pattern}")
 	                           String nachname,
 	                           @QueryParam(KUNDEN_PLZ_QUERY_PARAM)
 	                           @Pattern(regexp = "\\d{5}", message = "{adresse.plz}")
@@ -348,8 +347,7 @@ public class KundeResource {
 			final Link list = Link.fromUri(uriHelper.getUri(KundeResource.class, uriInfo)).rel(LIST_LINK).build();
 			final Link add = Link.fromUri(uriHelper.getUri(KundeResource.class, uriInfo)).rel(ADD_LINK).build();
 			final Link update = Link.fromUri(uriHelper.getUri(KundeResource.class, uriInfo)).rel(UPDATE_LINK).build();
-			final Link remove = Link.fromUri(uriHelper
-						.getUri(KundeResource.class, "deleteKunde", kunde.getId(), uriInfo))
+			final Link remove = Link.fromUri(uriHelper.getUri(KundeResource.class, "deleteKunde", kunde.getId(), uriInfo))
 						.rel(REMOVE_LINK)
 						.build();
 		return new Link[] {self, list, add, update, remove};
