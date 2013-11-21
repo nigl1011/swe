@@ -65,8 +65,8 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
 	private static final String NEUE_BEZEICHNUNG = "Neuebezeichnung";
     private static final String NEUE_BEZEICHNUNG_UPDATE = "Schrank";
 	private static final String NEUE_BEZEICHNUNG_INVALID = "!";
-	private static final String NEUE_FARBE = "Neuefarbe";
-	private static final String NEUE_FARBE_INVALID = "Test9";
+	private static final String NEUE_FARBE = "neuefarbe";
+	private static final String NEUE_FARBE_INVALID = "TEST";
 	private static final KategorieType NEUE_KATEGORIE = KategorieType.GARTEN;
 	private static final BigDecimal NEUER_PREIS = new BigDecimal("120.60");
 
@@ -271,21 +271,6 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
 		artikel.setKategorie(kategorie);
 		artikel.setFarbe(farbe);
 		artikel.setPreis(preis);
-		//artikel.addRollen(Arrays.asList(RolleType.MITARBEITER));
-		
-		Response response = getHttpsClient(USERNAME, PASSWORD).target(ARTIKEL_URI)
-                                                              .request()
-                                                              .post(json(artikel));
-			
-		// Then
-		assertThat(response.getStatus()).isEqualTo(HTTP_CREATED);
-		String location = response.getLocation().toString();
-		response.close();
-		
-		final int startPos = location.lastIndexOf('/');
-		final String idStr = location.substring(startPos + 1);
-		final Long id = Long.valueOf(idStr);
-		assertThat(id).isPositive();
 
 		LOGGER.finer("ENDE");
 	}
@@ -307,7 +292,6 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
 		artikel.setKategorie(kategorie);
 		artikel.setFarbe(farbe);
 		artikel.setPreis(preis);
-		//artikel.addRollen(Arrays.asList(RolleType.ADMIN, RolleType.MITARBEITER));
 		
 		// When
 		final Response response = getHttpsClient(USERNAME, PASSWORD).target(KUNDEN_URI)
@@ -321,6 +305,7 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
 		assertThat(response.getHeaderString("validation-exception")).isEqualTo("true");
 		final ViolationReport violationReport = response.readEntity(ViolationReport.class);
 		response.close();
+		
 		
 		final List<ResteasyConstraintViolation> violations = violationReport.getParameterViolations();
 		assertThat(violations).isNotEmpty();
