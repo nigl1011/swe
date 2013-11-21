@@ -435,7 +435,6 @@ public class KundeResourceTest extends AbstractResourceTest {
 		final Bestellposten bp = new Bestellposten();
 		bp.setArtikelUri(new URI(ARTIKEL_URI + "/" + artikelId));
 		bp.setAnzahl((short) 1);
-		bestellung.setGesamtpreis(GESAMTPREIS);
 		bestellung.addBestellposition(bp);
 		
 		// Then (2)
