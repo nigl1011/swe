@@ -2,6 +2,9 @@ package de.shop.kundenverwaltung.rest;
 
 import de.shop.kundenverwaltung.service.AbstractKundeServiceException;
 
+/**
+ * Exception, die ausgel&ouml;st wird, wenn die Attributwerte eines Kunden nicht korrekt sind
+ */
 public abstract class InvalidDateException extends AbstractKundeServiceException {
 	private static final long serialVersionUID = 2113917506853352685L;
 	

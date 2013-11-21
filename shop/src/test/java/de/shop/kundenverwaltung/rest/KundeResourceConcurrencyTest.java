@@ -204,9 +204,9 @@ public class KundeResourceConcurrencyTest extends AbstractResourceTest {
 		
     	// Erfolgreiches Delete trotz konkurrierendem Update
 		response = getHttpsClient(USERNAME_ADMIN, PASSWORD_ADMIN).target(KUNDEN_ID_URI)
-                                                                 .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM,kundeId)
-                                                                 .request()
-                                                                 .delete();
+                                   .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM,kundeId)
+                                   .request()
+                                   .delete();
 			
 		// Then
     	assertThat(response.getStatus()).isEqualTo(HTTP_NO_CONTENT);

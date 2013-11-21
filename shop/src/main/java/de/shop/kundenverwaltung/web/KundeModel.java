@@ -1,3 +1,4 @@
+
 package de.shop.kundenverwaltung.web;
 
 import java.io.Serializable;

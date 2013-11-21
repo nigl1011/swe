@@ -5,6 +5,9 @@ import javax.validation.ConstraintViolation;
 
 import de.shop.kundenverwaltung.domain.AbstractKunde;
 
+/**
+ * Exception, die ausgel&ouml;st wird, wenn die Attributwerte eines Kunden nicht korrekt sind
+ */
 public abstract class InvalidEmailException extends AbstractKundeValidationException {
 	private static final long serialVersionUID = -8973151010781329074L;
 	
