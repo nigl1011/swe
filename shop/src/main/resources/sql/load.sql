@@ -54,11 +54,11 @@ INSERT INTO artikel (id, version, aktualisiert, bezeichnung, erstellt, farbe, ka
 INSERT INTO artikel (id, version, aktualisiert, bezeichnung, erstellt, farbe, kategorie, preis, verfuegbar) VALUES (304,1,'01.08.2006 00:00:00','Arbeitsplatte','01.08.2006 00:00:00','hellbraun','werkstatt',169,1);
 
 --bestellung
-INSERT INTO bestellung (id, version, kunde_fk, idx, status, gesamtpreis, erzeugt, aktualisiert) VALUES (400,1,2,0,'V',300,'01.08.2006 00:00:00','01.08.2006 00:00:00');
-INSERT INTO bestellung (id, version, kunde_fk, idx, status, gesamtpreis, erzeugt, aktualisiert) VALUES (401,1,3,1,'V',200,'02.08.2006 00:00:00','02.08.2006 00:00:00');
-INSERT INTO bestellung (id, version, kunde_fk, idx, status, gesamtpreis, erzeugt, aktualisiert) VALUES (402,1,4,0,'V',100,'03.08.2006 00:00:00','03.08.2006 00:00:00');
-INSERT INTO bestellung (id, version, kunde_fk, idx, status, gesamtpreis, erzeugt, aktualisiert) VALUES (403,1,5,1,'V',50,'04.08.2006 00:00:00','04.08.2006 00:00:00');
-INSERT INTO bestellung (id, version, kunde_fk, idx, status, gesamtpreis, erzeugt, aktualisiert) VALUES (404,1,6,0,'I',10,'05.08.2006 00:00:00','05.08.2006 00:00:00');
+INSERT INTO bestellung (id, version, kunde_fk, idx, status, erzeugt, aktualisiert) VALUES (400,1,2,0,'V','01.08.2006 00:00:00','01.08.2006 00:00:00');
+INSERT INTO bestellung (id, version, kunde_fk, idx, status, erzeugt, aktualisiert) VALUES (401,1,3,1,'V','02.08.2006 00:00:00','02.08.2006 00:00:00');
+INSERT INTO bestellung (id, version, kunde_fk, idx, status, erzeugt, aktualisiert) VALUES (402,1,4,0,'V','03.08.2006 00:00:00','03.08.2006 00:00:00');
+INSERT INTO bestellung (id, version, kunde_fk, idx, status, erzeugt, aktualisiert) VALUES (403,1,5,1,'V','04.08.2006 00:00:00','04.08.2006 00:00:00');
+INSERT INTO bestellung (id, version, kunde_fk, idx, status, erzeugt, aktualisiert) VALUES (404,1,6,0,'I','05.08.2006 00:00:00','05.08.2006 00:00:00');
 
 --bestellposten
 INSERT INTO bestellposten (id, version, bestellung_fk, artikel_fk, anzahl, idx) VALUES (500,1,400,301,1,0);

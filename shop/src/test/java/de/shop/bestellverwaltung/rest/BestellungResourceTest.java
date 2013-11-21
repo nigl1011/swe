@@ -2,7 +2,6 @@ package de.shop.bestellverwaltung.rest;
 
 import static de.shop.util.TestConstants.BESTELLUNG_ID_EXISTS;
 import static de.shop.util.TestConstants.NO_ID;
-import static de.shop.util.TestConstants.GESAMTPREIS;
 import static de.shop.util.TestConstants.BESTELLUNGEN_ID_URI;
 import static de.shop.util.TestConstants.BESTELLUNGEN_ID_PATH_PARAM;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -123,9 +122,8 @@ public class BestellungResourceTest extends AbstractResourceTest {
 		bp1.setAnzahl((short) 1);
 		bestellung.addBestellposition(bp1);
 		bestellung.setStatus(StatusType.INBEARBEITUNG);
-		bestellung.setGesamtpreis(GESAMTPREIS);
 		
-
+		
 		// When
 		Long id;
 					
@@ -179,8 +177,7 @@ public class BestellungResourceTest extends AbstractResourceTest {
 		bp1.setAnzahl((short) 1);
 		bestellung.addBestellposition(bp1);
 		bestellung.setStatus(StatusType.INBEARBEITUNG);
-		bestellung.setGesamtpreis(GESAMTPREIS);
-		
+				
 		// When		
 		 Response response = getHttpsClient().target(BESTELLUNGEN_URI)
 						  			     .request()

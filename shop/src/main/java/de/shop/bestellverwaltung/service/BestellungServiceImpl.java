@@ -66,6 +66,13 @@ public class BestellungServiceImpl implements Serializable, BestellungService {
 	@Override
 	public Bestellung findBestellungById(Long id) {
 		final Bestellung bestellung = em.find(Bestellung.class, id);
+		/*
+		 * Gesamtpreis noch berechnen lassen
+		 */
+		if (bestellung == null) {
+			return null;
+		}
+		bestellung.setGesamtpreis(bestellung.calcPreis());
 		return bestellung;
 	}
 	

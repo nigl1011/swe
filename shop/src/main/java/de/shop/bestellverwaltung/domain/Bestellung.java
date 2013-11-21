@@ -6,6 +6,7 @@ import static javax.persistence.TemporalType.TIMESTAMP;
 
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +22,7 @@ import static de.shop.util.Constants.ERSTE_VERSION;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
 
 
 
@@ -112,9 +114,8 @@ public class Bestellung implements Serializable {
 		@Column(name = "status", length = 1)
 		private StatusType status;
 		
-		@Column(precision = 5, scale = 4, nullable = false)
-		@NotNull(message = "{bestellverwaltung.bestellung.gesamtpreis.notEmpty}")
-		private Double gesamtpreis;
+		@Transient
+		private BigDecimal gesamtpreis;
 
 		@ManyToOne(optional = false)
 		@JoinColumn(name = "kunde_fk", nullable = false, insertable = false, updatable = false)
@@ -238,14 +239,29 @@ public class Bestellung implements Serializable {
 		public void setVersion(int version) {
 			this.version = version;
 		}
-
-		public Double getGesamtpreis() {
-			return gesamtpreis;
+		
+		public BigDecimal getGesamtpreis() {
+			return calcPreis();
 		}
-		public void setGesamtpreis(Double gesamtpreis) {
+		
+		public void setGesamtpreis(BigDecimal gesamtpreis) {
 			this.gesamtpreis = gesamtpreis;
 		
 		}
+		
+		/*
+		 * Hilfsmethode um den Gesamtpreis
+		 * aus den einzelnen Positionen zu ermitteln
+		 */
+		
+		public BigDecimal calcPreis() {
+			BigDecimal ergebnis = new BigDecimal("0.0");
+			for (Bestellposten bp : bestellposten) {
+				ergebnis = ergebnis.add(bp.calcPreis());
+			}
+			return ergebnis;
+		}
+		
 		public AbstractKunde getKunde() {
 			return kunde;
 		}

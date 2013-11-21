@@ -5,7 +5,9 @@ import static de.shop.util.Constants.ERSTE_VERSION;
 
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.net.URI;
+
 
 
 
@@ -27,7 +29,9 @@ import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.validation.constraints.Min;
 import javax.xml.bind.annotation.XmlTransient;
+
 import org.jboss.logging.Logger;
+
 import de.shop.artikelverwaltung.domain.Artikel;
 
 
@@ -176,5 +180,14 @@ public class Bestellposten implements Serializable {
 		}
 		
 		return true;
+	}
+
+	/*
+	 * Preis einer Position berechnen, 
+	 * Hilfsmethode für den Gesamtpreis einer
+	 * Bestellung
+	 */
+	public BigDecimal calcPreis() {
+		return artikel.getPreis().multiply(new BigDecimal(this.getAnzahl()));
 	}
 }
