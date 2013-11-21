@@ -197,12 +197,6 @@ public class BestellungResourceTest extends AbstractResourceTest {
 	
 	//TODO:		createBestellungNotOK				(400_BAD_REQUEST)
 	@Test
-	@InSequence(5)
-	public void createBestellungNotOkNoKunde () {
-		
-	}
-	
-	@Test
 	@InSequence(6)
 	public void createBestellungNotOkNoPos () {
 		
