@@ -6,7 +6,7 @@ import javax.validation.ConstraintViolation;
 
 import de.shop.lieferverwaltung.domain.Lieferung;
 
-public abstract class LieferValidationException extends LieferServiceException {
+public abstract class LieferValidationException extends AbstractLieferServiceException {
 	private static final long serialVersionUID = 1L;
 	private final Collection<ConstraintViolation<Lieferung>> violations;
 	

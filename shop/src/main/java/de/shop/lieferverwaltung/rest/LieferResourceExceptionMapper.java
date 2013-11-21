@@ -8,16 +8,16 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import de.shop.lieferverwaltung.service.LieferServiceException;
+import de.shop.lieferverwaltung.service.AbstractLieferServiceException;
 import de.shop.util.interceptor.Log;
 
 
 @Provider
 @ApplicationScoped
 @Log
-public class LieferResourceExceptionMapper implements ExceptionMapper<LieferServiceException> {
+public class LieferResourceExceptionMapper implements ExceptionMapper<AbstractLieferServiceException> {
 	@Override
-	public Response toResponse(LieferServiceException e) {
+	public Response toResponse(AbstractLieferServiceException e) {
 		final String msg = e.getMessage();
 		final Response response = Response.status(CONFLICT)
 		                                  .type(TEXT_PLAIN)

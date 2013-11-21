@@ -102,7 +102,7 @@ public class BestellungResourceTest extends AbstractResourceTest {
 
 	@Test
 	@InSequence(3)
-	public void createBestellungOK () throws URISyntaxException {
+	public void createBestellungOK() throws URISyntaxException {
 		LOGGER.finer("BEGINN createBestellungOK");
 		
 		// Given
@@ -179,7 +179,7 @@ public class BestellungResourceTest extends AbstractResourceTest {
 		bestellung.setStatus(StatusType.INBEARBEITUNG);
 				
 		// When		
-		 Response response = getHttpsClient().target(BESTELLUNGEN_URI)
+		final Response response = getHttpsClient().target(BESTELLUNGEN_URI)
 						  			     .request()
 						  			     .accept(APPLICATION_JSON)
 						  			     .post(json(bestellung));
@@ -195,7 +195,7 @@ public class BestellungResourceTest extends AbstractResourceTest {
 	//TODO:		createBestellungNotOK				(400_BAD_REQUEST)
 	@Test
 	@InSequence(6)
-	public void createBestellungNotOkNoPos () {
+	public void createBestellungNotOkNoPos() {
 		
 	}
 }

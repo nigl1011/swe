@@ -129,7 +129,7 @@ public class LieferungResource {
 				       .links(bestellungResource.getTransitionalLinks(bestellung, uriInfo))
 				       .build();
 	}
-	//TODO: Beim Erstellen der Lieferung muss Bestellung.Status auf Verschickt gesetzt werden
+	
 	/*
 	 * Dafür gibt es schon die Methode updateBestellung(Bestellung bestellung)
 	 */
@@ -145,21 +145,16 @@ public class LieferungResource {
 		final String bestellungIdStr = bestellungUriStr.substring(startPos);
 		Long bestellungId = null;
 		
-		// eventuell try weg...
-		try {
-			bestellungId = Long.valueOf(bestellungIdStr);
-		}
-		catch (NumberFormatException ignore){
-			
-		}
+		bestellungId = Long.valueOf(bestellungIdStr);
+		
 		
 		lieferung = ls.createLieferung(lieferung, bestellungId);
 		
 		// TODO: Exception werfen
-		if(lieferung == null) {
+		if (lieferung == null) {
 			return null;
 		}
-		if(lieferung.getBestellung() == null) {
+		if (lieferung.getBestellung() == null) {
 			throw new NotFoundException(NOT_FOUND_ID, bestellungId);
 		}
 		return Response.created(getUriLieferung(lieferung, uriInfo)).build();
@@ -177,7 +172,7 @@ public class LieferungResource {
 	}
 	
 	public URI getUriLieferung(Lieferung lieferung, UriInfo uriInfo) {
-        return uriHelper.getUri(LieferungResource.class, "findLieferungById", lieferung.getId(), uriInfo);
+		return uriHelper.getUri(LieferungResource.class, "findLieferungById", lieferung.getId(), uriInfo);
     }
 	
 	public URI getUriBestellung(Lieferung lieferung, UriInfo uriInfo) {

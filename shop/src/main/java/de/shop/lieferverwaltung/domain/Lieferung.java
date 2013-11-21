@@ -78,15 +78,12 @@ public class Lieferung implements Serializable {
 
 	
 	@OneToOne
-	@JoinColumn(name = "bestellung_fk", nullable=false, unique=true)
+	@JoinColumn(name = "bestellung_fk", nullable = false, unique = true)
 	private Bestellung bestellung;
 	
 	@Transient
 	private URI bestellungUri;
 	
-	
-
-
 	public Lieferung() {
 		super();
 	}
@@ -200,21 +197,24 @@ public class Lieferung implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Lieferung other = (Lieferung) obj;
+		final Lieferung other = (Lieferung) obj;
 		if (aktualisiert == null) {
 			if (other.aktualisiert != null)
 				return false;
-		} else if (!aktualisiert.equals(other.aktualisiert))
+		} 
+		else if (!aktualisiert.equals(other.aktualisiert))
 			return false;
 		if (bestellung == null) {
 			if (other.bestellung != null)
 				return false;
-		} else if (!bestellung.equals(other.bestellung))
+		} 
+		else if (!bestellung.equals(other.bestellung))
 			return false;
 		if (erzeugt == null) {
 			if (other.erzeugt != null)
 				return false;
-		} else if (!erzeugt.equals(other.erzeugt))
+		} 
+		else if (!erzeugt.equals(other.erzeugt))
 			return false;
 		return true;
 	}

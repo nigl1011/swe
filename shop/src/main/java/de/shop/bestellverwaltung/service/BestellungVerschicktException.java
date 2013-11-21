@@ -14,7 +14,7 @@ public class BestellungVerschicktException extends
 	public BestellungVerschicktException(Long id) {
 		super("Die Bestellung " + id + " wurde schon verschickt");
 		this.id = id;
-		//TODO: message in den MessageDateien mit einbinden
+		
 	}
 	public Long getId() {
 		return id;
