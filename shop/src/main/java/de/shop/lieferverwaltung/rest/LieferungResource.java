@@ -46,6 +46,9 @@ public class LieferungResource {
 	
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
 	private static final String NOT_FOUND_ID = "bestellung.notFound.id";
+	
+	// public fuer Testklassen
+	public static final String LIEFERUNG_ID_PATH_PARAM = "lieferungId";
 		
 	@Context
 	private UriInfo uriInfo;

@@ -36,6 +36,8 @@ public final class TestConstants {
 	public static final String BESTELLUNGEN_ID_URI = BESTELLUNGEN_URI + "/{" + BESTELLUNGEN_ID_PATH_PARAM + "}";
 	public static final String BESTELLUNGEN_ID_KUNDE_URI = BESTELLUNGEN_ID_URI + "/kunde";
 	
+	public static final Long BESTELLUNG_ID = Long.valueOf(400);
+	
 	//Artikel
 	public static final String ARTIKEL_URI = BASE_URI + "/artikel";
 	public static final String ARTIKEL_ID_PATH_PARAM = "artikelId";
@@ -44,6 +46,11 @@ public final class TestConstants {
 	
 	public static final Long ARTIKEL_STUHL = Long.valueOf(300);
 	public static final Long ARTIKEL_DOPPELBETT = Long.valueOf(301);
+	
+	//Lieferung
+	public static final String LIEFERUNG_URI = BASE_URI + "/lieferung";
+	public static final String LIEFERUNG_ID_PATH_PARAM = "lieferungId";
+	public static final String LIEFERUNG_ID_URI = LIEFERUNG_URI + "/{" + LIEFERUNG_ID_PATH_PARAM + "}";
 	
 	// Username und Password
 	public static final String USERNAME = "3";
