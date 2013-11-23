@@ -124,9 +124,7 @@ public class BestellungResourceTest extends AbstractResourceTest {
 		bestellung.setStatus(StatusType.INBEARBEITUNG);
 		
 		
-		// When
-		Long id;
-					
+		// When		
 		 Response response = getHttpsClient(USERNAME, PASSWORD).target(BESTELLUNGEN_URI)
 						  			     .request()
 						  			     .accept(APPLICATION_JSON)
@@ -134,6 +132,7 @@ public class BestellungResourceTest extends AbstractResourceTest {
 		
 		
 		//Then
+		 Long id;
 		assertThat(response.getStatus()).isEqualTo(HTTP_CREATED);
 		final String location = response.getLocation().toString();
 		

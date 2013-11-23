@@ -43,9 +43,11 @@ import de.shop.util.rest.UriHelper;
 @Transactional
 @Log
 public class LieferungResource {
+
 	
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
-	private static final String NOT_FOUND_ID = "bestellung.notFound.id";
+	private static final String NOT_FOUND_ID_BESTELLUNG = "bestellung.notFound.id";
+	private static final String NOT_FOUND_ID = "lieferung.notFound.id";
 	
 	// public fuer Testklassen
 	public static final String LIEFERUNG_ID_PATH_PARAM = "lieferungId";
@@ -90,7 +92,7 @@ public class LieferungResource {
 	public Response findLieferungById(@PathParam("id") Long id) {
 		final Lieferung lieferung = ls.findLieferungById(id);
 		if (lieferung == null) {
-			throw new NotFoundException("Keine Lieferung mit der ID " + id + " gefunden.");
+			throw new NotFoundException(NOT_FOUND_ID, id);
 		}
 		
 		setStructuralLinks(lieferung, uriInfo);
@@ -113,7 +115,7 @@ public class LieferungResource {
 		//Zuerst die Lieferung aus der Id suchen
 		final Lieferung lieferung = ls.findLieferungById(id);
 		if (lieferung == null) {
-			throw new NotFoundException(NOT_FOUND_ID, id);
+			throw new NotFoundException(NOT_FOUND_ID_BESTELLUNG, id);
 		}
 		/*Wenn wirklich eine Lieferung existiert 
 		 * aus dieser die ID der Bestellung extrahieren
@@ -122,7 +124,7 @@ public class LieferungResource {
 		final Long bestellungId = lieferung.getBestellung().getId();
 		final Bestellung bestellung = ls.findBestellungByLieferungId(bestellungId);
 		if (bestellung == null) {
-			throw new NotFoundException(NOT_FOUND_ID, id);
+			throw new NotFoundException(NOT_FOUND_ID_BESTELLUNG, id);
 		}
 		
 		bestellungResource.setStructuralLinks(bestellung, uriInfo);
@@ -158,7 +160,7 @@ public class LieferungResource {
 			return null;
 		}
 		if (lieferung.getBestellung() == null) {
-			throw new NotFoundException(NOT_FOUND_ID, bestellungId);
+			throw new NotFoundException(NOT_FOUND_ID_BESTELLUNG, bestellungId);
 		}
 		return Response.created(getUriLieferung(lieferung, uriInfo)).build();
 	}

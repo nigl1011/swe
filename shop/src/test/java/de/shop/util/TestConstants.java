@@ -37,6 +37,8 @@ public final class TestConstants {
 	public static final String BESTELLUNGEN_ID_KUNDE_URI = BESTELLUNGEN_ID_URI + "/kunde";
 	
 	public static final Long BESTELLUNG_ID = Long.valueOf(400);
+	public static final Long BESTELLUNG_ID_NICHT_VERSCHICKT = Long.valueOf(404);
+	public static final Long BESTELLUNG_ID_NOT_FOUND = Long.valueOf(444);
 	
 	//Artikel
 	public static final String ARTIKEL_URI = BASE_URI + "/artikel";
