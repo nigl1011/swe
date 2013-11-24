@@ -2,9 +2,9 @@ package de.shop.kundenverwaltung.rest;
 
 import static de.shop.util.TestConstants.KUNDEN_ID_URI;
 import static de.shop.util.TestConstants.KUNDEN_URI;
-import static de.shop.util.TestConstants.PASSWORD;
+import static de.shop.util.TestConstants.PASSWORD_MITARBEITER;
 //import static de.shop.util.TestConstants.PASSWORD_ADMIN;
-import static de.shop.util.TestConstants.USERNAME;
+import static de.shop.util.TestConstants.USERNAME_MITARBEITER;
 //import static de.shop.util.TestConstants.USERNAME_ADMIN;
 import static java.net.HttpURLConnection.HTTP_CONFLICT;
 //import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
@@ -79,7 +79,7 @@ public class KundeResourceConcurrencyTest extends AbstractResourceTest {
 			@Override
 			public Integer call() {
 				final Response response = new HttpsConcurrencyHelper()
-				                          .getHttpsClient(USERNAME, PASSWORD)
+				                          .getHttpsClient(USERNAME_MITARBEITER, PASSWORD_MITARBEITER)
                                           .target(KUNDEN_URI)
                                           .request()
                                           .accept(APPLICATION_JSON)
@@ -97,7 +97,7 @@ public class KundeResourceConcurrencyTest extends AbstractResourceTest {
     	// Fehlschlagendes Update
 		// Aus den gelesenen JSON-Werten ein neues JSON-Objekt mit neuem Nachnamen bauen
 		kunde.setNachname(neuerNachname);
-		response = getHttpsClient(USERNAME, PASSWORD).target(KUNDEN_URI)
+		response = getHttpsClient(USERNAME_MITARBEITER, PASSWORD_MITARBEITER).target(KUNDEN_URI)
                                                       .request()
                                                       .accept(APPLICATION_JSON)
                                                       .put(json(kunde));

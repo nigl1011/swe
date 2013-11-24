@@ -8,10 +8,10 @@ import static de.shop.util.TestConstants.BESTELLUNGEN_URI;
 import static de.shop.util.TestConstants.KUNDEN_ID_FILE_URI;
 import static de.shop.util.TestConstants.KUNDEN_ID_URI;
 import static de.shop.util.TestConstants.KUNDEN_URI;
-import static de.shop.util.TestConstants.PASSWORD;
+import static de.shop.util.TestConstants.PASSWORD_MITARBEITER;
 import static de.shop.util.TestConstants.PASSWORD_ADMIN;
 import static de.shop.util.TestConstants.PASSWORD_FALSCH;
-import static de.shop.util.TestConstants.USERNAME;
+import static de.shop.util.TestConstants.USERNAME_MITARBEITER;
 import static de.shop.util.TestConstants.USERNAME_ADMIN;
 import static de.shop.util.TestConstants.VERSION;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
@@ -408,7 +408,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		kunde.setPasswordWdh(neuesPassword);
 		kunde.addRollen(Arrays.asList(RolleType.KUNDE, RolleType.MITARBEITER));
 		
-		Response response = getHttpsClient(USERNAME, PASSWORD).target(KUNDEN_URI)
+		Response response = getHttpsClient(USERNAME_MITARBEITER, PASSWORD_MITARBEITER).target(KUNDEN_URI)
                                                               .request()
                                                               .post(json(kunde));
 			
@@ -479,7 +479,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		kunde.setAdresse(adresse);
 		
 		// When
-		final Response response = getHttpsClient(USERNAME, PASSWORD).target(KUNDEN_URI)
+		final Response response = getHttpsClient(USERNAME_MITARBEITER, PASSWORD_MITARBEITER).target(KUNDEN_URI)
                                                                     .request()
                                                                     .accept(APPLICATION_JSON)
                                                                     // engl. Fehlermeldungen ohne Umlaute ;-)
@@ -545,7 +545,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		};
 		
 		// When
-		final Response response = getHttpsClient(USERNAME, PASSWORD_FALSCH).target(KUNDEN_URI).request().post(json(kunde));
+		final Response response = getHttpsClient(USERNAME_MITARBEITER, PASSWORD_FALSCH).target(KUNDEN_URI).request().post(json(kunde));
 		
 		// Then
 		assertThat(response.getStatus()).isEqualTo(HTTP_UNAUTHORIZED);
@@ -577,7 +577,7 @@ public class KundeResourceTest extends AbstractResourceTest {
             // Nachnamen bauen
             kunde.setNachname(neuerNachname);
 
-            response = getHttpsClient(USERNAME, PASSWORD).target(KUNDEN_URI).request().accept(APPLICATION_JSON)
+            response = getHttpsClient(USERNAME_MITARBEITER, PASSWORD_MITARBEITER).target(KUNDEN_URI).request().accept(APPLICATION_JSON)
                             .put(json(kunde));
             // Then
             assertThat(response.getStatus()).isEqualTo(HTTP_OK);
@@ -585,12 +585,12 @@ public class KundeResourceTest extends AbstractResourceTest {
             assertThat(kunde.getVersion()).isGreaterThan(origVersion);
 
             // Erneutes Update funktioniert, da die Versionsnr. aktualisiert ist
-            response = getHttpsClient(USERNAME, PASSWORD).target(KUNDEN_URI).request().put(json(kunde));
+            response = getHttpsClient(USERNAME_MITARBEITER, PASSWORD_MITARBEITER).target(KUNDEN_URI).request().put(json(kunde));
             assertThat(response.getStatus()).isEqualTo(HTTP_OK);
             response.close();
 
             // Erneutes Update funktioniert NICHT, da die Versionsnr. NICHT aktualisiert ist
-            response = getHttpsClient(USERNAME, PASSWORD).target(KUNDEN_URI).request().put(json(kunde));
+            response = getHttpsClient(USERNAME_MITARBEITER, PASSWORD_MITARBEITER).target(KUNDEN_URI).request().put(json(kunde));
             assertThat(response.getStatus()).isEqualTo(HTTP_CONFLICT);
             response.close();
 
@@ -674,7 +674,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		
 		// When
 		final Response response =
-                       getHttpsClient(USERNAME, PASSWORD).target(KUNDEN_ID_URI)
+                       getHttpsClient(USERNAME_MITARBEITER, PASSWORD_MITARBEITER).target(KUNDEN_ID_URI)
                                                          .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId)
                                                          .request()
                                                          .delete();
@@ -701,7 +701,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		final byte[] uploadBytes = Files.readAllBytes(Paths.get(path));
 		
 		// When
-		Response response = getHttpsClient(USERNAME, PASSWORD).target(KUNDEN_ID_FILE_URI)
+		Response response = getHttpsClient(USERNAME_MITARBEITER, PASSWORD_MITARBEITER).target(KUNDEN_ID_FILE_URI)
                                                               .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM,
                                                             		           kundeId)
                                                               .request()
@@ -721,7 +721,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		// Download der zuvor hochgeladenen Datei
 		byte[] downloadBytes;
 		
-		response = getHttpsClient(USERNAME, PASSWORD).target(KUNDEN_ID_FILE_URI)
+		response = getHttpsClient(USERNAME_MITARBEITER, PASSWORD_MITARBEITER).target(KUNDEN_ID_FILE_URI)
                                                      .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId)
                                                      .request()
                                                      .accept(mimeType)
@@ -755,7 +755,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		
 		// When
 		final Response response =
-				       getHttpsClient(USERNAME, PASSWORD).target(KUNDEN_ID_FILE_URI)
+				       getHttpsClient(USERNAME_MITARBEITER, PASSWORD_MITARBEITER).target(KUNDEN_ID_FILE_URI)
                                                          .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId)
                                                          .request()
                                                          .post(entity(uploadBytes, mimeType));

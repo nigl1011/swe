@@ -55,10 +55,12 @@ public final class TestConstants {
 	public static final String LIEFERUNG_ID_URI = LIEFERUNG_URI + "/{" + LIEFERUNG_ID_PATH_PARAM + "}";
 	
 	// Username und Password
-	public static final String USERNAME = "3";
-	public static final String PASSWORD = "3";
+	public static final String USERNAME_MITARBEITER = "3";
+	public static final String PASSWORD_MITARBEITER = "3";
 	public static final String USERNAME_ADMIN = "2";
 	public static final String PASSWORD_ADMIN = "2";
+	public static final String USERNAME_KUNDE = "6";
+	public static final String PASSWORD_KUNDE = "6";
 	public static final String PASSWORD_FALSCH = "falsch";
 	
 	//Allgemein gültige Attribute

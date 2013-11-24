@@ -6,10 +6,10 @@ import static de.shop.util.TestConstants.ARTIKEL_ID_URI;
 import static de.shop.util.TestConstants.ARTIKEL_URI;
 
 import static de.shop.util.TestConstants.KUNDEN_URI;
-import static de.shop.util.TestConstants.PASSWORD;
+import static de.shop.util.TestConstants.PASSWORD_MITARBEITER;
 import static de.shop.util.TestConstants.PASSWORD_ADMIN;
 import static de.shop.util.TestConstants.PASSWORD_FALSCH;
-import static de.shop.util.TestConstants.USERNAME;
+import static de.shop.util.TestConstants.USERNAME_MITARBEITER;
 import static de.shop.util.TestConstants.USERNAME_ADMIN;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_CONFLICT;
@@ -294,7 +294,7 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
 		artikel.setPreis(preis);
 		
 		// When
-		final Response response = getHttpsClient(USERNAME, PASSWORD).target(KUNDEN_URI)
+		final Response response = getHttpsClient(USERNAME_MITARBEITER, PASSWORD_MITARBEITER).target(KUNDEN_URI)
                                                                     .request()
                                                                     .accept(APPLICATION_JSON)
                                                                     .acceptLanguage(ENGLISH)

@@ -12,8 +12,8 @@ import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 import static de.shop.util.TestConstants.ARTIKEL_STUHL;
 import static de.shop.util.TestConstants.ARTIKEL_DOPPELBETT;
 import static de.shop.util.TestConstants.ARTIKEL_URI;
-import static de.shop.util.TestConstants.USERNAME;
-import static de.shop.util.TestConstants.PASSWORD;
+import static de.shop.util.TestConstants.USERNAME_MITARBEITER;
+import static de.shop.util.TestConstants.PASSWORD_MITARBEITER;
 import static de.shop.util.TestConstants.BESTELLUNGEN_URI;
 import static javax.ws.rs.client.Entity.json;
 
@@ -125,7 +125,7 @@ public class BestellungResourceTest extends AbstractResourceTest {
 		
 		
 		// When		
-		 Response response = getHttpsClient(USERNAME, PASSWORD).target(BESTELLUNGEN_URI)
+		 Response response = getHttpsClient(USERNAME_MITARBEITER, PASSWORD_MITARBEITER).target(BESTELLUNGEN_URI)
 						  			     .request()
 						  			     .accept(APPLICATION_JSON)
 						  			     .post(json(bestellung));

@@ -7,10 +7,13 @@ import static de.shop.util.TestConstants.BESTELLUNGEN_URI;
 import static de.shop.util.TestConstants.LIEFERUNG_URI;
 import static de.shop.util.TestConstants.USERNAME_ADMIN;
 import static de.shop.util.TestConstants.PASSWORD_ADMIN;
+import static de.shop.util.TestConstants.USERNAME_KUNDE;
+import static de.shop.util.TestConstants.PASSWORD_KUNDE;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_CREATED;
+import static java.net.HttpURLConnection.HTTP_FORBIDDEN;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static java.util.Locale.GERMAN;
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -41,7 +44,7 @@ public class LieferungResourceTest extends AbstractResourceTest {
 	 @Test
 	    @InSequence(1)
 	    public void findLieferungByIdVorhanden() {
-	            LOGGER.finer("BEGINN");
+	            LOGGER.finer("BEGINN findLieferungByIdVorhanden");
 
 	            //Given
 	            final Long lieferungId = LIEFERUNG_ID_VORHANDEN;
@@ -57,14 +60,14 @@ public class LieferungResourceTest extends AbstractResourceTest {
 	            assertThat(lieferung.getId()).isEqualTo(lieferungId);
 	            response.close();
 
-	            LOGGER.finer("ENDE");
+	            LOGGER.finer("ENDE findLieferungByIdVorhanden");
 	    }
 	 
 	 
 	 	@Test
 	    @InSequence(2)
 	    public void findLieferungByIdNichtVorhanden() {
-	            LOGGER.finer("BEGINN");
+	            LOGGER.finer("BEGINN findLieferungByIdNichtVorhanden");
 	            
 	            //Given
 	            final Long lieferungId = LIEFERUNG_ID_NICHT_VORHANDEN;
@@ -79,14 +82,14 @@ public class LieferungResourceTest extends AbstractResourceTest {
 	            assertThat(fehlermeldung).startsWith("Keine Lieferung mit der ID").endsWith("gefunden.");
 	            response.close();
 
-	            LOGGER.finer("ENDE");
+	            LOGGER.finer("ENDE findLieferungByIdNichtVorhanden");
 	    }
-	  
-	  
+	 	
+	  	
 	  	@Test
 	  	@InSequence(3)
 	  	public void createLieferungOK () throws URISyntaxException {
-		  LOGGER.finer("BEGINN");
+		  LOGGER.finer("BEGINN createLieferungOK");
 		  
 		  //Given
 		  final Long bestellungId = BESTELLUNG_ID_NICHT_VERSCHICKT;
@@ -120,7 +123,7 @@ public class LieferungResourceTest extends AbstractResourceTest {
 		  assertThat(response.getStatus()).isEqualTo(HTTP_OK);
 		  response.close();
 			
-		  LOGGER.finer("ENDE");
+		  LOGGER.finer("ENDE createLieferungOK");
 	  	}
 	  	
 	  	
@@ -128,7 +131,7 @@ public class LieferungResourceTest extends AbstractResourceTest {
 	  	@Test
 	  	@InSequence(4)
 	  	public void createLieferungNotOK () throws URISyntaxException {
-		  LOGGER.finer("BEGINN");
+		  LOGGER.finer("BEGINN createLieferungNotOK");
 		  
 		  //Given
 		  final Long bestellungId = BESTELLUNG_ID;
@@ -150,6 +153,33 @@ public class LieferungResourceTest extends AbstractResourceTest {
           assertThat(fehlermeldung).startsWith("Die Bestellung mit der ID").endsWith("verschickt.");
           response.close();
 			
-		  LOGGER.finer("ENDE");
+		  LOGGER.finer("ENDE createLieferungNotOK");
+	  	}
+	  	
+	  	
+	  	//Lieferung wird versucht als kunde zu erstellen
+	  	@Test
+	  	@InSequence(5)
+	  	public void createLieferungForbidden () throws URISyntaxException {
+		  LOGGER.finer("BEGINN createLieferungForbidden");
+		  
+		  //Given
+		  final Long bestellungId = BESTELLUNG_ID_NICHT_VERSCHICKT;
+		  
+		  final Lieferung lieferung = new Lieferung();
+		  lieferung.setBestellungUri(new URI(BESTELLUNGEN_URI + "/" + bestellungId));
+		  
+		  //When
+		  Response response = getHttpsClient(USERNAME_KUNDE, PASSWORD_KUNDE).target(LIEFERUNG_URI)
+				  .request()
+				  .accept(APPLICATION_JSON)
+				  .post(json(lieferung));
+				  
+		  //Then
+		  assertThat(response.getStatus()).isEqualTo(HTTP_FORBIDDEN);
+
+          response.close();
+			
+		  LOGGER.finer("ENDE createLieferungForbidden");
 	  	}
 }
