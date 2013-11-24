@@ -8,16 +8,12 @@ import static de.shop.util.TestConstants.ARTIKEL_URI;
 import static de.shop.util.TestConstants.KUNDEN_URI;
 import static de.shop.util.TestConstants.PASSWORD_MITARBEITER;
 import static de.shop.util.TestConstants.PASSWORD_ADMIN;
-import static de.shop.util.TestConstants.PASSWORD_FALSCH;
 import static de.shop.util.TestConstants.USERNAME_MITARBEITER;
 import static de.shop.util.TestConstants.USERNAME_ADMIN;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
-import static java.net.HttpURLConnection.HTTP_CONFLICT;
 import static java.net.HttpURLConnection.HTTP_CREATED;
-import static java.net.HttpURLConnection.HTTP_FORBIDDEN;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static java.net.HttpURLConnection.HTTP_OK;
-import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 import static java.util.Locale.ENGLISH;
 import static java.util.Locale.GERMAN;
 import static javax.ws.rs.client.Entity.json;
@@ -28,7 +24,6 @@ import static org.fest.assertions.api.Assertions.filter;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -39,11 +34,9 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.resteasy.api.validation.ResteasyConstraintViolation;
 import org.jboss.resteasy.api.validation.ViolationReport;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import de.shop.auth.domain.RolleType;
 import de.shop.artikelverwaltung.domain.Artikel;
 import de.shop.artikelverwaltung.domain.KategorieType;
 import de.shop.artikelverwaltung.rest.ArtikelResource;
@@ -71,55 +64,12 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
 	private static final BigDecimal NEUER_PREIS = new BigDecimal("120.60");
 
 	
-	/*
-	private static final String IMAGE_FILENAME = "image.png";
-	private static final String IMAGE_PATH_UPLOAD = "src/test/resources/rest/" + IMAGE_FILENAME;
-	private static final String IMAGE_MIMETYPE = "image/png";
-	private static final String IMAGE_PATH_DOWNLOAD = "target/" + IMAGE_FILENAME;
-	private static final Long KUNDE_ID_UPLOAD = Long.valueOf(6);
-
-	private static final String IMAGE_INVALID = "image.bmp";
-	private static final String IMAGE_INVALID_PATH = "src/test/resources/rest/" + IMAGE_INVALID;
-	private static final String IMAGE_INVALID_MIMETYPE = "image/bmp";
-*/
-
-	
-	
 	@Test
 	@InSequence(1)
 	public void validate() {
 		assertThat(true).isTrue();
 	}
 	
-	
-	/*
-	@Test
-	@InSequence(10)
-	public void findArtikelById() {
-		LOGGER.finer("BEGINN");
-		
-		// Given
-		final Long artikelId = ARTIKEL_ID_VORHANDEN;
-		
-		// When
-		Response response = getHttpsClient().target(ARTIKEL_ID_URI)
-                                            .resolveTemplate(ArtikelResource.ARTIKEL_ID_PATH_PARAM, artikelId)
-                                            .request()
-                                            .accept(APPLICATION_JSON).get();
-	
-		// Then
-		assertThat(response.getStatus()).isEqualTo(HTTP_OK);
-		final Artikel artikel = response.readEntity(Artikel.class);
-		assertThat(artikel.getId()).isEqualTo(artikelId);
-		assertThat(artikel.getBezeichnung()).isNotEmpty();
-		
-		// notwenig?
-		assertThat(response.getLinks()).isNotEmpty();
-		assertThat(response.getLink(SELF_LINK).getUri().toString()).contains(String.valueOf(artikelId));
-		
-		LOGGER.finer("ENDE");
-	}
-	*/
 	
     @Test
     @InSequence(2)
@@ -157,7 +107,7 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
 
 
 	@Test
-	@InSequence(20)
+	@InSequence(4)
 	public void findArtikelByBezeichnungVorhanden() {
 		LOGGER.finer("BEGINN");
 		
@@ -196,7 +146,7 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
 	
 	
 	@Test
-	@InSequence(21)
+	@InSequence(5)
 	public void findArtikelByBezeichungNichtVorhanden() {
 		LOGGER.finer("BEGINN");
 		
@@ -220,7 +170,7 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
 	
 	
 	@Test
-	@InSequence(22)
+	@InSequence(6)
 	public void findArtikelByBezeichnungInvalid() {
 		LOGGER.finer("BEGINN");
 		
@@ -256,11 +206,10 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
 	
 	
 	@Test
-	@InSequence(40)
+	@InSequence(7)
 	public void createArtikel() {
 		LOGGER.finer("BEGINN");
 		
-		// Given
 		final String bezeichnung = NEUE_BEZEICHNUNG;
 		final String farbe = NEUE_FARBE;
 		final KategorieType kategorie = NEUE_KATEGORIE;
@@ -271,13 +220,20 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
 		artikel.setKategorie(kategorie);
 		artikel.setFarbe(farbe);
 		artikel.setPreis(preis);
+		
+	final Response response = getHttpsClient(USERNAME_ADMIN, PASSWORD_ADMIN)
+                  .target(ARTIKEL_URI).request().accept(APPLICATION_JSON)
+                  .acceptLanguage(ENGLISH).post(json(artikel));
+
+   assertThat(response.getStatus()).isEqualTo(HTTP_CREATED);
+   response.close();		
 
 		LOGGER.finer("ENDE");
 	}
 	
 	
 	@Test
-	@InSequence(41)
+	@InSequence(8)
 	public void createArtikelInvalid() {
 		LOGGER.finer("BEGINN");
 		

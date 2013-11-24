@@ -34,7 +34,7 @@ import de.shop.util.HttpsConcurrencyHelper;
 public class ArtikelResourceConcurrencyTest extends AbstractResourceTest {
         private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
 
-        private static final long TIMEOUT = 5;
+        private static final long TIMEOUT = 20;
 
         private static final Long ARTIKEL_ID_UPDATE = Long.valueOf(301);
         private static final String NEUE_BEZEICHNUNG = "Regal";
@@ -67,6 +67,7 @@ public class ArtikelResourceConcurrencyTest extends AbstractResourceTest {
                                 return Integer.valueOf(status);
                         }
                 };
+                
                 final Integer status = Executors.newSingleThreadExecutor().submit(concurrentUpdate).get(TIMEOUT, SECONDS);
                 assertThat(status.intValue()).isEqualTo(HTTP_OK);
 
