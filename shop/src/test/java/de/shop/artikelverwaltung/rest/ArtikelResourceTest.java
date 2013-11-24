@@ -2,12 +2,16 @@ package de.shop.artikelverwaltung.rest;
 
 import static de.shop.util.TestConstants.ARTIKEL_ID_URI;
 import static de.shop.util.TestConstants.ARTIKEL_URI;
-import static de.shop.util.TestConstants.USERNAME_MITARBEITER;
+
+
 import static de.shop.util.TestConstants.PASSWORD_MITARBEITER;
+import static de.shop.util.TestConstants.USERNAME_MITARBEITER;
 import static de.shop.util.TestConstants.USERNAME_KUNDE;
 import static de.shop.util.TestConstants.PASSWORD_KUNDE;
-import static java.net.HttpURLConnection.HTTP_OK;
+//import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+//import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
+import static java.net.HttpURLConnection.HTTP_OK;
 import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
 import static java.net.HttpURLConnection.HTTP_FORBIDDEN;
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
@@ -17,10 +21,15 @@ import static javax.ws.rs.client.Entity.json;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.lang.invoke.MethodHandles;
+
 import java.util.logging.Logger;
 import java.math.BigDecimal;
 
 import org.junit.Ignore;
+import javax.ws.rs.core.Response;
+
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit.InSequence;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -28,10 +37,7 @@ import de.shop.artikelverwaltung.domain.Artikel;
 import de.shop.artikelverwaltung.domain.KategorieType;
 import de.shop.util.AbstractResourceTest;
 
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.junit.InSequence;
 
-import javax.ws.rs.core.Response;
 
 
 
@@ -46,10 +52,11 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
 	private static final String NEUE_FARBE = "neuefarbe";
 	private static final BigDecimal NEUER_PREIS = new BigDecimal(75);
 	private static final Boolean NEUE_VERFÜGBARKEIT = true;
+
 	
     @Test
     @InSequence(1)
-    public void findArtikelByIdVorhanden() {
+    public void findArtikelByIdOk() {
             LOGGER.finer("BEGINN findArtikelByIdOk");
 
             //Given
@@ -88,8 +95,7 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
 
             LOGGER.finer("ENDE findArtikelByIdNotFound");
     }
-    
-    
+
     @Test
     @InSequence(3)
     public void updateArtikelNotFound() {
