@@ -122,7 +122,6 @@ public class ArtikelService implements Serializable {
 		if (artikel == null) {
 			return artikel;
 		}
-		
 		em.persist(artikel);
 		return artikel;
 	}

@@ -47,6 +47,7 @@ import de.shop.util.rest.UriHelper;
 @Log
 public class ArtikelResource {
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
+	private static final String NOT_FOUND_ID = "artikel.notFound.id";
 	
 	// public fuer Testklassen
 	public static final String ARTIKEL_ID_PATH_PARAM = "artikelId";
@@ -89,7 +90,7 @@ public class ArtikelResource {
 	public Response findArtikelById(@PathParam("id") Long id, @Context UriInfo uirInfo) {
 		final Artikel artikel = as.findArtikelById(id);
 		if (artikel == null) {
-			throw new NotFoundException("Kein Artikel mit der ID " + id + " gefunden.");
+			throw new NotFoundException(NOT_FOUND_ID, id);
 		}
 		
 		return Response.ok(artikel)
@@ -151,21 +152,19 @@ public class ArtikelResource {
 		// Vorhandenen Kunden ermitteln
 		final Artikel origArtikel = as.findArtikelById(artikel.getId());
 		if (origArtikel == null) {
-			final String msg = "Kein Artikel gefunden mit der ID " + artikel.getId();
-			throw new NotFoundException(msg);
+			throw new NotFoundException(NOT_FOUND_ID, artikel.getId());
 		}
 		LOGGER.tracef("Artikel vorher: %s", origArtikel);
 	
-		// Daten des vorhandenen Kunden ueberschreiben
+		// Daten des vorhandenen Artikel ueberschreiben
 		origArtikel.setValues(artikel);
-		LOGGER.tracef("Kunde nachher: %s", origArtikel);
+		
+		LOGGER.tracef("Artikel nachher: %s", origArtikel);
 		
 		// Update durchfuehren
 		artikel = as.updateArtikel(origArtikel);
 		if (artikel == null) {
-			
-			final String msg = "Kein Artikel gefunden mit der ID " + origArtikel.getId();
-			throw new NotFoundException(msg);
+			throw new NotFoundException(NOT_FOUND_ID, origArtikel.getId());
 		}
 	
 	}

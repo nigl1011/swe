@@ -23,6 +23,7 @@ import javax.ws.rs.core.Response;
 
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -40,6 +41,7 @@ public class ArtikelResourceConcurrencyTest extends AbstractResourceTest {
         private static final String NEUE_BEZEICHNUNG = "Regal";
         private static final String NEUE_BEZEICHNUNG_2 = "Regal2";
 
+        @Ignore
         @Test
         @InSequence(1)
         public void updateUpdate() throws InterruptedException, ExecutionException, TimeoutException {
