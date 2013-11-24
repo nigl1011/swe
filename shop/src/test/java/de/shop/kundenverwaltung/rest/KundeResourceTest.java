@@ -219,7 +219,8 @@ public class KundeResourceTest extends AbstractResourceTest {
             final String email = KUNDE_EMAIL_VORHANDEN;
 
             final Response response = getHttpsClient().target(KUNDEN_URI)
-                            .queryParam(KundeResource.KUNDEN_EMAIL_QUERY_PARAM, email).request().accept(APPLICATION_JSON).get();
+                            .queryParam(KundeResource.KUNDEN_EMAIL_QUERY_PARAM, email).request()
+                            .accept(APPLICATION_JSON).get();
             assertThat(response.getStatus()).isEqualTo(HTTP_OK);
             final AbstractKunde kunde = response.readEntity(AbstractKunde.class);
             assertThat(kunde.getEmail()).isEqualTo(email);
@@ -235,7 +236,8 @@ public class KundeResourceTest extends AbstractResourceTest {
             final String email = KUNDE_EMAIL_NICHT_VORHANDEN;
 
             final Response response = getHttpsClient().target(KUNDEN_URI)
-                            .queryParam(KundeResource.KUNDEN_EMAIL_QUERY_PARAM, email).request().acceptLanguage(GERMAN).get();
+                            .queryParam(KundeResource.KUNDEN_EMAIL_QUERY_PARAM, email)
+                            .request().acceptLanguage(GERMAN).get();
             assertThat(response.getStatus()).isEqualTo(HTTP_NOT_FOUND);
             final String fehlermeldung = response.readEntity(String.class);
             assertThat(fehlermeldung).startsWith("Kein Kunde mit der Email").endsWith("gefunden.");
@@ -336,8 +338,9 @@ public class KundeResourceTest extends AbstractResourceTest {
 		assertThat(violations).isNotEmpty();
 		
 		final ResteasyConstraintViolation violation =
-				                          filter(violations).with("message")
-                                                            .equalsTo("A lastname must start with exactly one capital letter followed by at least one lower letter, and composed names with \"-\" are allowed.")
+			 filter(violations).with("message")
+                    .equalsTo("A lastname must start with exactly one capital letter followed by"
+                    		+ " at least one lower letter, and composed names with \"-\" are allowed.")
                                                             .get()
                                                             .iterator()
                                                             .next();
@@ -498,14 +501,17 @@ public class KundeResourceTest extends AbstractResourceTest {
 		
 		ResteasyConstraintViolation violation =
 				                    filter(violations).with("message")
-                                                      .equalsTo("A lastname must have at least 2 and may only have up to 32 characters.")
+                                                      .equalsTo("A lastname must have at least 2 and may"
+                                                      		+ " only have up to 32 characters.")
                                                       .get()
                                                       .iterator()
                                                       .next();
 		assertThat(violation.getValue()).isEqualTo(String.valueOf(nachname));
 		
 		violation = filter(violations).with("message")
-                                      .equalsTo("A lastname must start with exactly one capital letter followed by at least one lower letter, and composed names with \"-\" are allowed.")
+                                      .equalsTo("A lastname must start with exactly one "
+                                      		+ "capital letter followed by at least one lower"
+                                      		+ " letter, and composed names with \"-\" are allowed.")
                                       .get().iterator().next();
 		assertThat(violation.getValue()).isEqualTo(String.valueOf(nachname));
 
@@ -545,7 +551,8 @@ public class KundeResourceTest extends AbstractResourceTest {
 		};
 		
 		// When
-		final Response response = getHttpsClient(USERNAME_MITARBEITER, PASSWORD_FALSCH).target(KUNDEN_URI).request().post(json(kunde));
+		final Response response = getHttpsClient(USERNAME_MITARBEITER, PASSWORD_FALSCH).target(KUNDEN_URI)
+				.request().post(json(kunde));
 		
 		// Then
 		assertThat(response.getStatus()).isEqualTo(HTTP_UNAUTHORIZED);
@@ -577,7 +584,8 @@ public class KundeResourceTest extends AbstractResourceTest {
             // Nachnamen bauen
             kunde.setNachname(neuerNachname);
 
-            response = getHttpsClient(USERNAME_MITARBEITER, PASSWORD_MITARBEITER).target(KUNDEN_URI).request().accept(APPLICATION_JSON)
+            response = getHttpsClient(USERNAME_MITARBEITER, PASSWORD_MITARBEITER).target(KUNDEN_URI)
+            		.request().accept(APPLICATION_JSON)
                             .put(json(kunde));
             // Then
             assertThat(response.getStatus()).isEqualTo(HTTP_OK);
@@ -585,12 +593,14 @@ public class KundeResourceTest extends AbstractResourceTest {
             assertThat(kunde.getVersion()).isGreaterThan(origVersion);
 
             // Erneutes Update funktioniert, da die Versionsnr. aktualisiert ist
-            response = getHttpsClient(USERNAME_MITARBEITER, PASSWORD_MITARBEITER).target(KUNDEN_URI).request().put(json(kunde));
+            response = getHttpsClient(USERNAME_MITARBEITER, PASSWORD_MITARBEITER).target(KUNDEN_URI)
+            		.request().put(json(kunde));
             assertThat(response.getStatus()).isEqualTo(HTTP_OK);
             response.close();
 
             // Erneutes Update funktioniert NICHT, da die Versionsnr. NICHT aktualisiert ist
-            response = getHttpsClient(USERNAME_MITARBEITER, PASSWORD_MITARBEITER).target(KUNDEN_URI).request().put(json(kunde));
+            response = getHttpsClient(USERNAME_MITARBEITER, PASSWORD_MITARBEITER).target(KUNDEN_URI)
+            		.request().put(json(kunde));
             assertThat(response.getStatus()).isEqualTo(HTTP_CONFLICT);
             response.close();
 
@@ -648,11 +658,10 @@ public class KundeResourceTest extends AbstractResourceTest {
 		// When
 		final Response response =
 				       getHttpsClient(USERNAME_ADMIN, PASSWORD_ADMIN).target(KUNDEN_ID_URI)
-                                                                   .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM,
-                                                                                    kundeId)
-                                                                   .request()
-                                                                   .acceptLanguage(GERMAN)
-                                                                   .delete();
+                                  .resolveTemplate(KundeResource.KUNDEN_ID_PATH_PARAM, kundeId)
+                                               .request()
+                                               .acceptLanguage(GERMAN)
+                                               .delete();
 		
 		// Then
 		assertThat(response.getStatus()).isEqualTo(HTTP_BAD_REQUEST);
@@ -726,7 +735,7 @@ public class KundeResourceTest extends AbstractResourceTest {
                                                      .request()
                                                      .accept(mimeType)
                                                      .get();
-		downloadBytes = response.readEntity(new GenericType<byte[]>() { } );
+		downloadBytes = response.readEntity(new GenericType<byte[]>() { });
 		
 		// Then (2)
 		assertThat(uploadBytes.length).isEqualTo(downloadBytes.length);
