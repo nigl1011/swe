@@ -240,7 +240,7 @@ public class BestellungResourceTest extends AbstractResourceTest {
 		final List<ResteasyConstraintViolation> violations = violationReport.getParameterViolations();
 		assertThat(violations).isNotEmpty();
 		
-		ResteasyConstraintViolation violation = 
+		final ResteasyConstraintViolation violation = 
 									filter(violations).with("message")
 													  .equalsTo("At least one order item is required.")
 													  .get()
