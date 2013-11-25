@@ -1,4 +1,3 @@
-
 package de.shop.artikelverwaltung.rest;
 
 import static de.shop.util.TestConstants.ARTIKEL_ID_URI;
@@ -52,7 +51,8 @@ public class ArtikelResourceConcurrencyTest extends AbstractResourceTest {
                 final String neueBezeichnung2 = NEUE_BEZEICHNUNG_2;
 
                 Response response = getHttpsClient().target(ARTIKEL_ID_URI)
-                                .resolveTemplate(ArtikelResource.ARTIKEL_ID_PATH_PARAM, artikelId).request().accept(APPLICATION_JSON)
+                                .resolveTemplate(ArtikelResource.ARTIKEL_ID_PATH_PARAM, artikelId)
+                                .request().accept(APPLICATION_JSON)
                                 .get();
 
                 final Artikel artikel = response.readEntity(Artikel.class);
@@ -62,15 +62,18 @@ public class ArtikelResourceConcurrencyTest extends AbstractResourceTest {
                 final Callable<Integer> concurrentUpdate = new Callable<Integer>() {
                         @Override
                         public Integer call() {
-                                final Response response = new HttpsConcurrencyHelper().getHttpsClient(USERNAME_ADMIN, PASSWORD_ADMIN)
-                                                .target(ARTIKEL_URI).request().accept(APPLICATION_JSON).put(json(artikel));
+                                final Response response = new HttpsConcurrencyHelper()
+                                .getHttpsClient(USERNAME_ADMIN, PASSWORD_ADMIN)
+                                .target(ARTIKEL_URI).request().accept(APPLICATION_JSON).put(json(artikel));
+                                
                                 final int status = response.getStatus();
                                 response.close();
                                 return Integer.valueOf(status);
                         }
                 };
                 
-                final Integer status = Executors.newSingleThreadExecutor().submit(concurrentUpdate).get(TIMEOUT, SECONDS);
+                final Integer status = Executors.newSingleThreadExecutor()
+                								.submit(concurrentUpdate).get(TIMEOUT, SECONDS);
                 assertThat(status.intValue()).isEqualTo(HTTP_OK);
 
                 artikel.setBezeichnung(neueBezeichnung);

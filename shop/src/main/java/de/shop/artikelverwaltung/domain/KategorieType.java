@@ -1,7 +1,5 @@
 package de.shop.artikelverwaltung.domain;
 
-import de.shop.artikelverwaltung.domain.KategorieType;
-
 //TODO TypeConverter für Kategorie implementieren und load.sql anpassen!
 public enum KategorieType {
 	SCHLAFZIMMER("schlafzimmer"),

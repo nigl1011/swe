@@ -103,7 +103,7 @@ public class ArtikelResource {
                               .rel(SELF_LINK)
                               .build();
 
-		return new Link[] { self };
+		return new Link[] {self};
 	}
 	
 	//TODO @DefaultValue("") kann bei Enums nicht klappen und hier krachts auch. Loesung: Wrapper

@@ -42,7 +42,7 @@ import de.shop.util.AbstractResourceTest;
 
 
 @RunWith(Arquillian.class)
-public class ArtikelResourceTest extends AbstractResourceTest{
+public class ArtikelResourceTest extends AbstractResourceTest {
 private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
 	
 	private static final Long ARTIKEL_ID_VORHANDEN = Long.valueOf(301);
@@ -51,7 +51,7 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
 	private static final Short NEUE_VERSION = 1;
 	private static final String NEUE_FARBE = "neuefarbe";
 	private static final BigDecimal NEUER_PREIS = new BigDecimal(75);
-	private static final Boolean NEUE_VERFÜGBARKEIT = true;
+	private static final Boolean NEUE_VERFUEGBARKEIT = true;
 
 	
     @Test
@@ -105,7 +105,7 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
             final Long artikelId = ARTIKEL_ID_NICHT_VORHANDEN;
 
             //When
-            Response response = getHttpsClient().target(ARTIKEL_ID_URI)
+           final Response response = getHttpsClient().target(ARTIKEL_ID_URI)
                             					.resolveTemplate(ArtikelResource.ARTIKEL_ID_PATH_PARAM, artikelId)
                             					.request()
                             					.accept(APPLICATION_JSON)
@@ -136,7 +136,7 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
                             					.accept(APPLICATION_JSON)
                             					.get();
             
-            Artikel artikel = response.readEntity(Artikel.class);
+            final Artikel artikel = response.readEntity(Artikel.class);
             assertThat(artikel.getId()).isEqualTo(artikelId);
 
             response.close();
@@ -224,7 +224,7 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
                             					.accept(APPLICATION_JSON)
                             					.get();
             
-            Artikel artikel = response.readEntity(Artikel.class);
+            final Artikel artikel = response.readEntity(Artikel.class);
             assertThat(artikel.getId()).isEqualTo(artikelId);
 
             response.close();
@@ -255,10 +255,10 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
     	artikel.setVersion(NEUE_VERSION);
     	artikel.setKategorie(KategorieType.KUECHE);
     	artikel.setPreis(NEUER_PREIS);
-    	artikel.setVerfuegbar(NEUE_VERFÜGBARKEIT);
+    	artikel.setVerfuegbar(NEUE_VERFUEGBARKEIT);
     	artikel.setFarbe(NEUE_FARBE);
     	
-    	Response response = getHttpsClient().target(ARTIKEL_URI)
+    	final Response response = getHttpsClient().target(ARTIKEL_URI)
 					.request()
 					.accept(APPLICATION_JSON)
 					.put(json(artikel));
@@ -281,10 +281,10 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
     	artikel.setVersion(NEUE_VERSION);
     	artikel.setKategorie(KategorieType.KUECHE);
     	artikel.setPreis(NEUER_PREIS);
-    	artikel.setVerfuegbar(NEUE_VERFÜGBARKEIT);
+    	artikel.setVerfuegbar(NEUE_VERFUEGBARKEIT);
     	artikel.setFarbe(NEUE_FARBE);
     	
-    	Response response = getHttpsClient(USERNAME_KUNDE, PASSWORD_KUNDE).target(ARTIKEL_URI)
+    	final Response response = getHttpsClient(USERNAME_KUNDE, PASSWORD_KUNDE).target(ARTIKEL_URI)
 					.request()
 					.accept(APPLICATION_JSON)
 					.put(json(artikel));

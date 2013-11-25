@@ -8,7 +8,7 @@ import javax.persistence.Converter;
 */
 
 @Converter(autoApply = true)
-public class KategorieTypeConverter implements AttributeConverter<KategorieType, String>{
+public class KategorieTypeConverter implements AttributeConverter<KategorieType, String> {
 
 		@Override
 		public String convertToDatabaseColumn(KategorieType kategorieType) {
