@@ -10,7 +10,6 @@ import static de.shop.util.TestConstants.USERNAME_KUNDE;
 import static de.shop.util.TestConstants.PASSWORD_KUNDE;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static java.net.HttpURLConnection.HTTP_OK;
-import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
 import static java.net.HttpURLConnection.HTTP_FORBIDDEN;
 import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
@@ -187,7 +186,7 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
             																		.put(json(artikel));
             
             //Then
-            assertThat(response.getStatus()).isEqualTo(HTTP_NO_CONTENT);
+            assertThat(response.getStatus()).isEqualTo(HTTP_OK);
 
             response.close();
             
