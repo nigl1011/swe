@@ -3,8 +3,8 @@ package de.shop.artikelverwaltung.rest;
 import static de.shop.util.TestConstants.ARTIKEL_ID_URI;
 import static de.shop.util.TestConstants.ARTIKEL_URI;
 import static de.shop.util.TestConstants.ARTIKEL_ID_PATH_PARAM;
-import static de.shop.util.TestConstants.PASSWORD_ADMIN;
-import static de.shop.util.TestConstants.USERNAME_ADMIN;
+import static de.shop.util.TestConstants.PASSWORD_MITARBEITER;
+import static de.shop.util.TestConstants.USERNAME_MITARBEITER;
 import static java.net.HttpURLConnection.HTTP_CONFLICT;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -34,7 +34,7 @@ import de.shop.util.HttpsConcurrencyHelper;
 public class ArtikelResourceConcurrencyTest extends AbstractResourceTest {
         private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
 
-        private static final long TIMEOUT = 5;
+        private static final long TIMEOUT = 20;
 
         private static final Long ARTIKEL_ID_UPDATE = Long.valueOf(302);
         private static final String NEUE_BEZEICHNUNG = "Bett";
@@ -60,12 +60,14 @@ public class ArtikelResourceConcurrencyTest extends AbstractResourceTest {
                 final Artikel artikel = response.readEntity(Artikel.class);
 
                 artikel.setBezeichnung(neueBezeichnung2);
+                
+                response.close();
 
                 final Callable<Integer> concurrentUpdate = new Callable<Integer>() {
                         @Override
                         public Integer call() {
                                 final Response response = new HttpsConcurrencyHelper()
-                                .getHttpsClient(USERNAME_ADMIN, PASSWORD_ADMIN)
+                                .getHttpsClient(USERNAME_MITARBEITER, PASSWORD_MITARBEITER)
                                 .target(ARTIKEL_URI)
                                 .request()
                                 .accept(APPLICATION_JSON)
@@ -84,7 +86,7 @@ public class ArtikelResourceConcurrencyTest extends AbstractResourceTest {
                 assertThat(status.intValue()).isEqualTo(HTTP_OK);
 
                 artikel.setBezeichnung(neueBezeichnung);
-                response = getHttpsClient(USERNAME_ADMIN, PASSWORD_ADMIN)
+                response = getHttpsClient(USERNAME_MITARBEITER, PASSWORD_MITARBEITER)
                 				.target(ARTIKEL_URI)
                 				.request()
                                 .accept(APPLICATION_JSON)

@@ -47,11 +47,11 @@ INSERT INTO wartungsvertrag (nr, datum, inhalt, kunde_fk, idx, erzeugt, aktualis
 INSERT INTO wartungsvertrag (nr, datum, inhalt, kunde_fk, idx, erzeugt, aktualisiert, version) VALUES (1,'30.06.2006','Wartungsvertrag_1_K102',4,0,'03.08.2006 00:00:00','03.08.2006 00:00:00',1);
 
 --artikel
-INSERT INTO artikel (id, version, aktualisiert, bezeichnung, erstellt, farbe, kategorie, preis, verfuegbar) VALUES (300,1,'01.08.2006 00:00:00','Stuhl','01.08.2006 00:00:00','pink','kueche',119,1);
-INSERT INTO artikel (id, version, aktualisiert, bezeichnung, erstellt, farbe, kategorie, preis, verfuegbar) VALUES (301,1,'01.08.2006 00:00:00','Werkbank','01.08.2006 00:00:00','braun','werkstatt',119,1);
-INSERT INTO artikel (id, version, aktualisiert, bezeichnung, erstellt, farbe, kategorie, preis, verfuegbar) VALUES (302,1,'01.08.2006 00:00:00','Doppelbett','01.08.2006 00:00:00','schwarz','schlafzimmer',299,1);
-INSERT INTO artikel (id, version, aktualisiert, bezeichnung, erstellt, farbe, kategorie, preis, verfuegbar) VALUES (303,1,'01.08.2006 00:00:00','Buerostuhl','01.08.2006 00:00:00','schwarz','buero',890,1);
-INSERT INTO artikel (id, version, aktualisiert, bezeichnung, erstellt, farbe, kategorie, preis, verfuegbar) VALUES (304,1,'01.08.2006 00:00:00','Arbeitsplatte','01.08.2006 00:00:00','hellbraun','werkstatt',169,1);
+INSERT INTO artikel (id, version, aktualisiert, bezeichnung, erstellt, farbe, kategorie, preis, verfuegbar) VALUES (300,1,'01.08.2006 00:00:00','Stuhl','01.08.2006 00:00:00','Pink','kueche',119,1);
+INSERT INTO artikel (id, version, aktualisiert, bezeichnung, erstellt, farbe, kategorie, preis, verfuegbar) VALUES (301,1,'01.08.2006 00:00:00','Werkbank','01.08.2006 00:00:00','Braun','werkstatt',119,1);
+INSERT INTO artikel (id, version, aktualisiert, bezeichnung, erstellt, farbe, kategorie, preis, verfuegbar) VALUES (302,1,'01.08.2006 00:00:00','Doppelbett','01.08.2006 00:00:00','Schwarz','schlafzimmer',299,1);
+INSERT INTO artikel (id, version, aktualisiert, bezeichnung, erstellt, farbe, kategorie, preis, verfuegbar) VALUES (303,1,'01.08.2006 00:00:00','Buerostuhl','01.08.2006 00:00:00','Schwarz','buero',890,1);
+INSERT INTO artikel (id, version, aktualisiert, bezeichnung, erstellt, farbe, kategorie, preis, verfuegbar) VALUES (304,1,'01.08.2006 00:00:00','Arbeitsplatte','01.08.2006 00:00:00','Hellbraun','werkstatt',169,1);
 
 --bestellung
 INSERT INTO bestellung (id, version, kunde_fk, idx, status, erzeugt, aktualisiert) VALUES (400,1,2,0,'V','01.08.2006 00:00:00','01.08.2006 00:00:00');
