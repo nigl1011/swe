@@ -4,7 +4,7 @@ import static de.shop.util.Constants.FIRST_LINK;
 import static de.shop.util.Constants.LAST_LINK;
 import static de.shop.util.Constants.SELF_LINK;
 import static de.shop.util.TestConstants.ARTIKEL_URI;
-import static de.shop.util.TestConstants.BESTELLUNGEN_URI;
+import static de.shop.util.TestConstants.BESTELLUNG_URI;
 import static de.shop.util.TestConstants.KUNDEN_ID_FILE_URI;
 import static de.shop.util.TestConstants.KUNDEN_ID_URI;
 import static de.shop.util.TestConstants.KUNDEN_URI;
@@ -438,7 +438,7 @@ public class KundeResourceTest extends AbstractResourceTest {
 		bestellung.addBestellposition(bp);
 		
 		// Then (2)
-		response = getHttpsClient(username, neuesPassword).target(BESTELLUNGEN_URI)
+		response = getHttpsClient(username, neuesPassword).target(BESTELLUNG_URI)
                                                           .request()
                                                           .post(json(bestellung));
 

@@ -31,10 +31,10 @@ public final class TestConstants {
 	public static final String KUNDEN_ID_FILE_URI = KUNDEN_ID_URI + "/file";
 	
 	// Bestellung
-	public static final String BESTELLUNGEN_URI = BASE_URI + "/bestellung";
-	public static final String BESTELLUNGEN_ID_PATH_PARAM = "bestellungId";
-	public static final String BESTELLUNGEN_ID_URI = BESTELLUNGEN_URI + "/{" + BESTELLUNGEN_ID_PATH_PARAM + "}";
-	public static final String BESTELLUNGEN_ID_KUNDE_URI = BESTELLUNGEN_ID_URI + "/kunde";
+	public static final String BESTELLUNG_URI = BASE_URI + "/bestellung";
+	public static final String BESTELLUNG_ID_PATH_PARAM = "bestellungId";
+	public static final String BESTELLUNG_ID_URI = BESTELLUNG_URI + "/{" + BESTELLUNG_ID_PATH_PARAM + "}";
+	public static final String BESTELLUNG_ID_KUNDE_URI = BESTELLUNG_ID_URI + "/kunde";
 	
 	public static final Long BESTELLUNG_ID = Long.valueOf(400);
 	public static final Long BESTELLUNG_ID_NICHT_VERSCHICKT = Long.valueOf(404);
@@ -48,6 +48,7 @@ public final class TestConstants {
 	
 	public static final Long ARTIKEL_STUHL = Long.valueOf(300);
 	public static final Long ARTIKEL_DOPPELBETT = Long.valueOf(301);
+	public static final short ARTIKEL_ANZAHL_INVALID = 0;
 	
 	//Lieferung
 	public static final String LIEFERUNG_URI = BASE_URI + "/lieferung";
