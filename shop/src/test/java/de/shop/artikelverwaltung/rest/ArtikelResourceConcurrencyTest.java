@@ -2,6 +2,7 @@ package de.shop.artikelverwaltung.rest;
 
 import static de.shop.util.TestConstants.ARTIKEL_ID_URI;
 import static de.shop.util.TestConstants.ARTIKEL_URI;
+import static de.shop.util.TestConstants.ARTIKEL_ID_PATH_PARAM;
 import static de.shop.util.TestConstants.PASSWORD_ADMIN;
 import static de.shop.util.TestConstants.USERNAME_ADMIN;
 import static java.net.HttpURLConnection.HTTP_CONFLICT;
@@ -22,7 +23,6 @@ import javax.ws.rs.core.Response;
 
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -36,28 +36,29 @@ public class ArtikelResourceConcurrencyTest extends AbstractResourceTest {
 
         private static final long TIMEOUT = 20;
 
-        private static final Long ARTIKEL_ID_UPDATE = Long.valueOf(301);
-        private static final String NEUE_BEZEICHNUNG = "Regal";
-        private static final String NEUE_BEZEICHNUNG_2 = "Regal2";
+        private static final Long ARTIKEL_ID_UPDATE = Long.valueOf(302);
+        private static final String NEUE_BEZEICHNUNG_A = "Bett A";
+        private static final String NEUE_BEZEICHNUNG_B = "Bett B";
 
-        @Ignore
         @Test
-        @InSequence(1)
+        @InSequence(50)
         public void updateUpdate() throws InterruptedException, ExecutionException, TimeoutException {
                 LOGGER.finer("BEGINN");
 
+                // Given
                 final Long artikelId = ARTIKEL_ID_UPDATE;
-                final String neueBezeichnung = NEUE_BEZEICHNUNG;
-                final String neueBezeichnung2 = NEUE_BEZEICHNUNG_2;
+                final String neueBezeichnungA = NEUE_BEZEICHNUNG_A;
+                final String neueBezeichnungB = NEUE_BEZEICHNUNG_B;
 
+                // When
                 Response response = getHttpsClient().target(ARTIKEL_ID_URI)
-                                .resolveTemplate(ArtikelResource.ARTIKEL_ID_PATH_PARAM, artikelId)
+                                .resolveTemplate(ARTIKEL_ID_PATH_PARAM, artikelId)
                                 .request().accept(APPLICATION_JSON)
                                 .get();
 
                 final Artikel artikel = response.readEntity(Artikel.class);
 
-                artikel.setBezeichnung(neueBezeichnung2);
+                artikel.setBezeichnung(neueBezeichnungB);
 
                 final Callable<Integer> concurrentUpdate = new Callable<Integer>() {
                         @Override
@@ -74,12 +75,14 @@ public class ArtikelResourceConcurrencyTest extends AbstractResourceTest {
                 
                 final Integer status = Executors.newSingleThreadExecutor()
                 								.submit(concurrentUpdate).get(TIMEOUT, SECONDS);
+               
                 assertThat(status.intValue()).isEqualTo(HTTP_OK);
 
-                artikel.setBezeichnung(neueBezeichnung);
+                artikel.setBezeichnung(neueBezeichnungA);
                 response = getHttpsClient(USERNAME_ADMIN, PASSWORD_ADMIN).target(ARTIKEL_URI).request()
                                 .accept(APPLICATION_JSON).put(json(artikel));
 
+                // Then
                 assertThat(response.getStatus()).isEqualTo(HTTP_CONFLICT);
                 response.close();
 
