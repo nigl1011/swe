@@ -8,12 +8,11 @@ import static de.shop.util.TestConstants.PASSWORD_MITARBEITER;
 import static de.shop.util.TestConstants.USERNAME_MITARBEITER;
 import static de.shop.util.TestConstants.USERNAME_KUNDE;
 import static de.shop.util.TestConstants.PASSWORD_KUNDE;
-//import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
-//import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
 import static java.net.HttpURLConnection.HTTP_FORBIDDEN;
+import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 import static java.util.Locale.GERMAN;
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -21,11 +20,9 @@ import static javax.ws.rs.client.Entity.json;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.lang.invoke.MethodHandles;
-
 import java.util.logging.Logger;
 import java.math.BigDecimal;
 
-import org.junit.Ignore;
 import javax.ws.rs.core.Response;
 
 import org.jboss.arquillian.junit.Arquillian;
@@ -47,11 +44,13 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
 	
 	private static final Long ARTIKEL_ID_VORHANDEN = Long.valueOf(301);
 	private static final Long ARTIKEL_ID_NICHT_VORHANDEN = Long.valueOf(350);
-	private static final String NEUE_BEZEICHNUNG = "neuerartikel";
-	private static final Short NEUE_VERSION = 1;
-	private static final String NEUE_FARBE = "neuefarbe";
-	private static final BigDecimal NEUER_PREIS = new BigDecimal(75);
-	private static final Boolean NEUE_VERFUEGBARKEIT = true;
+	
+	private static final String NEUE_BEZEICHNUNG = "Neuerartikel";
+	private static final int NEUE_VERSION = 1;
+	private static final String NEUE_FARBE = "Neuefarbe";
+	private static final BigDecimal NEUER_PREIS = new BigDecimal(75.5);
+	private static final boolean NEUE_VERFUEGBARKEIT = true;
+	private static final KategorieType NEUE_KATEGORIE = KategorieType.KUECHE;
 
 	
     @Test
@@ -157,8 +156,7 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
             LOGGER.finer("ENDE updateArtikelUnauthorized");
     }
 
-    //geht leider plötzlich nicht mehr
-    @Ignore
+    
     @Test
     @InSequence(5)
     public void updateArtikelNoContent() {
@@ -249,7 +247,7 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
     @InSequence(7)
     public void createArtikelUnauthorized() {
     	LOGGER.finer("BEGIN createArtikelUnauthorized");
-    	
+    	//Given
     	final Artikel artikel = new Artikel(); 
     	artikel.setBezeichnung(NEUE_BEZEICHNUNG);
     	artikel.setVersion(NEUE_VERSION);
@@ -258,11 +256,13 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
     	artikel.setVerfuegbar(NEUE_VERFUEGBARKEIT);
     	artikel.setFarbe(NEUE_FARBE);
     	
+    	//When
     	final Response response = getHttpsClient().target(ARTIKEL_URI)
 					.request()
 					.accept(APPLICATION_JSON)
-					.put(json(artikel));
+					.post(json(artikel));
     	
+    	//Then
     	assertThat(response.getStatus()).isEqualTo(HTTP_UNAUTHORIZED);
     	
     	response.close();
@@ -276,6 +276,7 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
     public void createArtikelForbidden() {
     	LOGGER.finer("BEGIN createArtikelUnauthorized");
     	
+    	//Given
     	final Artikel artikel = new Artikel(); 
     	artikel.setBezeichnung(NEUE_BEZEICHNUNG);
     	artikel.setVersion(NEUE_VERSION);
@@ -284,15 +285,60 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
     	artikel.setVerfuegbar(NEUE_VERFUEGBARKEIT);
     	artikel.setFarbe(NEUE_FARBE);
     	
+    	//When
     	final Response response = getHttpsClient(USERNAME_KUNDE, PASSWORD_KUNDE).target(ARTIKEL_URI)
 					.request()
 					.accept(APPLICATION_JSON)
-					.put(json(artikel));
+					.post(json(artikel));
     	
+    	//Then
     	assertThat(response.getStatus()).isEqualTo(HTTP_FORBIDDEN);
     	
     	response.close();
     	
     	LOGGER.finer("ENDE createArtikelUnauthorized");
+    }
+    
+    @Test
+    @InSequence(9)
+    public void createArtikelCreated() {
+    	LOGGER.finer("BEGIN createArtikelCreated");
+    	
+    	//Given
+    	final Artikel artikel = new Artikel(); 
+    	artikel.setBezeichnung(NEUE_BEZEICHNUNG);
+    	artikel.setVersion(NEUE_VERSION);
+    	artikel.setKategorie(NEUE_KATEGORIE);
+    	artikel.setPreis(NEUER_PREIS);
+    	artikel.setVerfuegbar(NEUE_VERFUEGBARKEIT);
+    	artikel.setFarbe(NEUE_FARBE);
+    	
+    	//When
+    	Response response = getHttpsClient(USERNAME_MITARBEITER, PASSWORD_MITARBEITER).target(ARTIKEL_URI)
+					.request()
+					.accept(APPLICATION_JSON)
+					.post(json(artikel));
+    	
+    	
+    	//Then
+    	assertThat(response.getStatus()).isEqualTo(HTTP_CREATED);
+		final String location = response.getLocation().toString();
+    	
+    	response.close();
+    	
+    	final int startPos = location.lastIndexOf('/');
+		final String idStr = location.substring(startPos + 1);
+		Long id = Long.valueOf(idStr);
+		assertThat(id).isPositive();
+		
+    	response = getHttpsClient().target(ARTIKEL_ID_URI)
+                .resolveTemplate(ArtikelResource.ARTIKEL_ID_PATH_PARAM, id)
+                .request().accept(APPLICATION_JSON).get();
+    	
+    	assertThat(response.getStatus()).isEqualTo(HTTP_OK);
+    	
+    	response.close();
+    	
+    	LOGGER.finer("ENDE createArtikelCreated");
     }
 }
