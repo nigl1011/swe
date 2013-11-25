@@ -3,7 +3,7 @@ package de.shop.lieferverwaltung.rest;
 import static de.shop.util.TestConstants.LIEFERUNG_ID_URI;
 import static de.shop.util.TestConstants.BESTELLUNG_ID;
 import static de.shop.util.TestConstants.BESTELLUNG_ID_NICHT_VERSCHICKT;
-import static de.shop.util.TestConstants.BESTELLUNGEN_URI;
+import static de.shop.util.TestConstants.BESTELLUNG_URI;
 import static de.shop.util.TestConstants.LIEFERUNG_URI;
 import static de.shop.util.TestConstants.USERNAME_ADMIN;
 import static de.shop.util.TestConstants.PASSWORD_ADMIN;
@@ -95,7 +95,7 @@ public class LieferungResourceTest extends AbstractResourceTest {
 		  final Long bestellungId = BESTELLUNG_ID_NICHT_VERSCHICKT;
 		  
 		  final Lieferung lieferung = new Lieferung();
-		  lieferung.setBestellungUri(new URI(BESTELLUNGEN_URI + "/" + bestellungId));
+		  lieferung.setBestellungUri(new URI(BESTELLUNG_URI + "/" + bestellungId));
 		  
 		  //When
 		  Response response = getHttpsClient(USERNAME_ADMIN, PASSWORD_ADMIN).target(LIEFERUNG_URI)
@@ -137,7 +137,7 @@ public class LieferungResourceTest extends AbstractResourceTest {
 		  final Long bestellungId = BESTELLUNG_ID;
 		  
 		  final Lieferung lieferung = new Lieferung();
-		  lieferung.setBestellungUri(new URI(BESTELLUNGEN_URI + "/" + bestellungId));
+		  lieferung.setBestellungUri(new URI(BESTELLUNG_URI + "/" + bestellungId));
 		  
 		  //When
 		  Response response = getHttpsClient(USERNAME_ADMIN, PASSWORD_ADMIN).target(LIEFERUNG_URI)
@@ -167,7 +167,7 @@ public class LieferungResourceTest extends AbstractResourceTest {
 		  final Long bestellungId = BESTELLUNG_ID_NICHT_VERSCHICKT;
 		  
 		  final Lieferung lieferung = new Lieferung();
-		  lieferung.setBestellungUri(new URI(BESTELLUNGEN_URI + "/" + bestellungId));
+		  lieferung.setBestellungUri(new URI(BESTELLUNG_URI + "/" + bestellungId));
 		  
 		  //When
 		  Response response = getHttpsClient(USERNAME_KUNDE, PASSWORD_KUNDE).target(LIEFERUNG_URI)

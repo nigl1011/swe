@@ -2,34 +2,44 @@ package de.shop.bestellverwaltung.rest;
 
 import static de.shop.util.TestConstants.BESTELLUNG_ID_EXISTS;
 import static de.shop.util.TestConstants.NO_ID;
-import static de.shop.util.TestConstants.BESTELLUNGEN_ID_URI;
-import static de.shop.util.TestConstants.BESTELLUNGEN_ID_PATH_PARAM;
+import static de.shop.util.TestConstants.BESTELLUNG_ID_URI;
+import static de.shop.util.TestConstants.BESTELLUNG_ID_PATH_PARAM;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static de.shop.util.TestConstants.ARTIKEL_STUHL;
 import static de.shop.util.TestConstants.ARTIKEL_DOPPELBETT;
 import static de.shop.util.TestConstants.ARTIKEL_URI;
 import static de.shop.util.TestConstants.USERNAME_MITARBEITER;
 import static de.shop.util.TestConstants.PASSWORD_MITARBEITER;
-import static de.shop.util.TestConstants.BESTELLUNGEN_URI;
+import static de.shop.util.TestConstants.BESTELLUNG_URI;
+import static de.shop.util.TestConstants.ARTIKEL_ANZAHL_INVALID;
+import static java.util.Locale.ENGLISH;
 import static javax.ws.rs.client.Entity.json;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import static org.fest.assertions.api.Assertions.assertThat;
+import static org.fest.assertions.api.Assertions.filter;
 
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 import java.util.logging.Logger;
+
+
+
 
 
 import javax.ws.rs.core.Response;
 
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
+import org.jboss.resteasy.api.validation.ResteasyConstraintViolation;
+import org.jboss.resteasy.api.validation.ViolationReport;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -57,8 +67,8 @@ public class BestellungResourceTest extends AbstractResourceTest {
 		final Long bestellungId = Long.valueOf(BESTELLUNG_ID_EXISTS);
 		
 		//When
-		final Response response = getHttpsClient().target(BESTELLUNGEN_ID_URI)
-				                                  .resolveTemplate(BESTELLUNGEN_ID_PATH_PARAM, bestellungId)
+		final Response response = getHttpsClient().target(BESTELLUNG_ID_URI)
+				                                  .resolveTemplate(BESTELLUNG_ID_PATH_PARAM, bestellungId)
 				                                  .request()
 				                                  .accept(APPLICATION_JSON)
 				                                  .get();
@@ -85,8 +95,8 @@ public class BestellungResourceTest extends AbstractResourceTest {
 		
 		//When
 		
-		final Response response = getHttpsClient().target(BESTELLUNGEN_ID_URI)
-												  .resolveTemplate(BESTELLUNGEN_ID_PATH_PARAM, bestellungId)
+		final Response response = getHttpsClient().target(BESTELLUNG_ID_URI)
+												  .resolveTemplate(BESTELLUNG_ID_PATH_PARAM, bestellungId)
 												  .request()
 												  .accept(APPLICATION_JSON)
 												  .get();
@@ -125,7 +135,7 @@ public class BestellungResourceTest extends AbstractResourceTest {
 		
 		
 		// When		
-		 Response response = getHttpsClient(USERNAME_MITARBEITER, PASSWORD_MITARBEITER).target(BESTELLUNGEN_URI)
+		 Response response = getHttpsClient(USERNAME_MITARBEITER, PASSWORD_MITARBEITER).target(BESTELLUNG_URI)
 						  			     .request()
 						  			     .accept(APPLICATION_JSON)
 						  			     .post(json(bestellung));
@@ -143,8 +153,8 @@ public class BestellungResourceTest extends AbstractResourceTest {
 		id = Long.valueOf(idStr);
 		assertThat(id).isPositive();
 		
-		response = getHttpsClient().target(BESTELLUNGEN_ID_URI)
-				.resolveTemplate(BESTELLUNGEN_ID_PATH_PARAM, id)
+		response = getHttpsClient().target(BESTELLUNG_ID_URI)
+				.resolveTemplate(BESTELLUNG_ID_PATH_PARAM, id)
 				.request()
 				.accept(APPLICATION_JSON)
 				.get();
@@ -165,7 +175,7 @@ public class BestellungResourceTest extends AbstractResourceTest {
 				
 		final Bestellung bestellung = new Bestellung();
 		
-		//Ich vermute das hier der fehler entsteht...
+		
 		final Bestellposten bp = new Bestellposten();
 		bp.setArtikelUri(new URI(ARTIKEL_URI + "/" + artikelId1));
 		bp.setAnzahl((short) 1);
@@ -178,7 +188,7 @@ public class BestellungResourceTest extends AbstractResourceTest {
 		bestellung.setStatus(StatusType.INBEARBEITUNG);
 				
 		// When		
-		final Response response = getHttpsClient().target(BESTELLUNGEN_URI)
+		final Response response = getHttpsClient().target(BESTELLUNG_URI)
 						  			     .request()
 						  			     .accept(APPLICATION_JSON)
 						  			     .post(json(bestellung));
@@ -191,10 +201,55 @@ public class BestellungResourceTest extends AbstractResourceTest {
 		LOGGER.finer("ENDE createBestellungKundeNotLoggedIn");
 	}
 	
-	//TODO:		createBestellungNotOK				(400_BAD_REQUEST)
+	/*
+	 * Test von @Valid
+	 * 			Bestellposition
+	 * konkret: Anzahl für einen Artikel muss größer 0 sein!
+	 */
 	@Test
 	@InSequence(6)
-	public void createBestellungNotOkNoPos() {
+	public void createBestellungPosNotValid() throws URISyntaxException {
+		LOGGER.finer("Beginn createBestellungPosNotValid");
+		
+		// Given
+		final Long artikelId1 = ARTIKEL_STUHL;
+	
+		
+		final Bestellung bestellung = new Bestellung();
+		
+		final Bestellposten bp = new Bestellposten();
+		bp.setArtikelUri(new URI(ARTIKEL_URI + "/" + artikelId1));
+		/*
+		 * ungültige Anzahl
+		 */
+		final short ungueltigeAnzahl = ARTIKEL_ANZAHL_INVALID;
+		bp.setAnzahl(ungueltigeAnzahl);
+		bestellung.addBestellposition(bp);
+		
+		final Response response = getHttpsClient(USERNAME_MITARBEITER, PASSWORD_MITARBEITER).target(BESTELLUNG_URI)
+																	.request()
+																	.accept(APPLICATION_JSON)
+																	.acceptLanguage(ENGLISH)
+																	.post(json(bestellung));
+		//Then
+		assertThat(response.getStatus()).isEqualTo(HTTP_BAD_REQUEST);
+		assertThat(response.getHeaderString("validation-exception")).isEqualTo("true");
+		final ViolationReport violationReport = response.readEntity(ViolationReport.class);
+		response.close();
+		
+		final List<ResteasyConstraintViolation> violations = violationReport.getParameterViolations();
+		assertThat(violations).isNotEmpty();
+		
+		ResteasyConstraintViolation violation = 
+									filter(violations).with("message")
+													  .equalsTo("At least one order item is required.")
+													  .get()
+													  .iterator()
+													  .next();
+		assertThat(violation.getValue()).isEqualTo(String.valueOf(ungueltigeAnzahl));
+		
+		LOGGER.finer("ENDE createBestellungPosNotValid");
+
 		
 	}
 }
