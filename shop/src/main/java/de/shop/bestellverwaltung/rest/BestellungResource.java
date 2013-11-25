@@ -167,7 +167,7 @@ public class BestellungResource {
 			throw new NotFoundException(NOT_FOUND_LIEFERUNG, id);
 		}
 		
-		//TODO: Bei Lust und Laune mal anpassen..
+		// TODO Bei Lust und Laune mal anpassen..
 		return Response.status(INTERNAL_SERVER_ERROR)
 			       .entity("findLieferungenByBestellungId: NOT YET IMPLEMENTED")
 			       .type(TEXT_PLAIN)

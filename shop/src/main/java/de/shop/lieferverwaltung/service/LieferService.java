@@ -112,7 +112,7 @@ public class LieferService implements Serializable {
 			return null;
 		}
 		
-		Bestellung bestellung = bs.findBestellungById(bestellungId);
+		final Bestellung bestellung = bs.findBestellungById(bestellungId);
 		/*
 		 * Status auf Verschickt setzen
 		 */

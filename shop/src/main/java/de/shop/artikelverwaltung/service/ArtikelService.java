@@ -89,18 +89,6 @@ public class ArtikelService implements Serializable {
 		return artikel;
 	}
 
-	public List<Artikel> findArtikelByKategorie(KategorieType kategorie) {
-		if (kategorie == null) {
-			final List<Artikel> artikel = findVerfuegbareArtikel();
-			return artikel;
-		}
-
-		final List<Artikel> artikel = em
-				.createNamedQuery(Artikel.FIND_ARTIKEL_BY_KAT, Artikel.class)
-				.setParameter(Artikel.PARAM_KATEGORIE, kategorie)
-				.getResultList();
-		return artikel;
-	}
 
 	public List<Artikel> findArtikelByKategorieAndFarbe(
 			KategorieType kategorie, String farbe) {

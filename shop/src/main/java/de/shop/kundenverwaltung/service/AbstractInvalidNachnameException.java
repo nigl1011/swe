@@ -6,12 +6,13 @@ import javax.validation.ConstraintViolation;
 
 import de.shop.kundenverwaltung.domain.AbstractKunde;
 
-public abstract class InvalidNachnameException extends AbstractKundeValidationException {
+public abstract class AbstractInvalidNachnameException extends AbstractKundeValidationException {
 	private static final long serialVersionUID = -8973151010781329074L;
 	
 	private final String nachname;
 	
-	public InvalidNachnameException(String nachname, Collection<ConstraintViolation<AbstractKunde>> violations) {
+	public AbstractInvalidNachnameException(String nachname, 
+			Collection<ConstraintViolation<AbstractKunde>> violations) {
 		super(violations);
 		this.nachname = nachname;
 	}

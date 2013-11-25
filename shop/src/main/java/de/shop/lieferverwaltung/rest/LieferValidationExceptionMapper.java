@@ -12,18 +12,18 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 import de.shop.lieferverwaltung.domain.Lieferung;
-import de.shop.lieferverwaltung.service.LieferValidationException;
+import de.shop.lieferverwaltung.service.AbstractLieferValidationException;
 import de.shop.util.interceptor.Log;
 
 
 @Provider
 @ApplicationScoped
 @Log
-public class LieferValidationExceptionMapper implements ExceptionMapper<LieferValidationException> {
+public class LieferValidationExceptionMapper implements ExceptionMapper<AbstractLieferValidationException> {
 	private static final String NEWLINE = System.getProperty("line.separator");
 
 	@Override
-	public Response toResponse(LieferValidationException e) {
+	public Response toResponse(AbstractLieferValidationException e) {
 		final Collection<ConstraintViolation<Lieferung>> violations = e.getViolations();
 		final StringBuilder sb = new StringBuilder();
 		for (ConstraintViolation<Lieferung> v : violations) {

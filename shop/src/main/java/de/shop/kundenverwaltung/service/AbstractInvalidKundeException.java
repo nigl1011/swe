@@ -10,11 +10,11 @@ import de.shop.kundenverwaltung.domain.AbstractKunde;
 /**
  * Exception, die ausgel&ouml;st wird, wenn die Attributwerte eines Kunden nicht korrekt sind
  */
-public abstract class InvalidKundeException extends AbstractKundeValidationException {
+public abstract class AbstractInvalidKundeException extends AbstractKundeValidationException {
 	private static final long serialVersionUID = 4255133082483647701L;
 	private final AbstractKunde kunde;
 	
-	public InvalidKundeException(AbstractKunde kunde,
+	public AbstractInvalidKundeException(AbstractKunde kunde,
 			                     Collection<ConstraintViolation<AbstractKunde>> violations) {
 		super(violations);
 		this.kunde = kunde;

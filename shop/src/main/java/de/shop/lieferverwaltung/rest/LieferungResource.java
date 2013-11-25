@@ -155,7 +155,6 @@ public class LieferungResource {
 		
 		lieferung = ls.createLieferung(lieferung, bestellungId);
 		
-		// TODO: Exception werfen
 		if (lieferung == null) {
 			return null;
 		}
@@ -173,7 +172,7 @@ public class LieferungResource {
 				  			  .build();
 	
 			
-		return new Link[] { self };
+		return new Link[] {self };
 	}
 	
 	public URI getUriLieferung(Lieferung lieferung, UriInfo uriInfo) {

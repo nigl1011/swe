@@ -8,7 +8,6 @@ import static javax.ws.rs.core.MediaType.TEXT_XML;
 
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
-import java.util.Collection;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -17,14 +16,12 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.Response;
@@ -33,7 +30,6 @@ import javax.ws.rs.core.UriInfo;
 import org.jboss.logging.Logger;
 
 import de.shop.artikelverwaltung.domain.Artikel;
-import de.shop.artikelverwaltung.domain.KategorieType;
 import de.shop.artikelverwaltung.service.ArtikelService;
 import de.shop.util.interceptor.Log;
 import de.shop.util.rest.NotFoundException;
@@ -106,30 +102,6 @@ public class ArtikelResource {
 		return new Link[] {self};
 	}
 	
-	//TODO @DefaultValue("") kann bei Enums nicht klappen und hier krachts auch. Loesung: Wrapper
-	@GET
-	public Collection<Artikel> findArtikelByKategorie(@QueryParam("kategorie") 
-	@DefaultValue("") KategorieType kategorie) {
-		
-		Collection<Artikel> gesuchteArtikel = null;
-			if ("".equals(kategorie)) {
-				gesuchteArtikel = as.findVerfuegbareArtikel();
-				if (gesuchteArtikel.isEmpty()) {
-					throw new NotFoundException("Kein Artikel vorhanden");
-					}
-				}
-			else {
-				gesuchteArtikel = as.findArtikelByKategorie(kategorie);
-				if (gesuchteArtikel.isEmpty()) {
-					throw new NotFoundException("Keine Artikel aus der Kategorie " + kategorie + " gefunden");
-				}
-				
-			}
-	
-	return gesuchteArtikel;
-	}
-	
-
 	
 	@POST
 	@Consumes({ APPLICATION_JSON, APPLICATION_XML, TEXT_XML })

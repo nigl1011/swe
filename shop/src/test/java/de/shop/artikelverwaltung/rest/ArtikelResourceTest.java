@@ -327,7 +327,7 @@ private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().loo
     	
     	final int startPos = location.lastIndexOf('/');
 		final String idStr = location.substring(startPos + 1);
-		Long id = Long.valueOf(idStr);
+		final Long id = Long.valueOf(idStr);
 		assertThat(id).isPositive();
 		
     	response = getHttpsClient().target(ARTIKEL_ID_URI)

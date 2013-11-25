@@ -79,43 +79,24 @@ public class KundeObserver {
 			@Override
 			public void run() {
 				final MimeMessage message = new MimeMessage(session);
-
 				try {
-					// Absender setzen
 					final InternetAddress absenderObj = new InternetAddress(absenderMail, absenderName);
 					message.setFrom(absenderObj);
-					
-					// Empfaenger setzen
 					final InternetAddress empfaenger = new InternetAddress(empfaengerMail, empfaengerName);
 					message.setRecipient(RecipientType.TO, empfaenger);   // RecipientType: TO, CC, BCC
-
 					final Adresse adr = kunde.getAdresse();
-					
-					// Subject setzen
-					final String subject = adr == null
-							               ? "Neuer Kunde ohne Adresse"
+					final String subject = adr == null ? "Neuer Kunde ohne Adresse"
 							               : "Neuer Kunde in " + adr.getPlz() + " " + adr.getOrt();
 					message.setSubject(subject);
-					
-					// HTML-Text setzen mit MIME Type "text/html"
-					final String text = adr == null
-							            ? "<p><b>" + kunde.getVorname() + " " + kunde.getNachname()
-							            + "</b></p>" + NEWLINE
-							            : "<p><b>" + kunde.getVorname() + " " + kunde.getNachname()
-							            + "</b></p>" + NEWLINE
+					final String text = adr == null ? "<p><b>" + kunde.getVorname() 
+										+ " " + kunde.getNachname() + "</b></p>" + NEWLINE
+							            : "<p><b>" + kunde.getVorname() + " " 
+										+ kunde.getNachname() + "</b></p>" + NEWLINE
 					                    + "<p>" + adr.getPlz() + " " + adr.getOrt() + "</p>" + NEWLINE
 					                    + "<p>" + adr.getStrasse() + " " + adr.getHausnr() + "</p>" + NEWLINE;
-
 					message.setContent(text, "text/html");
-					
-					// Hohe Prioritaet einstellen
-					//message.setHeader("Importance", "high");
-					//message.setHeader("Priority", "urgent");
-					//message.setHeader("X-Priority", "1");
-					
-					// HTML-Text mit einem Bild als Attachment
 					Transport.send(message);
-				}
+				} 
 				catch (MessagingException | UnsupportedEncodingException e) {
 					LOGGER.error(e.getMessage());
 				}

@@ -10,7 +10,7 @@ import de.shop.lieferverwaltung.domain.Lieferung;
 /**
  * Exception, die ausgeloest wird, wenn die Attributwerte einer Lieferung nicht korrekt sind
  */
-public class InvalidLieferException extends LieferValidationException {
+public class InvalidLieferException extends AbstractLieferValidationException {
 	private static final long serialVersionUID = 1L;
 	private final Lieferung lieferung;
 	

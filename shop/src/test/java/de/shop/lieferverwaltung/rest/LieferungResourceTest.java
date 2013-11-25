@@ -88,7 +88,7 @@ public class LieferungResourceTest extends AbstractResourceTest {
 	  	
 	  	@Test
 	  	@InSequence(3)
-	  	public void createLieferungOK () throws URISyntaxException {
+	  	public void createLieferungOK() throws URISyntaxException {
 		  LOGGER.finer("BEGINN createLieferungOK");
 		  
 		  //Given
@@ -130,7 +130,7 @@ public class LieferungResourceTest extends AbstractResourceTest {
 	  	//Test createBestellungNotOK Bestellung schon verschickt
 	  	@Test
 	  	@InSequence(4)
-	  	public void createLieferungNotOK () throws URISyntaxException {
+	  	public void createLieferungNotOK() throws URISyntaxException {
 		  LOGGER.finer("BEGINN createLieferungNotOK");
 		  
 		  //Given
@@ -140,7 +140,7 @@ public class LieferungResourceTest extends AbstractResourceTest {
 		  lieferung.setBestellungUri(new URI(BESTELLUNG_URI + "/" + bestellungId));
 		  
 		  //When
-		  Response response = getHttpsClient(USERNAME_ADMIN, PASSWORD_ADMIN).target(LIEFERUNG_URI)
+		  final Response response = getHttpsClient(USERNAME_ADMIN, PASSWORD_ADMIN).target(LIEFERUNG_URI)
 				  .request()
 				  .accept(APPLICATION_JSON)
 				  .acceptLanguage(GERMAN)
@@ -160,7 +160,7 @@ public class LieferungResourceTest extends AbstractResourceTest {
 	  	//Lieferung wird versucht als kunde zu erstellen
 	  	@Test
 	  	@InSequence(5)
-	  	public void createLieferungForbidden () throws URISyntaxException {
+	  	public void createLieferungForbidden() throws URISyntaxException {
 		  LOGGER.finer("BEGINN createLieferungForbidden");
 		  
 		  //Given
@@ -170,7 +170,7 @@ public class LieferungResourceTest extends AbstractResourceTest {
 		  lieferung.setBestellungUri(new URI(BESTELLUNG_URI + "/" + bestellungId));
 		  
 		  //When
-		  Response response = getHttpsClient(USERNAME_KUNDE, PASSWORD_KUNDE).target(LIEFERUNG_URI)
+		  final Response response = getHttpsClient(USERNAME_KUNDE, PASSWORD_KUNDE).target(LIEFERUNG_URI)
 				  .request()
 				  .accept(APPLICATION_JSON)
 				  .post(json(lieferung));

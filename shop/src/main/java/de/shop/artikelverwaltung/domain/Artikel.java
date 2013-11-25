@@ -58,20 +58,7 @@ import org.jboss.logging.Logger;
 						+ " WHERE    a.bezeichnung LIKE :" + Artikel.PARAM_BEZEICHNUNG
 						+ "          AND a.verfuegbar = TRUE"
 			 	        + " ORDER BY a.id ASC"),
-	@NamedQuery(name  = Artikel.FIND_ARTIKEL_BY_KAT,
-		        query = "SELECT      a"
-		                + " FROM     Artikel a"
-		                + " WHERE    a.kategorie LIKE :" + Artikel.PARAM_KATEGORIE
-		                + "          AND a.verfuegbar = TRUE"
-		                + " ORDER BY a.id ASC"),
-	@NamedQuery(name  = Artikel.FIND_ARTIKEL_BY_KAT_AND_FAR,
-				        query = "SELECT      a"
-				                + " FROM     Artikel a"
-				                + " WHERE    a.kategorie LIKE :" + Artikel.PARAM_KATEGORIE
-				                + "          AND a.farbe LIKE :" + Artikel.PARAM_FARBE
-				                + "          AND a.verfuegbar = TRUE"
-				                + " ORDER BY a.id ASC"),
-   	@NamedQuery(name  = Artikel.FIND_ARTIKEL_MAX_PREIS,
+	@NamedQuery(name  = Artikel.FIND_ARTIKEL_MAX_PREIS,
             	query = "SELECT      a"
                         + " FROM     Artikel a"
 						+ " WHERE    a.preis < :" + Artikel.PARAM_PREIS

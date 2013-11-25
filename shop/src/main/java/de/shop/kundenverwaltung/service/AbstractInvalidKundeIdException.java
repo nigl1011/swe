@@ -6,12 +6,12 @@ import javax.validation.ConstraintViolation;
 
 import de.shop.kundenverwaltung.domain.AbstractKunde;
 
-public abstract class InvalidKundeIdException extends AbstractKundeValidationException {
+public abstract class AbstractInvalidKundeIdException extends AbstractKundeValidationException {
 	private static final long serialVersionUID = -8973151010781329074L;
 	
 	private final Long kundeId;
 	
-	public InvalidKundeIdException(Long kundeId, Collection<ConstraintViolation<AbstractKunde>> violations) {
+	public AbstractInvalidKundeIdException(Long kundeId, Collection<ConstraintViolation<AbstractKunde>> violations) {
 		super(violations);
 		this.kundeId = kundeId;
 	}
