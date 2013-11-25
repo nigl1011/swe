@@ -146,9 +146,9 @@ public class ArtikelResource {
 	
 	@PUT
 	@Consumes({ APPLICATION_JSON, APPLICATION_XML, TEXT_XML })
-	@Produces
+	@Produces({ APPLICATION_JSON, APPLICATION_XML, TEXT_XML })
 	@Transactional
-	public void updateArtikel(Artikel artikel) {
+	public Response updateArtikel(Artikel artikel) {
 		// Vorhandenen Kunden ermitteln
 		final Artikel origArtikel = as.findArtikelById(artikel.getId());
 		if (origArtikel == null) {
@@ -166,6 +166,9 @@ public class ArtikelResource {
 		if (artikel == null) {
 			throw new NotFoundException(NOT_FOUND_ID, origArtikel.getId());
 		}
+		return Response.ok(artikel)
+					   .links(getTransitionalLinks(artikel, uriInfo))
+					   .build();
 	
 	}
 
