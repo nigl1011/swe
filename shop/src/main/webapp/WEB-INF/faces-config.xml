@@ -19,5 +19,9 @@
    <base-name>web.kundenverwaltung.Messages</base-name>
    <var>msgKv</var>
   </resource-bundle>
+  <resource-bundle>
+  <base-name>web.bestellverwaltung.Messages</base-name>
+  <var>msgBv</var>  
+  </resource-bundle>
  </application>
 </faces-config>

@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:c="http://java.sun.com/jsp/jstl/core"
+	  xmlns:r="http://richfaces.org/rich">
+	<body>	
+		<ui:composition template="/WEB-INF/templates/desktop/main.xml">
+		
+		<ui:define name="content">
+			<h:form id="sucheForm">
+				<r:panel id="suchePanel" header="#{msgBv['viewBestellung.sucheNeu']}">
+					<h:panelGrid id="suchePanelGrid" columns="3">
+						<h:outputLabel id="idOutputLabel"
+										value="#{msgBv['viewBestellung.bestellungnr']}"
+										for="idInput"/>
+						<h:inputText id="idInput" value="#{bestellungModel.bestellungId}"/>
+						
+						<r:commandButton id="sucheButton"
+											action="#{bestellungModel.findBestellungById}"
+											value="#{msgBv['viewBestellung.submit']}"
+											render="gesuchteBestellungPanel"/>
+					</h:panelGrid>
+				</r:panel>
+						
+						
+				<r:outputPanel id="gesuchteBestellungPanel">
+					<c:if test="#{not empty flash.bestellung}">
+					
+						<c:set var="bestellung" value="#{flash.bestellung}" scope="view"/>
+						<c:set target="#{flash}" property="bestellung" value="#{bestellung}"/>
+						
+						<h:panelGrid id="gesuchteBestellung">
+									 columns="2"
+									 border="1"
+							<h:outputText id="bestellungIdLabel" value="#{msgBv['viewBestellung.bestellungnr']}"/>
+							<h:outputText id="bestellungId" value="#{bestellung.id}"/>
+							
+							<h:outputText id="artikelBezLabel" value="{msgBv['viewBestellung.position.artikel']}"/>
+							<h:outputText id="artikel" value="{bestellung.position.artikel}"/>
+							
+							<h:outputText id="artikelAnzahlLabel" value="{msgBv['viewBestellung.position.artikel.anzahl']}"/>
+							<h:outputText id="anzahl" value="{bestellung.position.artikel.anzahl}"/>
+						</h:panelGrid>
+					</c:if>
+				</r:outputPanel>
+			</h:form>
+		</ui:define>
+		
+	</ui:composition>
+	
+	</body>
+
+</html>
