@@ -1,13 +1,9 @@
 package de.shop.util;
 
-/**
- * @author <a href="mailto:Juergen.Zimmermann@HS-Karlsruhe.de">J&uuml;rgen Zimmermann</a>
- */
-public final class Constants {
-	
-	// REST-PATH
-	public static final String REST_PATH = "/rest";
 
+public final class Constants {
+	public static final String REST_PATH = "/rest";
+	
 	// Header-Links
 	public static final String SELF_LINK = "self";
 	public static final String LIST_LINK = "list";
@@ -35,7 +31,7 @@ public final class Constants {
 	public static final String JSF_DEFAULT_ERROR = "/error/defaultError";
 	public static final String JSF_REDIRECT_SUFFIX = "?faces-redirect=true";
 	
-	
 	private Constants() {
 	}
 }
+

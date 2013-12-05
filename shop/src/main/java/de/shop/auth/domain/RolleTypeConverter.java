@@ -7,10 +7,6 @@ import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
 
-/**
- 		* @author <a href="mailto:Juergen.Zimmermann@HS-Karlsruhe.de">J&uuml;rgen Zimmermann</a>
- */
-
 @Converter(autoApply = true)
 @FacesConverter(forClass = RolleType.class)
 public class RolleTypeConverter implements AttributeConverter<RolleType, String>, javax.faces.convert.Converter {
@@ -42,3 +38,4 @@ public class RolleTypeConverter implements AttributeConverter<RolleType, String>
 		return RolleType.build(str);
 	}
 }
+
