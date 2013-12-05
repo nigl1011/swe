@@ -14,10 +14,6 @@ import de.shop.kundenverwaltung.service.KundeService.FetchType;
 import de.shop.util.interceptor.Log;
 
 
-/**
- * Dialogsteuerung fuer die Kundenverwaltung
- * @author <a href="mailto:Juergen.Zimmermann@HS-Karlsruhe.de">J&uuml;rgen Zimmermann</a>
- */
 
 @RequestScoped
 @Named 
