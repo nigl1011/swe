@@ -2,7 +2,8 @@ package de.shop.bestellverwaltung.web;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.TransactionAttribute;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.Flash;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -16,13 +17,16 @@ import de.shop.util.interceptor.Log;
  *
  */
 @Named
-@RequestScoped
+@SessionScoped
 public class BestellungModel implements Serializable {
 	
 	private static final long serialVersionUID = -2178007500385342348L;
 	
 	private static final String FLASH_BESTELLUNG = "bestellung";
-	private static final String JSF_VIEW_BESTELLUNG = "/bestellverwaltung/viewBestellung";
+	private static final String JSF_BESTELLVERWALTUNG = "/bestellverwaltung";
+	private static final String JSF_VIEW_BESTELLUNG = JSF_BESTELLVERWALTUNG + "viewBestellung";
+	
+	private Bestellung bestellung;
 	
 	@Inject
 	private BestellungService bs;
@@ -45,18 +49,23 @@ public class BestellungModel implements Serializable {
 		return bestellungId;
 	}
 	
+	public Bestellung getBestellung() {
+		return bestellung;
+	}
+	
 	/**
 	 * Action Methode: Bestellung zu gegebener ID suchen
 	 */
+	@TransactionAttribute
 	@Log
 	public String findBestellungById() {
-		final Bestellung bestellung = bs.findBestellungById(bestellungId);
 		
-		if (bestellung == null) {
-			flash.remove(FLASH_BESTELLUNG);
+		
+		if (bestellungId == null) {
 			return null;
 		}
 		
+		bestellung = bs.findBestellungById(bestellungId);
 		flash.put(FLASH_BESTELLUNG, bestellung);
 		return JSF_VIEW_BESTELLUNG;
 	}

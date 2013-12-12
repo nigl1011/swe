@@ -4,47 +4,70 @@
 	  xmlns:ui="http://java.sun.com/jsf/facelets"
 	  xmlns:h="http://java.sun.com/jsf/html"
 	  xmlns:c="http://java.sun.com/jsp/jstl/core"
-	  xmlns:r="http://richfaces.org/rich">
+	  xmlns:r="http://richfaces.org/rich"
+      xmlns:f="http://java.sun.com/jsf/core">
 	<body>	
 		<ui:composition template="/WEB-INF/templates/desktop/main.xml">
-		
+			<ui:param name="pageTitle" value="#{msgBV['viewBestellung.title']}"/>
+			
 		<ui:define name="content">
-			<h:form id="sucheForm">
-				<r:panel id="suchePanel" header="#{msgBv['viewBestellung.sucheNeu']}">
-					<h:panelGrid id="suchePanelGrid" columns="3">
-						<h:outputLabel id="idOutputLabel"
-										value="#{msgBv['viewBestellung.bestellungnr']}"
-										for="idInput"/>
-						<h:inputText id="idInput" value="#{bestellungModel.bestellungId}"/>
+			<h:form id="form">
+			
+			
+			<r:panel id="bestellungMainPanel" header="#{msgBV['viewBestellung.heading']}">
+				<r:focus id="formFocus"/>
+				<h:panelGrid id="bestellungGrid" columns="3">
 						
-						<r:commandButton id="sucheButton"
-											action="#{bestellungModel.findBestellungById}"
-											value="#{msgBv['viewBestellung.submit']}"
-											render="gesuchteBestellungPanel"/>
-					</h:panelGrid>
+						<h:outputLabel id="idInputLabel"
+									   value="#{msgBv['viewBestellung.id']}"
+									   for="idInput"/>	
+									   
+						<h:inputText id="idInput" value="#{bestellungModel.bestellungId}"/>				
+						
+						<r:commandButton id="findButton"
+										 action="#{bestellungModel.findBestellungById}"
+										 value="#{msgBv['viewBestellung.submit']}"
+										 render="positionen"/>
+				</h:panelGrid>
+			</r:panel>
+			
+			<p id="abstand"/>
+			
+			<r:panel id="positionen" header="#{msgBv['viewBestellung.positionen']}"> 
+			<c:set var="bestellung" value="#{flash.bestellung}" scope = "view"/>
+			
+			<c:set target="#{flash}" property="bestellung" value="#{bestellung}"/>
+					<r:dataTable id="positionenTabelle"
+					             value="#{bestellung.bestellposten}"
+					             var="pos">
+					<r:column id="artikelIdSpalte">
+							<f:facet name="header">
+								#{msgBv['viewBestellung.artikel.id']}
+							</f:facet>
+							#{pos.artikel.id}
+						</r:column>
+			
+						<r:column id="bezeichnungSpalte">
+							<f:facet name="header">
+								#{msgBv['viewBestellung.artikel.bezeichnung']}
+							</f:facet>
+							#{pos.artikel.bezeichnung}
+						</r:column>
+			
+						<r:column id="anzahlSpalte">
+							<f:facet name="header">
+								#{msgBv['viewBestellung.artikel.anzahl']}
+							</f:facet>
+							#{pos.anzahl}
+						</r:column>
+						<f:facet name="footer">
+							<h:outputText value="Gesamtpreis: #{bestellung.gesamtpreis} €"/>
+						</f:facet>
+				</r:dataTable>
+				
+				
 				</r:panel>
-						
-						
-				<r:outputPanel id="gesuchteBestellungPanel">
-					<c:if test="#{not empty flash.bestellung}">
-					
-						<c:set var="bestellung" value="#{flash.bestellung}" scope="view"/>
-						<c:set target="#{flash}" property="bestellung" value="#{bestellung}"/>
-						
-						<h:panelGrid id="gesuchteBestellung">
-									 columns="2"
-									 border="1"
-							<h:outputText id="bestellungIdLabel" value="#{msgBv['viewBestellung.bestellungnr']}"/>
-							<h:outputText id="bestellungId" value="#{bestellung.id}"/>
-							
-							<h:outputText id="artikelBezLabel" value="{msgBv['viewBestellung.position.artikel']}"/>
-							<h:outputText id="artikel" value="{bestellung.position.artikel}"/>
-							
-							<h:outputText id="artikelAnzahlLabel" value="{msgBv['viewBestellung.position.artikel.anzahl']}"/>
-							<h:outputText id="anzahl" value="{bestellung.position.artikel.anzahl}"/>
-						</h:panelGrid>
-					</c:if>
-				</r:outputPanel>
+			
 			</h:form>
 		</ui:define>
 		
