@@ -1,12 +1,40 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:h="http://java.sun.com/jsf/html">
-	<p>
-		<h:link id="hsLink" outcome="/index">
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:cc="http://java.sun.com/jsf/composite/components"
+                xmlns:r="http://richfaces.org/rich">
+	<r:toolbar id="headerToolbar" height="65px">
+		<h:link id="homeLink" outcome="/index">
 			<h:graphicImage id="hsLogoImage"
 			                name="hs-logo.gif"
 			                library="images"
 							alt="#{msg['header.logo.alt']}"/>
 		</h:link>
-	</p>
+		<r:toolbarGroup id="rightGroup" location="right">
+			<h:form id="loginFormHeader" rendered="#{not authModel.loggedIn}">
+				<h:panelGrid id="loginGrid" columns="3">
+					<h:outputLabel id="usernameLabel"
+					               value="#{msg['login.kundeId']}"
+					               for="username"/>
+					<h:inputText id="username" value="#{authModel.username}"/>
+					<f:verbatim/>
+							
+					<h:outputLabel id="passwordLabel"
+					               value="#{msg['login.password']}"
+					               for="password"/>
+					<h:inputSecret id="password" value="#{authModel.password}"/>
+					<h:commandButton id="loginButton" action="#{authModel.login}" value="#{msg['login.submit']}"/>
+				</h:panelGrid>
+				<r:message id="fehlermeldungLogin" for="username"/>
+			</h:form>
+			
+		<h:form id="logoutForm">
+			<h:commandLink id="logout" action="#{authModel.logout}" rendered="#{authModel.loggedIn}">
+				#{msg['header.logout']}
+			</h:commandLink>
+		</h:form>
+		</r:toolbarGroup>
+		
+	</r:toolbar>
 </ui:composition>
