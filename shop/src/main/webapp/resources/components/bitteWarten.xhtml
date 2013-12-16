@@ -1,16 +1,17 @@
 <?xml version="1.0"?>
-<!DOCTYPE html>
+	<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:cc="http://java.sun.com/jsf/composite"
-      xmlns:r="http://richfaces.org/rich">
-		
-	<h:body>
-		<cc:interface>
-			<cc:attribute name="msg" required="true"/>
-		</cc:interface>
+	<html xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:cc="http://java.sun.com/jsf/composite"
+		xmlns:r="http://richfaces.org/rich">
+
+		<h:body>
+			<cc:interface>
+				<cc:attribute name="msg" required="true" />
+				<cc:attribute name="id"></cc:attribute>
+			</cc:interface>
 		
 		<cc:implementation>
 			<r:status id="statusWaiting">
