@@ -30,7 +30,7 @@ public class SpracheModel implements Serializable {
 	private void postConstruct() {
 		locale = FacesContext.getCurrentInstance().getExternalContext().getRequestLocale();
 	}
-
+	
 	@Log
 	public void change(String localeStr) {
 		final Locale newLocale = new Locale(localeStr);
@@ -43,6 +43,15 @@ public class SpracheModel implements Serializable {
 		final FacesContext ctx = FacesContext.getCurrentInstance();
 		ctx.getViewRoot().setLocale(locale);
 		ctx.renderResponse();
+	}
+	
+	public Locale getLocale() {
+		
+		if (locale.toString().equals("en")) {
+			return null;
+			
+		}
+		return locale;
 	}
 	
 //    @Produces

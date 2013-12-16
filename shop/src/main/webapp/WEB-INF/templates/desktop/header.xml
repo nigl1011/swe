@@ -3,7 +3,8 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:cc="http://java.sun.com/jsf/composite/components"
-                xmlns:r="http://richfaces.org/rich">
+                xmlns:r="http://richfaces.org/rich"
+                xmlns:c="http://java.sun/com/jsp/jstl/core">
 	<r:toolbar id="headerToolbar" height="65px">
 		<h:link id="homeLink" outcome="/index">
 			<h:graphicImage id="hsLogoImage"
@@ -28,13 +29,47 @@
 				</h:panelGrid>
 				<r:message id="fehlermeldungLogin" for="username"/>
 			</h:form>
-			
+				
+						<h:form id="spracheForm">
+				<r:dropDownMenu id="sprache">				>
+					<f:facet name="label">
+						#{msg['header.sprache']}
+					</f:facet>
+				<c:set var="language" value="#{spracheModel.getLocale}"/>
+				<c:if test="#{spracheModel.getLocale != null}">
+					<c:set var="status" value="#{msg['header.sprache.de.true']}"/>
+				</c:if>
+				<c:else>
+					<c:set var="status" value="#{msg['header.sprache.de.false']}"/>
+				</c:else>
+				
+				<r:menuItem id="deutsch"
+							disabled="status"
+							label="#{msg['header.sprache.deutsch']}"
+							icon="#{resource['images/de_icon.gif']}"
+							actionListener="#{spracheModel.change('de')}"/>
+				<r:menuItem id="englisch" 
+							label="#{msg['header.sprache.englisch']}"
+							icon="#{resource['images/us_icon.gif']}"
+							actionListener="#{spracheModel.change('en')}"/>
+				</r:dropDownMenu>
+			</h:form>	
 		<h:form id="logoutForm">
 			<h:commandLink id="logout" action="#{authModel.logout}" rendered="#{authModel.loggedIn}">
 				#{msg['header.logout']}
 			</h:commandLink>
 		</h:form>
+	
+	
+				
+	
+		
+		
+		
 		</r:toolbarGroup>
+		
+			
+
 		
 	</r:toolbar>
 </ui:composition>

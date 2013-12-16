@@ -7,13 +7,15 @@
 	
 	/* richfaces-core-impl-VERSION.jar: in z.B. META-INF/skins/blueSky.skin.properties siehe headerBackgroundColor=
 			blueSky			#BED6F8
-			deepMarine		#BED6F8
+			deepMarine		#008894
 			emeraldTown		#005000
 			japanCherry		#E8BDBD
 			ruby			#900000
 			wine			#5D7343
+			classic 		#F3F2F2
 	*/
 	background-color: #BED6F8;
+	border-style: none
 }
 
 #nav {
@@ -21,7 +23,9 @@
 	width: 15%;
 	height: 550px;
 	padding: 5px;
-	background-color: #BED6F8;   /* emeraldTown */
+	background-color: #BED6F8;
+	border-style:   /* emeraldTown */;
+	border-color: groove
 }
 
 #content {
