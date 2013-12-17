@@ -6,6 +6,7 @@ INSERT INTO kunde (id, nachname, vorname, seit, art, kategorie, familienstand, n
 INSERT INTO kunde (id, nachname, vorname, seit, art, kategorie, familienstand, newsletter, rabatt, umsatz, version, email, password, aktualisiert,geburtsdatum,geschlecht) VALUES (6,'Isabella','Kiwi','01.01.2001','P',1,'L',1,'0,2',870.00,1,'isi@hska.de','5/bAEXdujbfNMwtUF0/Xb30CFrYSOHpf/PuB5vCRloM=','01.08.2006 02:00:00','12.08.1990','W');
 
 
+
 -- FILE_TBL
 
 CALL insert_file_kunde(6,1,0,'image.png','Privatkunde_6.png','png','I','01.01.2007 01:00:00','01.01.2007 01:00:00');
@@ -24,7 +25,7 @@ INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (4,'kunde');
 INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (4,'mitarbeiter');
 INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (5,'kunde');
 INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (5,'mitarbeiter');
-INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (6,'kunde');
+INSERT INTO kunde_rolle(kunde_fk, rolle) VALUES (6,'mitarbeiter');
 
 
 --kunde-hobby
