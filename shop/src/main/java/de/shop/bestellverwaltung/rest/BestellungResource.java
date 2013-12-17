@@ -87,7 +87,7 @@ public class BestellungResource {
 	
 	@Inject
 	private BestellungServiceImpl bs;
-
+	
 	@Inject
 	private Principal principal;
 	
