@@ -21,6 +21,7 @@
 			<meta name="author" content="J&#252;rgen Zimmermann"/>
 			<meta name="copyright" content="J&#252;rgen Zimmermann"/>
 			<meta name="keywords" content="Software Engineering,Beispiele,Java EE,JBoss/WildFire,Eclipse,JBossTools,CDI,EJB,JAX-RS,JSON,JSF,EL,RichFaces,JPA,Bean Validation,JavaMail"/>
+
 		</h:head>
 		
 		<h:body>

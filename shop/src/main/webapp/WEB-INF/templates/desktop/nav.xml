@@ -101,11 +101,13 @@
 					 label="#{msg['nav.administration']}"
 					 expanded="true"
 					 rendered="#{r:isUserInRole('mitarbeiter')}">
-		<r:panelMenuItem id="bestellverwaltungAdmin">
+		<r:panelMenuItem id="bestellverwaltungAdmin" rendered="#{r:isUserInRole('mitarbeiter')}">
 				<h:link id="bestellverwaltungfindBestellung"
 					outcome="/bestellverwaltung/findBestellung"
-					value="#{msg['nav.bestellverwaltung.findBestellung']}">					
-				
+					value="#{msg['nav.bestellverwaltung.findBestellung']}">
+					<c:if test="#{not empty javax.enterprise.context.conversation.id}">
+						<f:param id="findBestellungCid" name="cid" value="#{javax.enterprise.context.conversation.id}"/>
+				</c:if>
 				</h:link>
 				
 				

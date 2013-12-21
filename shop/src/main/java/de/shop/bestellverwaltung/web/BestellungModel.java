@@ -86,15 +86,16 @@ public class BestellungModel implements Serializable {
 	
 	/**
 	 * Action Methode: Bestellung zu gegebener ID suchen
+	 * Rollenbasiert nur als Admin, Mitarbeiter möglich
+	 * 
 	 */
 	@Transactional
 	@Log
 	public String findBestellungById() {
-		
+		auth.preserveLogin();
 		if (bestellungId == null) {
 			return null;
 		}
-		
 		bestellung = bs.findBestellungById(bestellungId);
 		flash.put(FLASH_BESTELLUNG, bestellung);
 		return JSF_FIND_BESTELLUNG;
