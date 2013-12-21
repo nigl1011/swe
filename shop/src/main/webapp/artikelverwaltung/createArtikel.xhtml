@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:c="http://java.sun.com/jsp/jstl/core"
+	  xmlns:r="http://richfaces.org/rich">
+	  <body>
+	  <ui:composition template="/WEB-INF/templates/desktop/main.xml">
+			<ui:define name="metadata">
+				<f:event type="preRenderView" listener="#{artikelModel.createEmptyArtikel}"/>
+			</ui:define>
+			
+			<ui:param name="pageTitle" value="#{msgAv['createArtikel.title']}"/>
+	  		
+	  		<ui:define name="content">
+				<h1>
+					#{msgAv['createArtikel.heading']}
+				</h1>
+				
+
+			
+			
+				
+			<h:form id="createArtikelForm">
+				<!--  Focus auf Bezeichnung setzen -->
+				<r:jQuery id="bezeichnungFocus" selector="#bezeichnung" query="focus()"/>
+				
+				<c:set var="artikel" value="#{artikelModel.neuerArtikel}" scope="view"/>
+				
+				
+				
+				<h:panelGrid id="createArtikelTabelle" columns="4">
+				
+					<h:outputLabel id="bezeichnungLabel" for="bezeichnung" value="#{msgAv['createArtikel.bezeichnung']}"/>
+					<h:inputText id="bezeichnung" value="#{artikel.bezeichnung}">
+						<r:validator
+							oninvalid="$(#{r:element('bezeichnung')}).addClass('invalid')"
+							onvalid="$(#{r:element('bezeichnung')}).removeClass('invalid')"/>
+						
+					</h:inputText>
+					<r:messages id="fehlermeldungenBezeichnung" for="bezeichnung"/>
+					<f:verbatim/>
+					
+					
+					
+					<h:outputLabel id="farbeLabel" for="farbe" value="#{msgAv['createArtikel.farbe']}"/>
+					<h:inputText id="farbe" value="#{artikel.farbe}">
+						<r:validator/>
+					</h:inputText>
+					<r:messages id="fehlermeldungenFarbe" for="farbe"/>
+					<f:verbatim/>
+					
+					<h:outputLabel id="kategorieLabel" for="kategorie" value="#{msgAv['createArtikel.kategorie']}"/>
+					<r:select id="kategorie"
+							  enableManualInput="false"
+							  defaultLabel="#{msgAv['createArtikel.kategorie']}"
+							  value="#{artikel.kategorie}">
+						<f:selectItem id="badezimmer" itemValue="BADEZIMMER" itemLabel="#{msgAv['createArtikel.badezimmer']}"/>
+						<f:selectItem id="buero" itemValue="BUERO" itemLabel="#{msgAv['createArtikel.buero']}"/>
+						<f:selectItem id="garderobe" itemValue="GARDEROBE" itemLabel="#{msgAv['createArtikel.garderobe']}"/>
+						<f:selectItem id="garten" itemValue="GARTEN" itemLabel="#{msgAv['createArtikel.garten']}"/>
+						<f:selectItem id="kinderzimmer" itemValue="KINDERZIMMER" itemLabel="#{msgAv['createArtikel.kinderzimmer']}"/>
+						<f:selectItem id="kueche" itemValue="KUECHE" itemLabel="#{msgAv['createArtikel.kueche']}"/>
+						<f:selectItem id="schlafzimmer" itemValue="SCHLAFZIMMER" itemLabel="#{msgAv['createArtikel.schlafzimmer']}"/>
+						<f:selectItem id="werkstatt" itemValue="WERKSTATT" itemLabel="#{msgAv['createArtikel.werkstatt']}"/>
+						<f:selectItem id="wohnzimmer" itemValue="WOHNZIMMER" itemLabel="#{msgAv['createArtikel.wohnzimmer']}"/>
+					</r:select>
+					<f:verbatim/>
+					<f:verbatim/>
+					<h:outputLabel id="preisLabel" for="preis" value="#{msgAv['createArtikel.preis']}"/>
+					<h:inputText id="preis" value="#{artikel.preis}">
+						<r:validator/>
+					</h:inputText>
+					<r:messages id="fehlermeldungenPreis" for="preis"/>
+					<f:verbatim/>
+						
+				</h:panelGrid>
+				
+				<p id="buttons">
+							<h:commandButton id="createSubmit" action="#{artikelModel.createArtikel}" value="#{msgAv['createArtikel.submit']}"/>
+							#{' '}
+							<h:commandButton id="reset" type="reset" value="#{msgAv['createArtikel.reset']}"/>
+						</p>
+
+			</h:form>
+		</ui:define>
+	</ui:composition>
+					
+</body>
+	 </html>

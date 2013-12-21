@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:c="http://java.sun.com/jsp/jstl/core"
+	  xmlns:cc="http://java.sun.com/jsf/composite/components"
+	  xmlns:r="http://richfaces.org/rich">
+	<body>
+		<ui:composition template="/WEB-INF/templates/desktop/main.xml">
+			<ui:param name="pageTitle" value="#{msgAv['viewArtikel.title']}"/>
+		
+			<ui:define name="content">
+				<h:form id="form">
+					<r:focus id="formFocus"/>
+					
+					<r:panel id="suchePanel" header="#{msgAv['viewArtikel.sucheNeu']}">
+						<h:panelGrid id="suchePanelGrid" columns="3">
+							<h:outputLabel id="artikelIdInputLabel"
+										   value="#{msgAv['viewArtikel.id']}"
+										   for="artikelIdInput"/>
+							<h:inputText id="artikelIdInput" value="#{artikelModel.artikelId}"/>
+							<r:commandButton id="findButton"
+											 action="#{artikelModel.findArtikelById}"
+											 value="#{msgAv['viewArtikel.submit']}"
+											 render="gesuchterArtikelPanel"/>
+						</h:panelGrid>
+					</r:panel>
+					
+					<r:outputPanel id="gesuchterArtikelPanel">
+						<c:set var="artikel" value="#{flash.artikel}" scope = "view"/>
+						<c:set target="#{flash}" property="artikel" value="#{artikel}"/>
+						
+						<r:dataTable id="artikelTabelle"
+									 value="#{artikel}"
+									 var="art"
+									  rendered="#{not empty artikel}">
+							<r:column id="idSpalte">
+								<f:facet name="header">
+									#{msgAv['viewArtikel.id']}
+								</f:facet>
+								#{art.id}
+							</r:column>
+							
+							<r:column id="bezeichnungSpalte">
+								<f:facet name="header">
+									#{msgAv['viewArtikel.bezeichnung']}
+								</f:facet>
+								#{art.bezeichnung}
+							</r:column>
+							<r:column id="kategorieSpalte">
+								<f:facet name="header">
+									#{msgAv['viewArtikel.kategorie']}
+								</f:facet>
+								#{art.kategorie}
+							</r:column>
+								<r:column id="farbeSpalte">
+								<f:facet name="header">
+									#{msgAv['viewArtikel.farbe']}
+								</f:facet>
+								#{art.farbe}
+							</r:column>
+								<r:column id="preisSpalte">
+								<f:facet name="header">
+									#{msgAv['viewArtikel.preis']}
+								</f:facet>
+								#{art.preis}
+							</r:column>
+							<r:column id="buttonSpalte"
+									  rendered="#{not empty artikel}">
+									 <h:commandLink id="updateArtikelButton"
+									 				action="#{artikelModel.update}"
+									 				alt="#{msgAv['viewArtikel.alt.update']}">
+									 	<h:graphicImage id="updateArtikelItem"
+									 					name="update.gif"
+									 					library="images"/>
+									 </h:commandLink>
+							</r:column>
+						</r:dataTable>
+					
+				</r:outputPanel>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>							

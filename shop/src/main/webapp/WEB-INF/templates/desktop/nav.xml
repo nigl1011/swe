@@ -109,8 +109,12 @@
 						<f:param id="findBestellungCid" name="cid" value="#{javax.enterprise.context.conversation.id}"/>
 				</c:if>
 				</h:link>
-				
-				
+		</r:panelMenuItem>
+		<r:panelMenuItem id="artikelverwaltungCreateArtikelItem">
+			<h:link id="artikelverwaltungCreateArtikel"
+					outcome="/artikelverwaltung/createArtikel"
+					value="#{msg['nav.artikelverwaltung.createArtikel']}">
+			</h:link>
 		</r:panelMenuItem>
 	
 		
