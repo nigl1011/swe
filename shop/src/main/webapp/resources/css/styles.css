@@ -1,5 +1,4 @@
 /* # fuer Tag-ID und . fuer CSS-Klasse */
-
 #header {
 	/* clear: left; */
 	height: 75px;
@@ -14,8 +13,8 @@
 			wine			#5D7343
 			classic 		#F3F2F2
 	*/
-	background-color: #BED6F8;
-	border-style: none
+	background-color: #EAF0F8;
+	border-style: none;
 	
 }
 
@@ -24,9 +23,7 @@
 	width: 15%;
 	height: 550px;
 	padding: 5px;
-	background-color: #BED6F8;
-	border-style:   /* emeraldTown */;
-	border-color: groove
+	background-color: #DDE1FB;
 }
 
 #content {
@@ -71,7 +68,17 @@ h1 {
 	background-color: #FCFFFE;
 }
 .active-row {
-	background-color: #FFEBDA;
+	background-color: #FBFCBE;
 	cursor: pointer;
+}
+.commandLink {
+	text-decoration: blink;
+	font-weight: bold;
+	color: Snow;
+	text-align: right;
+	outline-style: groove;
+	outline-color: #EAF0F8;
+	font-style: oblique;
+	
 }
 

@@ -1,4 +1,9 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:ui="http://java.sun.com/jsf/facelets">
-	<b>&#169; Hochschule Karlsruhe - SWE Gruppe3</b>
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html">
+	<h:graphicImage id="iwiLogoImage"
+					name="iwi-logo.png"
+					library="images"
+					alt="#{msg['footer.logo.alt']}"/>
+	
 </ui:composition>

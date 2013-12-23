@@ -35,16 +35,8 @@
 					<f:facet name="label">
 						#{msg['header.sprache']}
 					</f:facet>
-				<c:set var="language" value="#{spracheModel.getLocale}"/>
-				<c:if test="#{spracheModel.getLocale != null}">
-					<c:set var="status" value="#{msg['header.sprache.de.true']}"/>
-				</c:if>
-				<c:else>
-					<c:set var="status" value="#{msg['header.sprache.de.false']}"/>
-				</c:else>
-				
+						
 				<r:menuItem id="deutsch"
-							disabled="status"
 							label="#{msg['header.sprache.deutsch']}"
 							icon="#{resource['images/de_icon.gif']}"
 							actionListener="#{spracheModel.change('de')}"/>
@@ -55,7 +47,7 @@
 				</r:dropDownMenu>
 			</h:form>	
 		<h:form id="logoutForm">
-			<h:commandLink id="logout" action="#{authModel.logout}" rendered="#{authModel.loggedIn}">
+			<h:commandLink id="logout" action="#{authModel.logout}" rendered="#{authModel.loggedIn}" styleClass="commandLink">
 				#{msg['header.logout']}
 			</h:commandLink>
 		</h:form>
