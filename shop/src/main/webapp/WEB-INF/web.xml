@@ -120,6 +120,11 @@
   <login-config>
     <auth-method>BASIC</auth-method>
     <realm-name>Webshop</realm-name>
+    <!--  <form-login-config>
+    	<form-login-page>/auth/login.jsf</form-login-page>
+    	<form-error-page>/auth/login.jsf?error=true</form-error-page>
+    </form-login-config>
+    -->
   </login-config>
    <security-role>
     <role-name>kunde</role-name>
@@ -219,4 +224,16 @@
       <transport-guarantee>CONFIDENTIAL</transport-guarantee>
     </user-data-constraint>
    </security-constraint>
+   <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>shopKundeTaetigkeiten</web-resource-name>
+      <url-pattern>/bestellverwaltung/confirmBestellung.jsf</url-pattern>
+      <http-method>POST</http-method>
+   	  <http-method>GET</http-method>
+   	 </web-resource-collection>
+    <auth-constraint>
+     <role-name>kunde</role-name>
+     </auth-constraint>
+     </security-constraint>
+   
 </web-app>

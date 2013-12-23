@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
-
+import static de.shop.util.Constants.JSF_DEFAULT_ERROR;
 import static de.shop.util.Constants.JSF_REDIRECT_SUFFIX;
 
 import javax.ejb.Stateful;
@@ -32,7 +32,6 @@ import de.shop.util.interceptor.Log;
  */
 @Named
 @SessionScoped
-@Stateful
 public class BestellungModel implements Serializable {
 	
 	private static final long serialVersionUID = -2178007500385342348L;
@@ -106,11 +105,10 @@ public class BestellungModel implements Serializable {
 	@Transactional
 	@Log
 	public String bestellen() {
-		auth.preserveLogin();
 		
+		auth.preserveLogin();		
 		if (warenkorb == null || warenkorb.getPositionen() == null || warenkorb.getPositionen().isEmpty()) {
-			//TODO return JSF_DEFAULT_ERROR
-			return null;
+			return JSF_DEFAULT_ERROR;
 		}
 		// Logged Kunde + Bestellungen ermitteln und neue ergänzen
 		kunde = ks.findKundeById(kunde.getId(), FetchType.MIT_BESTELLUNGEN);

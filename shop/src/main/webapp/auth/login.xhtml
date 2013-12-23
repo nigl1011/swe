@@ -11,7 +11,7 @@
 			<ui:param name="pageTitle" value="#{msg['login.title']}"/>
 			<ui:define name="content">
 				<r:panel id="loginPanel" header="#{msg['login.heading']}" style="width:300px">
-					<form id="loginForm" action="j_security_check" method="post">
+					<form id="loginForm" method="post" action="../../shop/j_security_check">
 						<r:jQuery id="focus" selector="#j_username" query="focus()"/>
 						
 						<h:panelGrid id="loginGrid" columns="3">
@@ -35,24 +35,6 @@
 						</p>
 					</h:panelGroup>
 				</r:panel>
-				
-	<!--
-		<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-				    xmlns:ui="http://java.sun.com/jsf/facelets"
-				    template="/WEB-INF/templates/desktop/main.xml">
-			<ui:param name="pageTitle" value="#{msg['login.title']}"/>
-		
-			<ui:define name="article">
-				<form id="loginForm" action="j_security_check" method="post">
-					Username
-					<input type="text" id="j_username" name="j_username"/>
-					Password
-					<input type="password" id="j_password" name="j_password"/>
-					<input type="submit" value="OK"/>
-				</form>
-			</ui:define>
-		</ui:composition>
-	-->
 			</ui:define>
 		</ui:composition>
 	</body>
