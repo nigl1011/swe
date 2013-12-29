@@ -28,12 +28,13 @@
 							                minChars="1"
 							                autocompleteMethod="#{kundeModel.findKundenByIdPrefix}"
 							                var="kunde"
-							                fetchValue="#{kunde.id}"
+							                fetchValue="#{kundenverwaltung.kunde.id}"
 							                converter="javax.faces.Number"
 							                converterMessage="#{msgKv['viewKunde.kundenr.converterError']}"
 							                required="true"
 							                requiredMessage="#{msgKv['viewKunde.kundenr.required']}">
-								#{kunde.id} : #{kunde.nachname}, #{kunde.vorname}
+								#{kundenverwaltung.kunde.id} : #{kundenverwaltung.kunde.nachname}, #{kundenverwaltung.kunde.vorname}
+								    <!-- war vorher kunde.id bei fetchValue und #-->
 							</r:autocomplete> 
 		
 							<r:commandButton id="findButton"

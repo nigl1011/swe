@@ -18,6 +18,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Event;
 import javax.faces.event.ValueChangeEvent;
@@ -60,6 +61,7 @@ import de.shop.util.web.Messages;
  */
 @Named
 @SessionScoped
+@RequestScoped
 @Stateful
 @TransactionAttribute(SUPPORTS)
 public class KundeModel implements Serializable {
