@@ -5,6 +5,7 @@
                 xmlns:cc="http://java.sun.com/jsf/composite/components"
                 xmlns:r="http://richfaces.org/rich"
                 xmlns:c="http://java.sun/com/jsp/jstl/core">
+                
 	<r:toolbar id="headerToolbar" height="65px">
 		<h:link id="homeLink" outcome="/index">
 			<h:graphicImage id="hsLogoImage"
@@ -12,7 +13,10 @@
 			                library="images"
 							alt="#{msg['header.logo.alt']}"/>
 		</h:link>
+		
+		
 		<r:toolbarGroup id="rightGroup" location="right">
+		
 			<h:form id="loginFormHeader" rendered="#{not authModel.loggedIn}">
 				<h:panelGrid id="loginGrid" columns="3">
 					<h:outputLabel id="usernameLabel"
@@ -46,22 +50,13 @@
 							actionListener="#{spracheModel.change('en')}"/>
 				</r:dropDownMenu>
 			</h:form>	
+			
 		<h:form id="logoutForm">
 			<h:commandLink id="logout" action="#{authModel.logout}" rendered="#{authModel.loggedIn}" styleClass="commandLink">
 				#{msg['header.logout']}
 			</h:commandLink>
 		</h:form>
-	
-	
-				
-	
-		
-		
-		
-		</r:toolbarGroup>
-		
-			
 
-		
+		</r:toolbarGroup>
 	</r:toolbar>
 </ui:composition>
