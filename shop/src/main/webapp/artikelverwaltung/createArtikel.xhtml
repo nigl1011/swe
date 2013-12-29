@@ -68,8 +68,9 @@
 						<f:selectItem id="werkstatt" itemValue="WERKSTATT" itemLabel="#{msgAv['createArtikel.werkstatt']}"/>
 						<f:selectItem id="wohnzimmer" itemValue="WOHNZIMMER" itemLabel="#{msgAv['createArtikel.wohnzimmer']}"/>
 					</r:select>
+					<r:messages id="fehlermeldungenKategorie" for="kategorie"/>
 					<f:verbatim/>
-					<f:verbatim/>
+					
 					<h:outputLabel id="preisLabel" for="preis" value="#{msgAv['createArtikel.preis']}"/>
 					<h:inputText id="preis" value="#{artikel.preis}">
 						<r:validator/>

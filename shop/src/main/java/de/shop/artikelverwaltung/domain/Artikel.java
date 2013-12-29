@@ -115,6 +115,7 @@ message = "{artikelverwaltung.artikel.bezeichnung.length}")
 private String bezeichnung = "";
 
 @Column(nullable = false, name = "kategorie", length = 32)
+@NotNull(message = "{artikelverwaltung.artikel.kategorie.notNull}")
 private KategorieType kategorie;
 
 @Column(length = FARBE_LENGTH_MAX, nullable = false)

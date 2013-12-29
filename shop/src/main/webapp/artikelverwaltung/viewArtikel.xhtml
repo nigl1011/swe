@@ -13,26 +13,26 @@
 			<ui:param name="pageTitle" value="#{msgAv['viewArtikel.title']}"/>
 		
 			<ui:define name="content">
+				<c:set var="artikel" value="#{flash.artikel}" scope="view"/>
 				<h:form id="form">
-					<r:focus id="formFocus"/>
 					
-					<r:panel id="suchePanel" header="#{msgAv['viewArtikel.sucheNeu']}">
-						<h:panelGrid id="suchePanelGrid" columns="3">
-							<h:outputLabel id="artikelIdInputLabel"
-										   value="#{msgAv['viewArtikel.id']}"
-										   for="artikelIdInput"/>
-							<h:inputText id="artikelIdInput" value="#{artikelModel.artikelId}"/>
-							<r:commandButton id="findButton"
-											 action="#{artikelModel.findArtikelById}"
-											 value="#{msgAv['viewArtikel.submit']}"
-											 render="gesuchterArtikelPanel"/>
+					
+					<r:panel id="artikelMainPanel" header="#{msgAv['viewArtikel.heading']}">
+						<h:panelGrid id="artikelMainPanelGrid" columns="2">
+							<h:outputLabel id="idLabel"
+										   value="#{msgAv['viewArtikel.id']}"/>
+							<h:outputText id="artikelId" value="#{artikel.id}"/>
+							
+							<h:outputLabel id="erzeugtLabel" value="#{msgAv['viewArtikel.zeitstempel']}"/>
+							<h:outputText id="erstellt" value="#{artikel.erstellt}">
+								<f:convertDateTime type="date" style="full"/>
+							</h:outputText>
 						</h:panelGrid>
 					</r:panel>
+					<p id="abstand"/>
 					
-					<r:outputPanel id="gesuchterArtikelPanel">
-						<c:set var="artikel" value="#{flash.artikel}" scope = "view"/>
-						<c:set target="#{flash}" property="artikel" value="#{artikel}"/>
-						
+					<r:panel id="artikelDetailPanel">
+												
 						<r:dataTable id="artikelTabelle"
 									 value="#{artikel}"
 									 var="art"
@@ -80,7 +80,7 @@
 							</r:column>
 						</r:dataTable>
 					
-				</r:outputPanel>
+				</r:panel>
 			</h:form>
 		</ui:define>
 	</ui:composition>

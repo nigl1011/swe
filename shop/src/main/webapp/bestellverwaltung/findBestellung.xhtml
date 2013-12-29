@@ -27,19 +27,25 @@
 						<r:commandButton id="findButton"
 										 action="#{bestellungModel.findBestellungById}"
 										 value="#{msgBv['findBestellung.submit']}"
-										 render="positionen"/>
+										 render="bestellungPanel"/>
 				</h:panelGrid>
 			</r:panel>
 			
 			<p id="abstand"/>
 			
-			<r:panel id="positionen" header="#{msgBv['findBestellung.positionen']}"> 
-			<c:set var="bestellung" value="#{flash.bestellung}" scope = "view"/>
 			
-			<c:set target="#{flash}" property="bestellung" value="#{bestellung}"/>
+				<r:outputPanel id="bestellungPanel">
+						<c:if test="#{not empty flash.bestellung or param.init ne 'true'}">
+						<c:set var="bestellung" value="#{flash.bestellung}" scope = "view"/>
+						<c:set target="#{flash}" property="bestellung" value="#{bestellung}"/>
 					<r:dataTable id="positionenTabelle"
-					             value="#{bestellung.bestellposten}"
-					             var="pos">
+								value="#{bestellung.bestellposten}"
+					             var="pos"
+					             noDataLabel="#{msgBv['findBestellung.keineDaten']}"
+					             rendered="#{not empty bestellung or param.init ne 'true'}">
+					 <f:facet name="header">
+					 	 #{msgBv['findBestellung.positionen']}
+					</f:facet>
 					<r:column id="artikelIdSpalte">
 							<f:facet name="header">
 								#{msgBv['findBestellung.artikel.id']}
@@ -66,8 +72,9 @@
 				</r:dataTable>
 				
 				
-				</r:panel>
-			
+				
+			</c:if>
+			</r:outputPanel>
 			</h:form>
 		</ui:define>
 		

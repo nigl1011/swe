@@ -11,7 +11,7 @@
 			<ui:param name="pageTitle" value="#{msg['login.title']}"/>
 			<ui:define name="content">
 				<r:panel id="loginPanel" header="#{msg['login.heading']}" style="width:300px">
-					<form id="loginForm" method="post" action="../../shop/j_security_check">
+					<form id="loginForm" method="post" action="j_security_check">
 						<r:jQuery id="focus" selector="#j_username" query="focus()"/>
 						
 						<h:panelGrid id="loginGrid" columns="3">
