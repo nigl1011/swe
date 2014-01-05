@@ -54,10 +54,8 @@ import de.shop.util.web.Captcha;
 import de.shop.util.web.Client;
 import de.shop.util.web.Messages;
 
-/**
- * Dialogsteuerung fuer die Kundenverwaltung
- * @author <a href="mailto:Juergen.Zimmermann@HS-Karlsruhe.de">J&uuml;rgen Zimmermann</a>
- */
+
+
 @Named
 @SessionScoped
 @Stateful
@@ -69,7 +67,7 @@ public class KundeModel implements Serializable {
 
 	private static final String JSF_KUNDENVERWALTUNG = "/kundenverwaltung/";
 	private static final String JSF_VIEW_KUNDE = JSF_KUNDENVERWALTUNG + "viewKunde";
-	private static final String JSF_LIST_KUNDEN = JSF_KUNDENVERWALTUNG + "/kundenverwaltung/listKunden";
+	private static final String JSF_LIST_KUNDEN = JSF_KUNDENVERWALTUNG + "listKunden";
 	private static final String JSF_UPDATE_PRIVATKUNDE = JSF_KUNDENVERWALTUNG + "updatePrivatkunde";
 	private static final String JSF_UPDATE_FIRMENKUNDE = JSF_KUNDENVERWALTUNG + "updateFirmenkunde";
 	private static final String JSF_DELETE_OK = JSF_KUNDENVERWALTUNG + "okDelete";
