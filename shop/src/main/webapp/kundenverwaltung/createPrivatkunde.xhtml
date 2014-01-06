@@ -25,37 +25,35 @@
 		
 				<h:form id="createKundeForm">
 					<r:jQuery id="nachnameFocus" selector="#nachname" query="focus()"/>
-					<!-- fokussiert auf id="kategorie" statt auf id="nachname" WARUM?
+					
 					<r:focus id="createKundeFormFocus"/>
-					-->
+					
 					
 					<c:set var="kunde" value="#{kundeModel.neuerPrivatkunde}" scope="view"/>
 					<c:set var="adresse" value="#{kunde.adresse}" scope="view"/>
-					<!--
-						https://issues.jboss.org/browse/AS7-1348
-						http://community.jboss.org/thread/169487 
-					-->
-					<r:graphValidator id="kundeValidator" value="#{kunde}" groups="#{kundeModel.passwordGroup}">
-						<r:messages id="fehlermeldungKundeValidator" for="kundeValidator"/>
-						<r:messages id="fehlermeldungGlobal" globalOnly="true"/>
+					
+						
+					
 					
 						<h:panelGrid id="createKundeTabelle" columns="3">
 				
 							<h:outputLabel id="nachnameLabel" for="nachname" value="#{msgKv['createPrivatkunde.nachname']}"/>
-							<h:inputText id="nachname" value="#{kunde.nachname}">
-								<!-- Validierung durch Ajax mit JSF -->
-								<!--
-								<f:ajax event="blur" render="fehlermeldungenUmsatz"/>
-								-->
-								<!-- Validierung durch Javascript mit RichFaces -->
+							<h:inputText id="nachname" value="#{kunde.nachname}" valueChangeListener="#{kundeModel.geaendert}">
+								
+								
 								<r:validator oninvalid="$(#{r:element('nachname')}).addClass('invalid')"
 	                                         onvalid="$(#{r:element('nachname')}).removeClass('invalid')"/>
 							</h:inputText>
 							<r:messages id="fehlermeldungenNachname" for="nachname"/>
 				
 							<h:outputLabel id="vornameLabel" for="vorname" value="#{msgKv['createPrivatkunde.vorname']}"/>
-							<h:inputText id="vorname" value="#{kunde.vorname}"/>
-							<f:verbatim/>
+							<h:inputText id="vorname" value="#{kunde.vorname}" valueChangeListener="#{kundeModel.geaendert}">
+                                                
+                                       <r:validator oninvalid="$(#{r:element('vorname')}).addClass('invalid')"
+                                                        onvalid="$(#{r:element('vorname')}).removeClass('invalid')" />
+                            </h:inputText>
+                            <r:messages id="fehlermeldungenVorname" for="vorname" />
+							
 							
 							<h:outputLabel id="kategorieLabel" value="#{msgKv['createPrivatkunde.kategorie']}" for="kategorie"/>
 							<r:inputNumberSlider id="kategorie"
@@ -73,9 +71,9 @@
 							            datePattern="#{msgKv['createPrivatkunde.calendar.pattern']}"
 							            value="#{kunde.seit}"
 							            timezone="CET">
-							    <!-- https://issues.jboss.org/browse/RF-10224
+							    
 								<r:validator/>
-								-->
+								
 								<r:placeholder id="seitPlaceholder" value="#{msgKv['createPrivatkunde.seit.placeholder']}" />
 							</r:calendar>
 							<r:messages id="fehlermeldungenSeit" for="seit"/>
@@ -83,16 +81,18 @@
 							<h:outputLabel id="umsatzLabel" for="umsatz" value="#{msgKv['createPrivatkunde.umsatz']}"/>
 							<h:inputText id="umsatz"
 							             value="#{kunde.umsatz}"
-							             converterMessage="#{msgKv['createPrivatkunde.umsatz.convert']}">
+							             converterMessage="#{msgKv['createPrivatkunde.umsatz.convert']}"
+							             valueChangeListener="#{kundeModel.geaendert}">
 							    <!--
 							    <f:convertNumber type="currency"
 								                 currencyCode="EUR"
 								                 maxFractionDigits="2"/>
 								-->
 								<f:ajax event="blur" render="fehlermeldungenUmsatz"/>
-								<!-- https://issues.jboss.org/browse/RF-10224
-								<r:validator/>
-								-->
+								<r:validator
+                                                        oninvalid="$(#{r:element('umsatz')}).addClass('invalid')"
+                                                        onvalid="$(#{r:element('umsatz')}).removeClass('invalid')" />
+                                        
 							</h:inputText>
 							<r:messages id="fehlermeldungenUmsatz" for="umsatz"/>
 				
@@ -133,7 +133,7 @@
 							<f:verbatim/>
 											
 							<h:outputLabel id="emailLabel" for="email" value="#{msgKv['createPrivatkunde.email']}"/>
-							<h:inputText id="email" value="#{kunde.email}">
+							<h:inputText id="email" value="#{kunde.email}" valueChangeListener="#{kundeModel.geaendert}">
 								<r:validator oninvalid="$(#{r:element('email')}).addClass('invalid')"
 	                                         onvalid="$(#{r:element('email')}).removeClass('invalid')"/>
 							</h:inputText>
@@ -154,7 +154,9 @@
 							               value="#{kunde.passwordWdh}"
 							               redisplay="true"/>
 							<f:verbatim/>
-			
+							
+							
+							
 							<h:outputLabel id="plzLabel" for="plz" value="#{msgKv['createPrivatkunde.plz']}"/>
 							<h:inputText id="plz"
 							             value="#{adresse.plz}">
@@ -180,7 +182,11 @@
 							<r:messages id="fehlermeldungStrasse" for="strasse"/>
 							
 							<h:outputLabel id="hausnrLabel" for="hausnr" value="#{msgKv['createPrivatkunde.hausnr']}"/>
-							<h:inputText id="hausnr" value="#{adresse.hausnr}"/>
+							<h:inputText id="hausnr" value="#{adresse.hausnr}">
+									<r:validator oninvalid="$(#{r:element('hausnr')}).addClass('invalid')"
+	                                         	 onvalid="$(#{r:element('hausnr')}).removeClass('invalid')"/>
+							</h:inputText>
+							<r:messages id="fehlermeldungHausnr" for="hausnr"/>
 							<f:verbatim/>
 							
 							<r:mediaOutput id="captcha"
@@ -208,7 +214,7 @@
 							#{' '}
 							<h:commandButton id="reset" type="reset" value="#{msgKv['createPrivatkunde.reset']}"/>
 						</p>
-					</r:graphValidator>
+					
 				</h:form>
 				
 				<p id="hinweisPflichtfelder">
