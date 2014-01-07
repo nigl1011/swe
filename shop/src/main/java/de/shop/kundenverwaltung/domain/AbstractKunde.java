@@ -283,7 +283,7 @@ public abstract class AbstractKunde implements Serializable, Cloneable {
 	@Basic(optional = false)
 	private short kategorie;
 	
-	@Basic(optional = false)
+	//@Basic(optional = false)
 	@Temporal(DATE)
 	@Past(message = "{kundenverwaltung.kunde.seit.past}")
 	private Date seit;
