@@ -158,13 +158,14 @@
 				</f:facet>
 				
 				<r:column id="togglerSpalte" colspan="3">
+				     <!--  .getErzeugt('yyyy-MM-dd') -->
 					<r:collapsibleSubTableToggler id="subTableToggler" for="positionenSubtable"
-					                              collapsedLabel="#{msgKv['viewKundePopup.bestellung']} #{bestellung.id} : #{bestellung.getErzeugt('yyyy-MM-dd')}"
-					                              expandedLabel="#{msgKv['viewKundePopup.bestellung']} #{bestellung.id} : #{bestellung.getErzeugt('yyyy-MM-dd')}"/>
+					                              collapsedLabel="#{msgKv['viewKundePopup.bestellung']} #{bestellung.id} : #{bestellung.erzeugt}"
+					                              expandedLabel="#{msgKv['viewKundePopup.bestellung']} #{bestellung.id} : #{bestellung.erzeugt}"/>
 				</r:column>
 				
 				<r:collapsibleSubTable id="positionenSubtable"
-				                       value="#{bestellung.bestellpositionen}"
+				                       value="#{bestellung.bestellposten}"
 				                       var="pos"
 				                       rowClasses="odd-row, even-row"
 					                   styleClass="tabelleMitZebrastil"

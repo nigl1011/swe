@@ -133,7 +133,7 @@ public class KundeModel implements Serializable {
 	private AbstractKunde kunde;
 	private List<String> hobbies;
 	
-	@Pattern(regexp = AbstractKunde.NACHNAME_PATTERN, message = "{kunde.nachname.pattern}")
+	@Pattern(regexp = AbstractKunde.NACHNAME_PATTERN, message = "{kundenverwaltung.kunde.nachname.pattern}")
 	private String nachname;
 	
 	private List<AbstractKunde> kunden = Collections.emptyList();
