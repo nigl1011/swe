@@ -1,6 +1,7 @@
 package de.shop.artikelverwaltung.web;
 
 import static de.shop.util.Constants.JSF_REDIRECT_SUFFIX;
+import static de.shop.util.Constants.JSF_INDEX;
 
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
@@ -15,15 +16,20 @@ import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.event.Event;
 import javax.faces.context.Flash;
+import javax.faces.event.ValueChangeEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.OptimisticLockException;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
 import org.jboss.logging.Logger;
+import org.richfaces.push.cdi.Push;
 
 import de.shop.artikelverwaltung.domain.Artikel;
 import de.shop.artikelverwaltung.service.ArtikelService;
@@ -36,13 +42,18 @@ import de.shop.util.web.Messages;
  */
 @Named
 @SessionScoped
+@Stateful
 public class ArtikelModel implements Serializable {
 	private static final long serialVersionUID = 58038678073649354L;
 
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
 	
+
+	
 	private static final String JSF_VIEW_ARTIKEL = "/artikelverwaltung/viewArtikel";
 	private static final String JSF_LIST_ARTIKEL = "/artikelverwaltung/listArtikel";
+	private static final String JSF_UPDATE_ARTIKEL = "/artikelverwaltung/updateArtikel";
+	
 	private static final String FLASH_ARTIKEL = "artikel";
 	
 	private static final String JSF_SELECT_ARTIKEL = "/artikelverwaltung/selectArtikel";
@@ -54,9 +65,16 @@ public class ArtikelModel implements Serializable {
 	private static final String MSG_KEY_ARTIKEL_NOT_FOUND_BY_BEZEICHNUNG = "artikel.notFound.bezeichnung";
 	private static final String CLIENT_ID_ARTIKEL_BEZEICHNUNG = "form:bezeichnung";
 	
+	private static final String MSG_KEY_CONCURRENT_UPDATE = "persistence.concurrentUpdate";
+	
 	private Long artikelId;
 	private String bezeichnung;
 	private Artikel artikel;
+	
+	/*
+	 * Wird für den ValueChangeListener benötigt
+	 */
+	private boolean geanderterArtikel;
 	
 	private List<String> kategorie;
 	
@@ -68,6 +86,14 @@ public class ArtikelModel implements Serializable {
 	
 	@Inject
 	private Messages messages;
+	
+	@Inject
+	@Push(topic = "updateArtikel")
+	private transient Event<String> updateArtikelEvent;
+	
+	@Inject
+	@Push(topic = "neuerArtikel")
+	private transient Event<String> neuerArtikelEvent;
 	
 	@Inject
 	@Client
@@ -165,18 +191,23 @@ public class ArtikelModel implements Serializable {
 	@Log
 	public String createArtikel() {
 		
+		//TODO try/catch Block
 		neuerArtikel = as.createArtikel(neuerArtikel);
 		
+		neuerArtikelEvent.fire(String.valueOf(neuerArtikel.getId()));
 		
 		// Aufbereitung für viewArtikel.xhtml
 		artikelId = neuerArtikel.getId();
 		artikel = neuerArtikel;
+		
+		
+		
 		neuerArtikel = null;
 		
-		// Artikel im Flash speichern wegen Redirect zum neuen Artikel
 		flash.put(FLASH_ARTIKEL, artikel);
 		
-		return JSF_VIEW_ARTIKEL;
+		
+		return JSF_VIEW_ARTIKEL + JSF_REDIRECT_SUFFIX;
 		
 		
 		
@@ -199,13 +230,70 @@ public class ArtikelModel implements Serializable {
 		messages.error(MSG_KEY_ARTIKEL_NOT_FOUND_BY_ID, locale, CLIENT_ID_ARTIKELID, id);
 		return null;
 	}
+	
+	/*
+	 * Verwendung als ValueChangeListener bei update.xhtml
+	 */
+	public void geandert(ValueChangeEvent e) {
+		if (geanderterArtikel) {
+			return;
+		}
+		if (e.getOldValue() == null) {
+			 if (e.getNewValue() != null) {
+				 geanderterArtikel = true;
+			 }
+			 return;
+		}
+		if (!e.getOldValue().equals(e.getNewValue())) {
+			geanderterArtikel = true;
+		}
+	}
 
-	@TransactionAttribute
+	@Log
+	public String selectForUpdate(Artikel ausgewaehlterArtikel) {
+		if (ausgewaehlterArtikel == null) {
+			return null;
+		}
+		artikel = ausgewaehlterArtikel;
+		return Artikel.class.equals(ausgewaehlterArtikel.getClass())
+				? JSF_UPDATE_ARTIKEL + JSF_REDIRECT_SUFFIX
+				: JSF_INDEX;
+	}
+	
+	@Transactional
 	@Log
 	public String update() {
 		auth.preserveLogin();
 	
-	//TODO: update implementieren
-	return null;
+		if (!geanderterArtikel || artikel == null) {
+			return JSF_INDEX;
+		}
+	LOGGER.tracef("Aktualisierter Artikel: %s", artikel);
+	try {
+		artikel = as.updateArtikel(artikel);
+	}
+	// Nur OptLockExc abfangen, Löschen wurde nicht implementiert. Keine UniqueConstraints
+	catch (OptimisticLockException e) {
+		final String outcome = updateErrorMsg(e, artikel.getClass());
+		return outcome;
+	}
+	updateArtikelEvent.fire(String.valueOf(artikel.getId()));
+	
+	return JSF_INDEX + JSF_REDIRECT_SUFFIX;
+	}
+	
+	/*
+	 * Alle RuntimeExceptions an Errorausgabe leiten und durch Abfragen vefeinert ausgeben
+	 */
+	private String updateErrorMsg(RuntimeException e, Class<? extends Artikel> artikelClass) {
+		final Class<? extends RuntimeException> exceptionClass = e.getClass();
+
+		if (OptimisticLockException.class.equals(exceptionClass)) {
+			messages.error(MSG_KEY_CONCURRENT_UPDATE, locale, null);
+		}
+		else {
+			throw new RuntimeException(e);
+		}
+		return null;
 	}
 }
