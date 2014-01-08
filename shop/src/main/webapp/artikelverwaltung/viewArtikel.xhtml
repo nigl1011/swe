@@ -69,13 +69,15 @@
 								#{art.preis}
 							</r:column>
 							<r:column id="buttonSpalte"
-									  rendered="#{not empty artikel}">
+									  rendered="#{not empty artikelModel.artikel}">
 									 <h:commandLink id="updateArtikelButton"
-									 				action="#{artikelModel.update}"
-									 				alt="#{msgAv['viewArtikel.alt.update']}">
+									 				action="#{artikelModel.selectForUpdate(artikel)}"
+									 				alt="#{msgAv['viewArtikel.alt.update']}"
+									 				>
 									 	<h:graphicImage id="updateArtikelItem"
 									 					name="update.gif"
 									 					library="images"/>
+									 	
 									 </h:commandLink>
 							</r:column>
 						</r:dataTable>
