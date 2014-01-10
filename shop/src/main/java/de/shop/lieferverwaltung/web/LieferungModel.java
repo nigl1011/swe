@@ -22,7 +22,6 @@ public class LieferungModel implements Serializable {
 	private static final String FLASH_LIEFERUNG = "lieferung";
 	private static final String JSF_LIEFERVERWALTUNG = "/lieferverwaltung/";
 	private static final String JSF_VIEW_LIEFERUNG = JSF_LIEFERVERWALTUNG + "/viewLieferung";
-	//private static final String JSF_FIND_LIEFERUNG = JSF_LIEFERVERWALTUNG + "findLieferung";
 	
 	private Lieferung lieferung;
 	
@@ -54,23 +53,6 @@ public class LieferungModel implements Serializable {
 		this.lieferId = lieferId;
 	}
 	
-	/**
-	 * Action Methode, um eine Lieferung zu gegebener ID zu suchen
-	 * @return URL fuer Anzeige der gefundenen Lieferung; sonst null
-	 */
-	/**@Log
-	public String findLieferungById() {
-		final Lieferung lieferung = ls.findLieferungById(lieferId);
-		if (lieferung == null) {
-			flash.remove(FLASH_LIEFERUNG);
-			return null;
-		}
-		
-		flash.put(FLASH_LIEFERUNG, lieferung);
-		return JSF_VIEW_LIEFERUNG;
-	}
-	**/
-	
 	@Transactional
 	@Log
 	public String findLieferungById() {
@@ -80,7 +62,6 @@ public class LieferungModel implements Serializable {
 		}
 		lieferung = ls.findLieferungById(lieferId);
 		flash.put(FLASH_LIEFERUNG, lieferung);
-		//return JSF_FIND_LIEFERUNG;
 		return JSF_VIEW_LIEFERUNG;
 	}
 }

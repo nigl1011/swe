@@ -116,6 +116,13 @@
 					value="#{msg['nav.artikelverwaltung.createArtikel']}">
 			</h:link>
 		</r:panelMenuItem>
+		<r:panelMenuItem id="lieferverwaltungAdmin" rendered="#{r:isUserInRole('mitarbeiter')}">
+				<h:link id="lieferverwaltungviewLieferung"
+					outcome="/lieferverwaltung/viewLieferung"
+					value="#{msg['nav.lieferverwaltung.viewLieferung']}">
+				</h:link>
+		</r:panelMenuItem>
+		
 	
 		
 	</r:panelMenuGroup>

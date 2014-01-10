@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:c="http://java.sun.com/jsp/jstl/core"
+	  xmlns:r="http://richfaces.org/rich"
+      xmlns:f="http://java.sun.com/jsf/core">
+	<body>	
+		<ui:composition template="/WEB-INF/templates/desktop/main.xml">
+			<ui:param name="pageTitle" value="#{msgLV['viewLieferung.title']}"/>
+			
+		<ui:define name="content">
+			<h:form id="form">
+			
+			
+			<r:panel id="lieferungMainPanel" header="#{msgLv['viewLieferung.heading']}">
+				<r:focus id="formFocus"/>
+				<h:panelGrid id="lieferungGrid" columns="2">
+						
+						<h:outputLabel id="idInputLabel"
+									   value="#{msgLv['viewLieferung.id']}"
+									   for="idInput"/>	
+									   
+						<h:inputText id="idInput" value="#{lieferungModel.lieferId}"/>				
+						
+						<r:commandButton id="findButton"
+										 action="#{lieferungModel.findLieferungById}"
+										 value="#{msgLv['viewLieferung.submit']}"
+										 render="lieferungPanel"/>
+				</h:panelGrid>
+			</r:panel>
+			
+			<p id="abstand"/>
+			
+			
+				<r:outputPanel id="lieferungPanel">
+						<c:if test="#{not empty flash.lieferung or param.init ne 'true'}">
+						<c:set var="lieferung" value="#{flash.lieferung}" scope = "view"/>
+						<c:set target="#{flash}" property="lieferung" value="#{lieferung}"/>
+					<r:dataTable id="positionenTabelle"
+								value="#{lieferung}"
+					             var="pos"
+					             noDataLabel="#{msgLv['viewLieferung.keineDaten']}"
+					             rendered="#{not empty lieferung or param.init ne 'true'}">
+					 <f:facet name="header">
+					 	 #{msgLv['viewLieferung.positionen']}
+					</f:facet>
+					<r:column id="lieferungIdSpalte">
+							<f:facet name="header">
+								#{msgLv['viewLieferung.id']}
+							</f:facet>
+							#{pos.id}
+						</r:column>
+			
+						<r:column id="bestellungIdSpalte">
+							<f:facet name="header">
+								#{msgLv['viewLieferung.bestellung.id']}
+							</f:facet>
+							#{pos.bestellung.id}
+						</r:column>
+				</r:dataTable>
+				
+				
+				
+			</c:if>
+			</r:outputPanel>
+			</h:form>
+		</ui:define>
+		
+	</ui:composition>
+	
+	</body>
+
+</html>

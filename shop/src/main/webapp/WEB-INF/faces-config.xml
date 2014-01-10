@@ -39,6 +39,11 @@
   </resource-bundle>
   
   <resource-bundle>
+   <base-name>web.lieferverwaltung.Messages</base-name>
+   <var>msgLv</var>
+  </resource-bundle>
+  
+  <resource-bundle>
    <base-name>web.auth.Messages</base-name>
    <var>msgAuth</var>
   </resource-bundle>
