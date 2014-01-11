@@ -16,6 +16,10 @@
     <param-value>true</param-value>
   </context-param>
   <context-param>
+    <param-name>org.atmosphere.useBlocking</param-name>
+    <param-value>true</param-value>
+  </context-param>
+  <context-param>
     <description>In Produktion: Validierung der Tags mit f: abschalten, d.h. auf false setzen</description>
     <param-name>com.sun.faces.enableCoreTagLibValidator</param-name>
     <param-value>true</param-value>
