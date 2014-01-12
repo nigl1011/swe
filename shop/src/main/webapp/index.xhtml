@@ -11,7 +11,13 @@
 			</ui:define>
 
 			<ui:define name="content">
-				<h1>#{msg['index.welcome']}</h1>
+				<h1>#{msg['index.welcome']}
+				</h1>
+				<p id="abstand">
+				
+				<h:outputText id="username" value="#{authModel.getBenutzer()}" rendered="#{not empty authModel.username}"/>
+				</p>
+				
 			</ui:define>
 		</ui:composition>
 	</body>

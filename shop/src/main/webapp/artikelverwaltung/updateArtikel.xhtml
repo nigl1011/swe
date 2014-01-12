@@ -11,8 +11,13 @@
 		<ui:composition template="/WEB-INF/templates/desktop/main.xml">
 			<ui:param name="pageTitle" value="#{msgAv['updateArtikel.title']}"/>
 			
+			<ui:define name="metadata">
+				<f:viewParam id="artikelIdView" name="artikel" value="#{flash.now.artikel}"/>
+			</ui:define>
+			
 			<ui:define name="content">
-				<c:set var="artikel" value="#{artikelModel.artikel}" scope="view"/>
+				<c:set var="artikel" value="#{flash.artikel}" scope="view"/>
+				<c:set target="#{flash}" property="artikel" value="#{artikel}"/>
 			
 				<h1>
 					<h:outputFormat id="headingArtikel" value="#{msgAv['updateArtikel.heading']}" rendered="#{not empty artikel}">
@@ -34,7 +39,7 @@
 					<r:jQuery id="bezeichnungFocus" selector="#bezeichnung" query="focus()"/>
 					
 					<h:panelGrid id="updateArtikelTabelle"
-								 columns="3">
+								 columns="4">
 						<h:outputLabel id="bezeichnungLabel" for="bezeichnung" value="#{msgAv['updateArtikel.bezeichnung']}"/>
 						<h:inputText id="bezeichnung"
 									 value="#{artikel.bezeichnung}"
@@ -51,7 +56,7 @@
 						<h:outputLabel id="kategorieLabel" value="#{msgAv['updateArtikel.kategorie']}" for="kategorie"/>
 						<r:select id="kategorie"
 							  	  enableManualInput="false"
-							  	  defaultLabel="#{msgAv['updateArtikel.kategorie']}"
+							  	  defaultLabel="#{artikel.kategorie}"
 							      value="#{artikel.kategorie}">
 							<f:selectItem id="badezimmer" itemValue="BADEZIMMER" itemLabel="#{msgAv['updateArtikel.badezimmer']}"/>
 							<f:selectItem id="buero" itemValue="BUERO" itemLabel="#{msgAv['updateArtikel.buero']}"/>
@@ -77,10 +82,7 @@
 						#{' '}
 						<h:commandButton type="reset" value="#{msgAv['updateArtikel.reset']}"/>
 					</p>
-					
-					<p id="hinweisPflichtfelder">
-						#{msgAv['updateArtikel.required']}
-					</p>
+				
 				</h:form>
 			</ui:define>
 		</ui:composition>

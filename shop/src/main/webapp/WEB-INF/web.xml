@@ -213,6 +213,8 @@
       <url-pattern>/kundenverwaltung/createPrivatkunde.jsf</url-pattern>
       <url-pattern>/artikelverwaltung/createArtikel.jsf</url-pattern>
       <url-pattern>/lieferverwaltung/viewLieferung.jsf</url-pattern>
+      <url-pattern>/artikelverwaltung/findArtikel.jsf</url-pattern>
+      <url-pattern>/artikelverwaltung/updateArtikel.jsf</url-pattern>
    	 <http-method>POST</http-method>
    	  <http-method>GET</http-method>
    	 </web-resource-collection>
@@ -228,6 +230,9 @@
     <web-resource-collection>
       <web-resource-name>shopKundeTaetigkeiten</web-resource-name>
       <url-pattern>/bestellverwaltung/confirmBestellung.jsf</url-pattern>
+      <url-pattern>/kundenverwaltung/updatePrivatkunde.jsf</url-pattern>
+      <url-pattern>/kundenverwaltung/updateFirmenkunde.jsf</url-pattern>
+      <url-pattern>/kundenverwaltung/viewKunde.jsf</url-pattern>
       <http-method>POST</http-method>
    	  <http-method>GET</http-method>
    	 </web-resource-collection>

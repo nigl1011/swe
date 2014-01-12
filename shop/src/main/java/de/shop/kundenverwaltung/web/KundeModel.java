@@ -27,6 +27,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import javax.validation.constraints.Pattern;
 
 import org.jboss.logging.Logger;
@@ -297,14 +298,14 @@ public class KundeModel implements Serializable {
 			id = Long.valueOf(idPrefix);
 		}
 		catch (NumberFormatException e) {
-			findKundeByIdErrorMsg(idPrefix);
+			findKundeByIdErrorMsg(idPrefix.toString());
 			return null;
 		}
 		
 		kundenPrefix = ks.findKundenByIdPrefix(id);
 		if (kundenPrefix == null || kundenPrefix.isEmpty()) {
 			// Kein Kunde zu gegebenem ID-Praefix vorhanden
-			findKundeByIdErrorMsg(idPrefix);
+			findKundeByIdErrorMsg(idPrefix.toString());
 			return null;
 		}
 		
@@ -490,7 +491,7 @@ public class KundeModel implements Serializable {
 	}
 	
 
-	@TransactionAttribute
+	@Transactional
 	@Log
 	public String update() {
 		auth.preserveLogin();

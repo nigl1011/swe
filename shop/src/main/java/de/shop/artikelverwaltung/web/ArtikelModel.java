@@ -53,6 +53,7 @@ public class ArtikelModel implements Serializable {
 	private static final String JSF_VIEW_ARTIKEL = "/artikelverwaltung/viewArtikel";
 	private static final String JSF_LIST_ARTIKEL = "/artikelverwaltung/listArtikel";
 	private static final String JSF_UPDATE_ARTIKEL = "/artikelverwaltung/updateArtikel";
+	private static final String JSF_FIND_ARTIKEL = "/artikelverwaltung/findArtikel";
 	
 	private static final String FLASH_ARTIKEL = "artikel";
 	
@@ -224,7 +225,7 @@ public class ArtikelModel implements Serializable {
 		}
 		flash.put(FLASH_ARTIKEL, artikel);
 		
-		return JSF_VIEW_ARTIKEL;
+		return JSF_VIEW_ARTIKEL + JSF_REDIRECT_SUFFIX;
 	}
 	private String findArtikelByIdErrorMsg(String id) {
 		messages.error(MSG_KEY_ARTIKEL_NOT_FOUND_BY_ID, locale, CLIENT_ID_ARTIKELID, id);
@@ -279,7 +280,16 @@ public class ArtikelModel implements Serializable {
 	}
 	updateArtikelEvent.fire(String.valueOf(artikel.getId()));
 	
-	return JSF_INDEX + JSF_REDIRECT_SUFFIX;
+	// Aufbereitung für viewArtikel.xhtml
+	artikelId = artikel.getId();
+	
+	
+	
+	
+	
+	return JSF_FIND_ARTIKEL + JSF_REDIRECT_SUFFIX;
+	
+	
 	}
 	
 	/*

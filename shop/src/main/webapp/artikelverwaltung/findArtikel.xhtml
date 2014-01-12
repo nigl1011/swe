@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:c="http://java.sun.com/jsp/jstl/core"
+	  xmlns:cc="http://java.sun.com/jsf/composite/components"
+	  xmlns:r="http://richfaces.org/rich">
+
+	<ui:composition template="/WEB-INF/templates/desktop/main.xml">
+		<ui:param name="pageTitle" value="#{msgAv['findArtikel.title']}"/>
+	
+		<ui:define name="content">
+			<h:form id="form">
+				<r:focus id="sucheFocus"/>
+				
+				<r:panel id="suchePanel" header="#{msgAv['findArtikel.sucheNeu']}">
+					<h:panelGrid id="sucheGrid" columns="4">
+						<h:outputLabel id="idLabel"
+						               value="#{msgAv['findArtikel.id']}"
+						               for="id"/>
+
+						<!-- Kein Placeholder wegen <r:focus> -->
+						<h:inputText id="id" value="#{artikelModel.artikelId}"/>
+		
+						<r:commandButton id="findButton"
+						                 action="#{artikelModel.findArtikelById()}"
+								         value="#{msgAv['findArtikel.submit']}"
+								        />
+						
+						
+					</h:panelGrid>
+				</r:panel>
+				<h:outputText id="updatedId"
+									  value="#{msgAv['findArtikel.updatet']}"
+									  rendered="#{not empty flash.artikel}"/>
+			
+			
+			
+				
+				
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</html>

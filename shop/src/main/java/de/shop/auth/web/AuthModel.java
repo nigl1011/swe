@@ -206,8 +206,9 @@ public class AuthModel implements Serializable {
 		password = null;
 		user = null;
 	}
-
 	
+
+		
 	/**
 	 * Ausloggen und L&ouml;schen der gesamten Session-Daten.
 	 * @return Pfad zur Startseite einschliesslich Redirect
@@ -298,5 +299,15 @@ public class AuthModel implements Serializable {
 		kundeId = null;
 
 		return JSF_INDEX + JSF_REDIRECT_SUFFIX;
+	}
+	@Log
+	public String getBenutzer() {
+		
+		user = ks.findKundeByUserName(username);
+		
+		return user.getVorname() + " " + user.getNachname();
+		
+		
+		
 	}
 }

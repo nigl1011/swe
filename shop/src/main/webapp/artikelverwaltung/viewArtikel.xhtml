@@ -13,9 +13,10 @@
 			<ui:param name="pageTitle" value="#{msgAv['viewArtikel.title']}"/>
 		
 			<ui:define name="content">
-				<c:set var="artikel" value="#{flash.artikel}" scope="view"/>
+				
 				<h:form id="form">
-					
+					<c:set var="artikel" value="#{flash.artikel}" scope="view"/>
+					<c:set target="#{flash}" property="artikel" value="#{artikel}"/>
 					
 					<r:panel id="artikelMainPanel" header="#{msgAv['viewArtikel.heading']}">
 						<h:panelGrid id="artikelMainPanelGrid" columns="2">
@@ -27,6 +28,10 @@
 							<h:outputText id="erstellt" value="#{artikel.erstellt}">
 								<f:convertDateTime type="date" style="full"/>
 							</h:outputText>
+							
+								<h:outputLabel id="versionLabel" value="#{msgAv['viewArtikel.version']}"/>
+							<h:outputText id="version" value="#{artikel.version}"/>
+								
 						</h:panelGrid>
 					</r:panel>
 					<p id="abstand"/>
@@ -71,8 +76,8 @@
 							<r:column id="buttonSpalte"
 									  rendered="#{not empty artikelModel.artikel}">
 									 <h:commandLink id="updateArtikelButton"
-									 				action="#{artikelModel.selectForUpdate(artikel)}"
-									 				alt="#{msgAv['viewArtikel.alt.update']}"
+									 				action="/artikelverwaltung/updateArtikel"
+									 				alt="#{msgKv['viewArtikel.update.alt']}"
 									 				>
 									 	<h:graphicImage id="updateArtikelItem"
 									 					name="update.gif"

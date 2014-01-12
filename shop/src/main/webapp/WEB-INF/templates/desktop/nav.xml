@@ -14,13 +14,14 @@
 		             itemLeftIcon="grid">
 	
 	
-	<r:panelMenuGroup id="kundenverwaltung"
+	<r:panelMenuGroup id="kundenverwaltung" rendered="#{r:isUserInRole('kunde')}"
 			                  label="#{msg['nav.kundenverwaltung']}"
 			                  expanded="true">
 				<r:panelMenuItem id="kundenverwaltungViewKundeItem">
 				    <h:link id="kundenverwaltungViewKunde"
 							outcome="/kundenverwaltung/viewKunde"
-							value="#{msg['nav.kundenverwaltung.viewKunde']}">
+							value="#{msg['nav.kundenverwaltung.viewKunde']}"
+							>
 						<c:if test="#{not empty javax.enterprise.context.conversation.id}">
 							<f:param id="viewKundeCid" name="cid" value="#{javax.enterprise.context.conversation.id}"/>
 						</c:if>
@@ -114,6 +115,12 @@
 			<h:link id="artikelverwaltungCreateArtikel"
 					outcome="/artikelverwaltung/createArtikel"
 					value="#{msg['nav.artikelverwaltung.createArtikel']}">
+			</h:link>
+		</r:panelMenuItem>
+			<r:panelMenuItem id="artikelverwaltungUpdateArtikelItem">
+			<h:link id="artikelverwaltungUpdateArtikel"
+					outcome="/artikelverwaltung/findArtikel"
+					value="#{msg['nav.artikelverwaltung.findArtikel']}">
 			</h:link>
 		</r:panelMenuItem>
 		<r:panelMenuItem id="lieferverwaltungAdmin" rendered="#{r:isUserInRole('mitarbeiter')}">
