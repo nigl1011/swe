@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
 import static de.shop.util.Constants.JSF_DEFAULT_ERROR;
 import static de.shop.util.Constants.JSF_REDIRECT_SUFFIX;
 
@@ -24,7 +26,11 @@ import de.shop.bestellverwaltung.service.BestellungService;
 import de.shop.kundenverwaltung.domain.AbstractKunde;
 import de.shop.kundenverwaltung.service.KundeService;
 import de.shop.kundenverwaltung.service.KundeService.FetchType;
+import de.shop.lieferverwaltung.domain.Lieferung;
+import de.shop.lieferverwaltung.service.LieferService;
 import de.shop.util.interceptor.Log;
+import de.shop.util.web.Client;
+import de.shop.util.web.Messages;
 /**
  * Dialogsteuerung fuer die Bestellverwaltung
  * @author Michael
@@ -42,14 +48,32 @@ public class BestellungModel implements Serializable {
 	private static final String JSF_BESTELLVERWALTUNG = "/bestellverwaltung/";
 	private static final String JSF_VIEW_BESTELLUNG = JSF_BESTELLVERWALTUNG + "viewBestellung";
 	private static final String JSF_FIND_BESTELLUNG = JSF_BESTELLVERWALTUNG + "findBestellung";
+	private static final String JSF_FIND_LIEFERUNG = "/lieferverwaltung/viewLieferung";
+
+	private static final String MSG_KEY_BESTELLUNG_NOT_FOUND_BY_ID = "bestellung.notFound.id";
+
+	private static final String BESTELLUNG_ID_FORM = "form:idInput";
 	
 	private Bestellung bestellung;
+	
+	@Inject
+	@Client
+	private Locale locale;
+	
+	@Inject
+	private Messages messages;
 	
 	@Inject
 	private Warenkorb warenkorb;
 		
 	@Inject
 	private BestellungService bs;
+	
+	@Inject
+	private Lieferung lieferung;
+	
+	@Inject
+	private LieferService ls;
 	
 	@Inject
 	private KundeService ks;
@@ -63,6 +87,8 @@ public class BestellungModel implements Serializable {
 	
 	@Inject
 	private Flash flash;
+	
+	private Long lieferungId;
 	
 	private Long bestellungId;
 	
@@ -82,6 +108,9 @@ public class BestellungModel implements Serializable {
 	public Bestellung getBestellung() {
 		return bestellung;
 	}
+	public Lieferung getLieferung() {
+		return lieferung;
+	}
 	
 	/**
 	 * Action Methode: Bestellung zu gegebener ID suchen
@@ -96,9 +125,17 @@ public class BestellungModel implements Serializable {
 			return null;
 		}
 		bestellung = bs.findBestellungById(bestellungId);
+		if (bestellung == null) {
+			return findBestellungByIdErrorMsg(bestellungId.toString());
+		}
 		flash.put(FLASH_BESTELLUNG, bestellung);
-		return JSF_FIND_BESTELLUNG;
+		return JSF_FIND_BESTELLUNG + JSF_REDIRECT_SUFFIX;
 	}
+	private String findBestellungByIdErrorMsg(String bestellungId) {
+		messages.error(MSG_KEY_BESTELLUNG_NOT_FOUND_BY_ID, locale, BESTELLUNG_ID_FORM, bestellungId);
+		return null;
+	}
+
 	/**
 	 * Action Methode: Bestellung absenden
 	 */
@@ -137,5 +174,17 @@ public class BestellungModel implements Serializable {
 		flash.put(FLASH_BESTELLUNG, bestellung);
 		
 		return JSF_VIEW_BESTELLUNG;
+	}
+	/**
+	 * Lieferung zu einer Bestellung auslösen
+	 * 
+	 */
+	@Transactional
+	@Log
+	public String createLieferung() {
+		
+		lieferung = ls.createLieferung(lieferung, bestellung.getId());
+		flash.put("lieferung", lieferung);
+		return JSF_FIND_LIEFERUNG + JSF_REDIRECT_SUFFIX;
 	}
 }

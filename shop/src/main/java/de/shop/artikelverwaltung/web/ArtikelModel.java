@@ -7,17 +7,13 @@ import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
-
-
-
-
-
 import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
+import static javax.ejb.TransactionAttributeType.SUPPORTS;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Event;
 import javax.faces.context.Flash;
@@ -43,13 +39,11 @@ import de.shop.util.web.Messages;
 @Named
 @SessionScoped
 @Stateful
+@TransactionAttribute(SUPPORTS)
 public class ArtikelModel implements Serializable {
 	private static final long serialVersionUID = 58038678073649354L;
 
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
-	
-
-	
 	private static final String JSF_VIEW_ARTIKEL = "/artikelverwaltung/viewArtikel";
 	private static final String JSF_LIST_ARTIKEL = "/artikelverwaltung/listArtikel";
 	private static final String JSF_UPDATE_ARTIKEL = "/artikelverwaltung/updateArtikel";
@@ -261,7 +255,7 @@ public class ArtikelModel implements Serializable {
 				: JSF_INDEX;
 	}
 	
-	@Transactional
+	@TransactionAttribute
 	@Log
 	public String update() {
 		auth.preserveLogin();

@@ -3,18 +3,21 @@ package de.shop.lieferverwaltung.web;
 import java.io.Serializable;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.Flash;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.transaction.Transactional;
 
 import de.shop.auth.web.AuthModel;
+import de.shop.bestellverwaltung.domain.Bestellung;
+import de.shop.bestellverwaltung.service.BestellungService;
 import de.shop.lieferverwaltung.domain.Lieferung;
 import de.shop.lieferverwaltung.service.LieferService;
 import de.shop.util.interceptor.Log;
 
 @Named
-@RequestScoped
+@SessionScoped
 public class LieferungModel implements Serializable {
 	
 	private static final long serialVersionUID = 6473526291332635412L;
@@ -25,8 +28,13 @@ public class LieferungModel implements Serializable {
 	
 	private Lieferung lieferung;
 	
+	private Bestellung bestellung;
+
+	
 	@Inject
 	private LieferService ls;
+	
+	
 	
 	@Inject
 	private AuthModel auth;
@@ -53,6 +61,10 @@ public class LieferungModel implements Serializable {
 		this.lieferId = lieferId;
 	}
 	
+	public Bestellung bestellung() {
+		return bestellung;
+	}
+	
 	@Transactional
 	@Log
 	public String findLieferungById() {
@@ -63,5 +75,14 @@ public class LieferungModel implements Serializable {
 		lieferung = ls.findLieferungById(lieferId);
 		flash.put(FLASH_LIEFERUNG, lieferung);
 		return JSF_VIEW_LIEFERUNG;
+	}
+	@Transactional
+	@Log
+	public String createLieferung() {
+		
+		
+		flash.put(FLASH_LIEFERUNG, lieferung);
+		return JSF_VIEW_LIEFERUNG;
+		
 	}
 }

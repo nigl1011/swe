@@ -13,31 +13,31 @@
 		<ui:define name="content">
 			<h:form id="form">
 			
-			
-			<r:panel id="bestellungMainPanel" header="#{msgBV['findBestellung.heading']}">
-				<r:focus id="formFocus"/>
+			<r:focus id="formFocus"/>
+			<r:panel id="bestellungMainPanel" header="#{msgBv['findBestellung.heading']}">
+				
 				<h:panelGrid id="bestellungGrid" columns="3">
 						
 						<h:outputLabel id="idInputLabel"
 									   value="#{msgBv['findBestellung.id']}"
 									   for="idInput"/>	
-									   
+														
 						<h:inputText id="idInput" value="#{bestellungModel.bestellungId}"/>				
 						
 						<r:commandButton id="findButton"
 										 action="#{bestellungModel.findBestellungById}"
 										 value="#{msgBv['findBestellung.submit']}"
-										 render="bestellungPanel"/>
+										 render="bestellungPanel sucheForm:fehlermeldungId"/>
 				</h:panelGrid>
+				<r:messages id="fehlermeldungId" for="idInput"/>
 			</r:panel>
 			
 			<p id="abstand"/>
 			
+			<c:set var="bestellung" value="#{bestellungModel.bestellung}"/>
 			
-				<r:outputPanel id="bestellungPanel">
-						<c:if test="#{not empty flash.bestellung or param.init ne 'true'}">
-						<c:set var="bestellung" value="#{flash.bestellung}" scope = "view"/>
-						<c:set target="#{flash}" property="bestellung" value="#{bestellung}"/>
+				<r:outputPanel id="bestellungPanel" rendered="#{not empty bestellung}">
+						
 					<r:dataTable id="positionenTabelle"
 								value="#{bestellung.bestellposten}"
 					             var="pos"
@@ -72,9 +72,24 @@
 				</r:dataTable>
 				
 				
-				
-			</c:if>
 			</r:outputPanel>
+			
+			<p id="buttons"/>
+			<h:panelGroup id="buttonsGroup" rendered="#{bestellung.status eq 'INBEARBEITUNG'}">
+			
+								<h:commandLink id="createLieferung"
+								               action="#{bestellungModel.createLieferung()}"
+								               alt="#{msgBv['findBestellung.createLieferung.alt']}"
+								               
+								               >
+									<h:graphicImage id="lieferungIcon"
+			    	                                name="lief.jpg"
+			        	                            library="images"/>
+			        	                        						
+								</h:commandLink>
+								
+			</h:panelGroup>
+			
 			</h:form>
 		</ui:define>
 		

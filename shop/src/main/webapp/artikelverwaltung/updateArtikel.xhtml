@@ -17,6 +17,8 @@
 			
 			<ui:define name="content">
 					<c:set var="artikel" value="#{artikelModel.artikel}" scope="view"/>
+					<c:set var="artikel" value="#{flash.artikel}" scope="view"/>
+				<c:set target="#{flash}" property="artikel" value="#{artikel}"/>
 			
 				<h1>
 					<h:outputFormat id="headingArtikel" value="#{msgAv['updateArtikel.heading']}" rendered="#{not empty artikel}">
@@ -30,7 +32,7 @@
 							  rendered="#{empty artikel}"/>
 							  
 				<r:push id="updateEvent" address="updateArtikel"
-			              ondataavailable="if (event.rf.data == '#{artikel.id}') { $('#updateMessage').html('&lt;span class=rf-msg-err&gt;#{msgA['updateArtikel.concurrentUpdate']}&lt;/span&gt;') }"/>
+			              ondataavailable="if (event.rf.data == '#{artikel.id}') { $('#updateMessage').html('&lt;span class=rf-msg-err&gt;#{msgAv['updateArtikel.concurrentUpdate']}&lt;/span&gt;') }"/>
 				<span id="updateMessage"></span>
 				
 				

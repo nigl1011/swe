@@ -28,10 +28,11 @@
 						<r:commandButton id="findButton"
 						                 action="#{artikelModel.findArtikelByBezeichnung}"
 								         value="#{msgAv['listArtikel.submit']}"
-								         render="artikelPanel sucheForm:fehlermeldungBezeichnung"/>
+								         render="artikelPanel fehlermeldungBezeichnung"/>
 						
 						<cc:bitteWarten id="inBearbeitung" msg="#{msgAv['listArtikel.inBearbeitung']}"/>
 					</h:panelGrid>
+					<r:messages id="fehlermeldungBezeichnung" for="bezeichnung"/>
 				</r:panel>
 			
 				<p id="abstand1"/>
