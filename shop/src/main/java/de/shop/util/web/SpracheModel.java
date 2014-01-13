@@ -47,7 +47,7 @@ public class SpracheModel implements Serializable {
 	
 	public Locale getLocale() {
 		
-		if (locale.toString().equals("en")) {
+		if ("en".equals(locale.toString())) {
 			return null;
 			
 		}

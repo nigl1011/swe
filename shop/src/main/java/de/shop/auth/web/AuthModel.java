@@ -80,7 +80,7 @@ public class AuthModel implements Serializable {
 	private Messages messages;
 	
 	@Inject
-	private HttpServletRequest request;
+	private transient HttpServletRequest request;
 	
 	// FIXME https://issues.jboss.org/browse/WFLY-1533
 	//@Inject

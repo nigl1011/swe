@@ -2,7 +2,6 @@ package de.shop.lieferverwaltung.web;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.Flash;
 import javax.inject.Inject;
@@ -10,8 +9,6 @@ import javax.inject.Named;
 import javax.transaction.Transactional;
 
 import de.shop.auth.web.AuthModel;
-import de.shop.bestellverwaltung.domain.Bestellung;
-import de.shop.bestellverwaltung.service.BestellungService;
 import de.shop.lieferverwaltung.domain.Lieferung;
 import de.shop.lieferverwaltung.service.LieferService;
 import de.shop.util.interceptor.Log;
@@ -28,8 +25,6 @@ public class LieferungModel implements Serializable {
 	
 	private Lieferung lieferung;
 	
-	private Bestellung bestellung;
-
 	
 	@Inject
 	private LieferService ls;
@@ -61,10 +56,7 @@ public class LieferungModel implements Serializable {
 		this.lieferId = lieferId;
 	}
 	
-	public Bestellung bestellung() {
-		return bestellung;
-	}
-	
+		
 	@Transactional
 	@Log
 	public String findLieferungById() {

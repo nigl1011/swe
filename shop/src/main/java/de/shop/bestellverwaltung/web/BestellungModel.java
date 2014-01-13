@@ -9,7 +9,6 @@ import java.util.Locale;
 import static de.shop.util.Constants.JSF_DEFAULT_ERROR;
 import static de.shop.util.Constants.JSF_REDIRECT_SUFFIX;
 
-import javax.ejb.Stateful;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.Flash;
 import javax.inject.Inject;
@@ -88,7 +87,7 @@ public class BestellungModel implements Serializable {
 	@Inject
 	private Flash flash;
 	
-	private Long lieferungId;
+	
 	
 	private Long bestellungId;
 	
@@ -163,15 +162,15 @@ public class BestellungModel implements Serializable {
 		warenkorb.endConversation();
 		
 		// Neue Bestellung erzeugen
-		Bestellung bestellung = new Bestellung();
-		bestellung.setBestellpositionen(neuePositionen);
-		LOGGER.tracef("Neue Bestellung: %s\nBestellpositionen: %s", bestellung, bestellung.getBestellposten());
+		Bestellung neueBestellung = new Bestellung();
+		neueBestellung.setBestellpositionen(neuePositionen);
+		LOGGER.tracef("Neue Bestellung: %s\nBestellpositionen: %s", neueBestellung, neueBestellung.getBestellposten());
 		
 		// Bestellung mit Kunden verknüpfen
-		bestellung = bs.createBestellung(bestellung, kunde);
+		neueBestellung = bs.createBestellung(neueBestellung, kunde);
 		
 		// Bestellung im Flash speichern wegen Redirect
-		flash.put(FLASH_BESTELLUNG, bestellung);
+		flash.put(FLASH_BESTELLUNG, neueBestellung);
 		
 		return JSF_VIEW_BESTELLUNG;
 	}

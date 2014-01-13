@@ -147,14 +147,14 @@ public class ArtikelModel implements Serializable {
 	
 	@Log
 	public String findArtikelByBezeichnung() {
-		final List<Artikel> artikel = as.findArtikelByBezeichnung(bezeichnung);
+		final List<Artikel> artikelListe = as.findArtikelByBezeichnung(bezeichnung);
 		
-		if (artikel == null || artikel.isEmpty()) {
+		if (artikelListe == null || artikelListe.isEmpty()) {
 			// Keine Artikel mit der gesuchten Bezeichnung gefunden
 			return findArtikelByBezeichnungErrorMsg(bezeichnung.toString());
 		}
 		
-		flash.put(FLASH_ARTIKEL, artikel);
+		flash.put(FLASH_ARTIKEL, artikelListe);
 		
 		return JSF_LIST_ARTIKEL;
 	}

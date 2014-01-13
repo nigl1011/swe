@@ -15,6 +15,6 @@ public class NotFoundException extends RuntimeException {
 	}
 
 	public Object[] getArgs() {
-		return args;
+		return args.clone();
 	}
 }
