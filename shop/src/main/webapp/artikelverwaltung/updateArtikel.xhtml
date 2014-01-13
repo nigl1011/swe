@@ -16,8 +16,7 @@
 			</ui:define>
 			
 			<ui:define name="content">
-				<c:set var="artikel" value="#{flash.artikel}" scope="view"/>
-				<c:set target="#{flash}" property="artikel" value="#{artikel}"/>
+					<c:set var="artikel" value="#{artikelModel.artikel}" scope="view"/>
 			
 				<h1>
 					<h:outputFormat id="headingArtikel" value="#{msgAv['updateArtikel.heading']}" rendered="#{not empty artikel}">
